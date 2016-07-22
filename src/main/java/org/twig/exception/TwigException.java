@@ -14,6 +14,16 @@ public class TwigException extends Exception {
     }
 
     /**
+     * Create a twig exception with file name included
+     * @param rawMessage The error message
+     * @param templateName The filename the error occurred in
+     */
+    public TwigException(String rawMessage, String templateName) {
+        this.rawMessage = rawMessage;
+        this.templateName = templateName;
+    }
+
+    /**
      * Create a twig exception with file name and line number included
      * @param rawMessage The error message
      * @param lineNumber The line number the error occurred at
