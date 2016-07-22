@@ -14,6 +14,16 @@ public class TwigException extends Exception {
     }
 
     /**
+     * Create a twig exception without any template info
+     * @param rawMessage The error message
+     * @param cause The exception that previously followed this one
+     */
+    public TwigException(String rawMessage, Throwable cause) {
+        this.rawMessage = rawMessage;
+        initCause(cause);
+    }
+
+    /**
      * Create a twig exception with file name included
      * @param rawMessage The error message
      * @param templateName The filename the error occurred in
@@ -26,13 +36,27 @@ public class TwigException extends Exception {
     /**
      * Create a twig exception with file name and line number included
      * @param rawMessage The error message
-     * @param lineNumber The line number the error occurred at
      * @param templateName The filename the error occurred in
+     * @param lineNumber The line number the error occurred at
      */
-    public TwigException(String rawMessage, Integer lineNumber, String templateName) {
+    public TwigException(String rawMessage, String templateName, Integer lineNumber) {
+        this.rawMessage = rawMessage;
+        this.templateName = templateName;
+        this.lineNumber = lineNumber;
+    }
+
+    /**
+     * Create a twig exception with file name and line number included
+     * @param rawMessage The error message
+     * @param templateName The filename the error occurred in
+     * @param lineNumber The line number the error occurred at
+     * @param cause The exception that previously followed this one
+     */
+    public TwigException(String rawMessage, String templateName, Integer lineNumber, Throwable cause) {
         this.rawMessage = rawMessage;
         this.lineNumber = lineNumber;
         this.templateName = templateName;
+        initCause(cause);
     }
 
     /**
