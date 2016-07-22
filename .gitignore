@@ -1,0 +1,6 @@
+# Local files
+/.idea/
+
+# Builds
+/build/
+/.gradle/
