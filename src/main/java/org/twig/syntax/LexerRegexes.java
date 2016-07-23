@@ -24,10 +24,10 @@ public class LexerRegexes {
     }
 
     public Pattern getLexBlockEnd() {
-        String pattern = "\\s*(?:"
-                + Pattern.quote(options.getWhitespaceTrim() + options.getVariableClose())
-                + "\\s*|\\s*"
-                + Pattern.quote(options.getVariableClose())
+        String pattern = "^\\s*(?:"
+                + Pattern.quote(options.getWhitespaceTrim() + options.getBlockClose())
+                + "\\s*|^\\s*"
+                + Pattern.quote(options.getBlockClose())
                 + ")\\n?";
 
         return Pattern.compile(pattern);
@@ -61,7 +61,7 @@ public class LexerRegexes {
                 + Pattern.quote(options.getWhitespaceTrim() + options.getCommentClose())
                 + "\\s*|"
                 + Pattern.quote(options.getCommentClose())
-                + "\\n?";
+                + ")\\n?";
 
         return Pattern.compile(pattern, Pattern.DOTALL);
     }

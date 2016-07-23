@@ -54,4 +54,31 @@ public class LexerTests {
 
         lexer.tokenize(code, "aFile");
     }
+
+    @Test
+    public void canLexBlocks() throws SyntaxErrorException {
+        Lexer lexer = new Lexer();
+        String code = "{% aBlock %}";
+
+        TokenStream tokenStream = lexer.tokenize(code, "aFile");
+
+        Assert.assertEquals("1st token should be a block start", Token.Type.BLOCK_START, tokenStream.next().getType());
+
+        Token blockName = tokenStream.next();
+        Assert.assertEquals("2nd token should be a name", Token.Type.NAME, blockName.getType());
+        Assert.assertEquals("3rd token should be the block name", "aBlock", blockName.getValue());
+
+        Assert.assertEquals("4th token should be block end", Token.Type.BLOCK_END, tokenStream.next().getType());
+    }
+
+    @Test
+    public void ignoresComments() throws SyntaxErrorException {
+        Lexer lexer = new Lexer();
+        String code = "foo {# This is a comment #} bar";
+
+        TokenStream tokenStream = lexer.tokenize(code, "aFile");
+
+        Assert.assertEquals("1st token should be text", "foo ", tokenStream.next().getValue());
+        Assert.assertEquals("2nd token should be text", " bar", tokenStream.next().getValue());
+    }
 }

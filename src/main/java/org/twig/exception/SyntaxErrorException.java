@@ -60,6 +60,16 @@ public class SyntaxErrorException extends TwigException {
     }
 
     /**
+     * Create an unclosed comment error
+     * @param templateName The name of the template/file the error occurred in
+     * @param lineNumber The line the error occurred on
+     * @return The exception
+     */
+    public static SyntaxErrorException unclosedComment(String templateName, Integer lineNumber) {
+        return new SyntaxErrorException("Unclosed comment.", templateName, lineNumber);
+    }
+
+    /**
      * Create an unclosed tag exception
      * @param tagType The type of tag
      * @param templateName The name of the template/file the error occurred in
@@ -79,5 +89,16 @@ public class SyntaxErrorException extends TwigException {
         }
 
         return new SyntaxErrorException("Unclosed " + tagTypeInEnglish + ".", templateName, lineNumber);
+    }
+
+    /**
+     * Create an unexpected character error
+     * @param character The unexpected character
+     * @param templateName The name of the template/file the error occurred in
+     * @param lineNumber The line the error occurred on
+     * @return The exception
+     */
+    public static SyntaxErrorException unexpectedCharacter(String character, String templateName, Integer lineNumber) {
+        return new SyntaxErrorException("Unexpected character \"" + character + "\".", templateName, lineNumber);
     }
 }

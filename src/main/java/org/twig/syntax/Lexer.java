@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  */
 public class Lexer {
     public static enum State {
-        TEXT, BLOCK, VARIABLE, STRING, INTERPOLATION
+        TEXT, BLOCK, VARIABLE, STRING, INTERPOLATION, COMMENT
     }
 
     /**
@@ -128,6 +128,12 @@ public class Lexer {
                 case VARIABLE:
                     lexVariable();
                     break;
+                case BLOCK:
+                    lexBlock();
+                    break;
+                case COMMENT:
+                    lexComment();
+                    break;
             }
         }
 
@@ -183,9 +189,13 @@ public class Lexer {
         // Check the upcoming tag te see what to lex
         String currentPositionGroup = this.tagPositions.get(this.position).getGroup();
         if (currentPositionGroup.equals(options.getCommentOpen())) {
-            // TODO lex comment
+            pushState(State.COMMENT);
+
         } else if (currentPositionGroup.equals(options.getBlockOpen())) {
-            // TODO lex block
+            pushToken(Token.Type.BLOCK_START);
+            pushState(State.BLOCK);
+            this.currentTagLine = this.line;
+
         } else if (currentPositionGroup.equals(options.getVariableOpen())) {
             pushToken(Token.Type.VAR_START);
             pushState(State.VARIABLE);
@@ -208,6 +218,20 @@ public class Lexer {
             popState();
         } else {
             // Parse the var contents (name, operations etc)
+            lexExpression();
+        }
+    }
+
+    protected void lexBlock() throws SyntaxErrorException {
+        Matcher endBlockTagMatcher = this.regexes.getLexBlockEnd().matcher(this.code.substring(this.cursor));
+
+        // Check if this is the variable closing token
+        if (this.brackets.size() == 0 && endBlockTagMatcher.find(0)) {
+            pushToken(Token.Type.BLOCK_END);
+            moveCursor(endBlockTagMatcher.group(0));
+            popState();
+        } else {
+            // Parse the block contents (name, strings, operations etc)
             lexExpression();
         }
     }
@@ -248,6 +272,22 @@ public class Lexer {
 
             return;
         }
+
+        // Unlexable
+        String unexpectedCharacter = String.valueOf(this.code.charAt(this.cursor));
+        throw SyntaxErrorException.unexpectedCharacter(unexpectedCharacter, this.filename, this.line);
+    }
+
+    protected void lexComment() throws SyntaxErrorException {
+        Matcher endCommentTagMatcher = this.regexes.getLexCommentEnd().matcher(this.code.substring(this.cursor));
+
+        // Check if this is the variable closing token
+        if (!endCommentTagMatcher.find(0)) {
+            throw SyntaxErrorException.unclosedComment(this.filename, this.line);
+        }
+
+        moveCursor(this.code.substring(this.cursor, this.cursor + endCommentTagMatcher.end(0)));
+        popState();
     }
 
     /**
