@@ -7,13 +7,16 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Lexes code and gives us a TokenStream
+ */
 public class Lexer {
     public static enum State {
         TEXT, BLOCK, VARIABLE, STRING, INTERPOLATION
     }
 
     /**
-     * Represents a token position in the code stream
+     * Represents a token position in the code
      */
     protected class TokenPosition {
         private Integer offset;
@@ -41,20 +44,34 @@ public class Lexer {
         }
     }
 
+    // The code to tokenize
     private String code;
+    // The file name of the code (used in error messages)
     private String filename;
+    // From where in the code we're currently tokenizing
     private Integer cursor;
+    // The current token tag position @see tagPositions
     private Integer position;
-    private Integer end;
-    private Integer line;
-    private Integer currentTagLine;
-    private State state;
-    private List<State> states;
-    private List brackets;
-    private TokenStream tokenStream;
-    private LexerOptions options;
-    private LexerRegexes regexes;
+    // Positions of all found tag tokens (ie block, var etc.). Just so we don't have to step through each character of the code
     private List<TokenPosition> tagPositions;
+    // On which character count the code ends
+    private Integer end;
+    // On which line we're currently on (used in error messages)
+    private Integer line;
+    // On which line the tag being tokenized is on (used in error messages)
+    private Integer currentTagLine;
+    // The current type of token we're analyzing
+    private State state;
+    // A list of the states, as states can be nestled
+    private List<State> states;
+    // TODO: Not sure what this thing does yet, find out
+    private List brackets;
+    // The stream of tokens to return
+    private TokenStream tokenStream;
+    // Options for the lexer (ie the variable and block open/close tags should look like)
+    private LexerOptions options;
+    // All required regexes
+    private LexerRegexes regexes;
 
     /**
      * Constructor with default configuration
@@ -76,6 +93,14 @@ public class Lexer {
         regexes = new LexerRegexes(this.options, new ArrayList<>(), new ArrayList<>());
     }
 
+    /**
+     * Creates tokens from the provided code
+     *
+     * @param code     The code to tokenize
+     * @param filename The source file (used for error messages)
+     * @return The stream of tokens from the source
+     * @throws SyntaxErrorException If we can't keep on tokenizing for some reason (i.e. missing closing tag)
+     */
     public TokenStream tokenize(String code, String filename) throws SyntaxErrorException {
         this.code = code;
         this.filename = filename;
@@ -88,10 +113,13 @@ public class Lexer {
         this.tagPositions = new ArrayList<>();
         this.brackets = new ArrayList<>();
         this.states = new ArrayList<>();
+        // The initial state should always be TEXT
         pushState(State.TEXT);
 
+        // Find all tags except TEXT so we don't have to step through each character
         findTokenPositions();
 
+        // Keep on tokenizing as long as there are still characters to tokenize
         while (this.cursor < this.end) {
             switch (this.state) {
                 case TEXT:
@@ -106,6 +134,9 @@ public class Lexer {
         return this.tokenStream;
     }
 
+    /**
+     * Entry point for tokenizing - tokenizes text and changes the state to whatever the next token requires
+     */
     protected void lexData() {
         // If no matching tags are left we return the rest of the template as simple text token
         if (this.position == (this.tagPositions.size() - 1)) {
@@ -119,9 +150,10 @@ public class Lexer {
         this.position++;
 
         // Find the first tag token after the current cursor
+        // (that way we know everything before that one is just plain text)
         TokenPosition nextPosition = tagPositions.get(this.position);
         while (nextPosition.getOffset() < this.cursor) {
-            // If this is the last tag token do nothing
+            // If this is the last tag token do nothing.
             if (this.position == (this.tagPositions.size() - 1)) {
                 return;
             }
@@ -131,19 +163,24 @@ public class Lexer {
             nextPosition = this.tagPositions.get(this.position);
         }
 
-        // Push the template text first
+        // Save everything that's between the current cursor position and the next position
         String tokenText = code.substring(this.cursor, nextPosition.getOffset() - this.cursor);
-        String textReal = tokenText;
+
         /*
+        Not sure why this code snippet was here or what it does, find out and check so it's nothing crucial.
+        @see Twig_Lexer.php:161-165
         TODO:
             if (isset($this->positions[2][$this->position][0])) {
                 $text = rtrim($text);
             }
          */
 
+        // Save found TEXT
         pushToken(Token.Type.TEXT, tokenText);
-        moveCursor(textReal + nextPosition.getGroup());
+        // Move past saved text and the next token
+        moveCursor(tokenText + nextPosition.getGroup());
 
+        // Check the upcoming tag te see what to lex
         String currentPositionGroup = this.tagPositions.get(this.position).getGroup();
         if (currentPositionGroup.equals(options.getCommentOpen())) {
             // TODO lex comment
@@ -156,27 +193,40 @@ public class Lexer {
         }
     }
 
+    /**
+     * Lexes a variable expression "{{ aVar }}"
+     *
+     * @throws SyntaxErrorException If we can't keep on tokenizing for some reason (i.e. missing closing tag)
+     */
     protected void lexVariable() throws SyntaxErrorException {
         Matcher endVarTagMatcher = this.regexes.getLexVariableEnd().matcher(this.code.substring(this.cursor));
 
+        // Check if this is the variable closing token
         if (this.brackets.size() == 0 && endVarTagMatcher.find(0)) {
             pushToken(Token.Type.VAR_END);
             moveCursor(endVarTagMatcher.group(0));
             popState();
         } else {
-
+            // Parse the var contents (name, operations etc)
             lexExpression();
         }
     }
 
+    /**
+     * Does the hard work in lexing all tag contents (ie variable names, operatiors etc)
+     *
+     * @throws SyntaxErrorException If we can't keep on tokenizing for some reason (i.e. missing closing tag)
+     */
     protected void lexExpression() throws SyntaxErrorException {
+        // The code to lex
         String codeAfterCursor = this.code.substring(this.cursor);
 
-        // Move past any  leading whitespace
+        // Move past any leading whitespace
         Matcher leadingWhitespacesMatcher = Pattern.compile("^\\s+").matcher(codeAfterCursor);
         if (leadingWhitespacesMatcher.find(0)) {
             moveCursor(leadingWhitespacesMatcher.group(0));
 
+            // Cursor was moved, we need to update codeAfterCursor too
             codeAfterCursor = this.code.substring(this.cursor);
 
             // We're lexing an expression but we found the end of the template = closing tag is missing
@@ -200,8 +250,14 @@ public class Lexer {
         }
     }
 
+    /**
+     * Pushes a token to the TokenStream
+     *
+     * @param type  The token type
+     * @param value The value of the token (or null if no value, ie for start/end tags)
+     */
     protected void pushToken(Token.Type type, String value) {
-        // Don't push empty text tokens
+        // Don't push empty TEXT tokens
         if (type == Token.Type.TEXT && value.equals("")) {
             return;
         }
@@ -209,8 +265,13 @@ public class Lexer {
         this.tokenStream.add(new Token(type, value, this.line));
     }
 
+    /**
+     * Pushes a token to the token stream without a value
+     *
+     * @param type The token type
+     */
     protected void pushToken(Token.Type type) {
-        // Don't push empty text tokens
+        // Don't push empty TEXT tokens
         if (type == Token.Type.TEXT) {
             return;
         }
@@ -218,11 +279,19 @@ public class Lexer {
         this.tokenStream.add(new Token(type, null, this.line));
     }
 
+    /**
+     * Sets a new state (pushes it since states can be nestled)
+     *
+     * @param state The new state
+     */
     protected void pushState(State state) {
         this.states.add(state);
         this.state = state;
     }
 
+    /**
+     * Resets the state to the previous state
+     */
     protected void popState() {
         if (states.size() == 0) {
             throw new RuntimeException("Cannot pop state without a previous state");
@@ -233,11 +302,22 @@ public class Lexer {
         state = states.get(states.size() - 1);
     }
 
+    /**
+     * Moves the cursor and the line number past as many characters/line breaks as the provided text contains
+     *
+     * @param text The text to move the cursor past
+     */
     protected void moveCursor(String text) {
         cursor += text.length();
         this.line += findNumberOfLineEndingsInText(text);
     }
 
+    /**
+     * Finds the number of line breaks in the provided text
+     *
+     * @param text The text to find line breaks in
+     * @return The number of line endings
+     */
     protected Integer findNumberOfLineEndingsInText(String text) {
         Matcher matcher = Pattern.compile("\n").matcher(text);
 
@@ -251,6 +331,10 @@ public class Lexer {
         return lineEndingsInText;
     }
 
+    /**
+     * Finds the starts of all tag tokens to tokenize (makes us not having to step through each character
+     * of the template)
+     */
     protected void findTokenPositions() {
         Matcher matcher = regexes.getLexTokensStart().matcher(this.code);
 
