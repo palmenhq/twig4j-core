@@ -108,7 +108,7 @@ public class Lexer {
         this.end = code.length();
         this.line = 1;
         this.currentTagLine = 1;
-        this.tokenStream = new TokenStream();
+        this.tokenStream = new TokenStream(this.filename);
         this.position = -1;
         this.tagPositions = new ArrayList<>();
         this.brackets = new ArrayList<>();
