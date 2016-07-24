@@ -92,6 +92,17 @@ public class SyntaxErrorException extends TwigException {
     }
 
     /**
+     * Create an something exception
+     * @param something Whatever is unclosed
+     * @param templateName The name of the template/file the error occurred in
+     * @param lineNumber The line the error occurred on
+     * @return The exception
+     */
+    public static SyntaxErrorException unclosedSomething(String something, String templateName, Integer lineNumber) {
+        return new SyntaxErrorException("Unclosed " + something + ".", templateName, lineNumber);
+    }
+
+    /**
      * Create an unexpected character error
      * @param character The unexpected character
      * @param templateName The name of the template/file the error occurred in

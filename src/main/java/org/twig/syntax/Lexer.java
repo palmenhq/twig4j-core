@@ -1,6 +1,7 @@
 package org.twig.syntax;
 
 import org.twig.exception.SyntaxErrorException;
+import org.twig.utils.StringModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +66,7 @@ public class Lexer {
     // A list of the states, as states can be nestled
     private List<State> states;
     // TODO: Not sure what this thing does yet, find out
-    private List brackets;
+    private List<Bracket> brackets;
     // The stream of tokens to return
     private TokenStream tokenStream;
     // Options for the lexer (ie the variable and block open/close tags should look like)
@@ -134,13 +135,20 @@ public class Lexer {
                 case COMMENT:
                     lexComment();
                     break;
+                case STRING:
+                    lexString();
+                    break;
             }
         }
 
         // This is the end of the file
         pushToken(Token.Type.EOF);
 
-        // TODO Check "brackets"
+        // If there are unclosed elements left
+        if (this.brackets.size() > 0) {
+            Bracket bracket = brackets.remove(brackets.size() - 1);
+            throw SyntaxErrorException.unclosedSomething(bracket.getType(), this.filename, bracket.getLine());
+        }
 
         return this.tokenStream;
     }
@@ -278,11 +286,37 @@ public class Lexer {
             return;
         }
 
+        // Regular string contents
+        Matcher stringMatcher = this.regexes.getExpressionString().matcher(codeAfterCursor);
+        if (stringMatcher.find(0)) {
+            // Strip quotes from string
+            String foundStringContents = stringMatcher.group(0).substring(1, stringMatcher.group(0).length() - 1);
+            pushToken(Token.Type.STRING, StringModule.stripcslashes(foundStringContents));
+            moveCursor(stringMatcher.group(0));
+
+            return;
+        }
+
+        // Opening double quoted string
+        Matcher openingStringMatcher = this.regexes.getDoubleQuoteStringDelimiter().matcher(codeAfterCursor);
+        if (openingStringMatcher.find(0)) {
+            // Increase bracket depth
+            this.brackets.add(new Bracket("\"", this.line));
+            pushState(State.STRING);
+            moveCursor(openingStringMatcher.group(0));
+
+            return;
+        }
+
         // Unlexable
         String unexpectedCharacter = String.valueOf(this.code.charAt(this.cursor));
         throw SyntaxErrorException.unexpectedCharacter(unexpectedCharacter, this.filename, this.line);
     }
 
+    /**
+     * Move past comment blocks
+     * @throws SyntaxErrorException On any unclosed comments
+     */
     protected void lexComment() throws SyntaxErrorException {
         Matcher endCommentTagMatcher = this.regexes.getLexCommentEnd().matcher(this.code.substring(this.cursor));
 
@@ -293,6 +327,48 @@ public class Lexer {
 
         moveCursor(this.code.substring(this.cursor, this.cursor + endCommentTagMatcher.end(0)));
         popState();
+    }
+
+    protected void lexString() throws SyntaxErrorException {
+        String codeAfterCursor = this.code.substring(this.cursor);
+
+        // If this is a string interpolation
+        Matcher stringInterpolationStartMatcher = this.regexes.getInterpolationStart().matcher(codeAfterCursor);
+        if (stringInterpolationStartMatcher.find(0)) {
+            // We're now doing string interpolation
+            // Add a depth in brackets
+            this.brackets.add(new Bracket(this.options.getInterpolationOpen(), this.line));
+            pushToken(Token.Type.INTERPLATION_START);
+            moveCursor(stringInterpolationStartMatcher.group(0));
+            pushState(State.INTERPOLATION);
+
+            return;
+        }
+
+        // If this is just a regular string
+        Matcher stringDoubleQuotePartMatcher = this.regexes.getDoubleQuoteStringPart().matcher(codeAfterCursor);
+        if (stringDoubleQuotePartMatcher.find(0) && stringDoubleQuotePartMatcher.group(0).length() > 0) {
+            // Push the string token
+            pushToken(Token.Type.STRING, StringModule.stripcslashes(stringDoubleQuotePartMatcher.group(0)));
+            moveCursor(stringDoubleQuotePartMatcher.group(0));
+
+            return;
+        }
+
+        // If this is the end of a string
+        Matcher stringDoubleQuoteDelimiterMatcher = this.regexes.getDoubleQuoteStringDelimiter().matcher(codeAfterCursor);
+        if (stringDoubleQuoteDelimiterMatcher.find(0)) {
+            // Move up one bracket level
+            Bracket bracket = this.brackets.remove(this.brackets.size() - 1);
+            // Check so the cursor is actually at a quote
+            if (this.code.charAt(this.cursor) != '"') {
+                throw SyntaxErrorException.unclosedSomething(bracket.getType(), this.filename, this.line);
+            }
+
+            // Closing of the string
+            popState();
+            this.cursor ++;
+        }
     }
 
     /**

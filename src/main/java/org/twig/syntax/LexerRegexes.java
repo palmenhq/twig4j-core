@@ -119,7 +119,15 @@ public class LexerRegexes {
     }
 
     public Pattern getExpressionString() {
-        return Pattern.compile("^\"([^#\"\\\\]*(?:\\\\.[^#\"\\\\]*)*)\"|'([^'\\\\]*(?:\\\\.[^'\\\\]*)*)'", Pattern.DOTALL);
+        return Pattern.compile("^\"([^#\"\\\\]*(?:\\\\.[^#\"\\\\]*)*)\"|^'([^'\\\\]*(?:\\\\.[^'\\\\]*)*)'", Pattern.DOTALL);
+    }
+
+    public Pattern getDoubleQuoteStringDelimiter() {
+        return Pattern.compile("^\"");
+    }
+
+    public Pattern getDoubleQuoteStringPart() {
+        return Pattern.compile("^[^#\"\\\\]*(?:^(?:^\\\\.|^#(?!\\{))[^#\"\\\\]*)*", Pattern.DOTALL);
     }
 
     public void setOptions(LexerOptions options) {

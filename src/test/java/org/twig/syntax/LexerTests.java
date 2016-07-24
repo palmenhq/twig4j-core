@@ -85,6 +85,69 @@ public class LexerTests {
     }
 
     @Test
+    public void lexesDoulbeQuotedStrings() throws SyntaxErrorException {
+        Lexer lexer = new Lexer();
+        String code  = "{{ \"A string\" }}";
+
+        TokenStream tokenStream = lexer.tokenize(code, "file");
+
+        Assert.assertEquals("1st token should be variable start", Token.Type.VAR_START, tokenStream.next().getType());
+        Token stringToken = tokenStream.next();
+        Assert.assertEquals("2nd token should be of type STRING", Token.Type.STRING, stringToken.getType());
+        Assert.assertEquals("STRING token value should be string contents", "A string", stringToken.getValue());
+    }
+
+    @Test
+    public void lexesEscapedDoubleQuotedStrings() throws SyntaxErrorException {
+        Lexer lexer = new Lexer();
+        String code  = "{{ \"A \\\"string\" }}";
+
+        TokenStream tokenStream = lexer.tokenize(code, "file");
+
+        Assert.assertEquals("1st token should be variable start", Token.Type.VAR_START, tokenStream.next().getType());
+        Token stringToken = tokenStream.next();
+        Assert.assertEquals("2nd token should be of type STRING", Token.Type.STRING, stringToken.getType());
+        Assert.assertEquals("STRING token value should be the escaped string contents", "A \"string", stringToken.getValue());
+    }
+
+    @Test
+    public void lexesSingleQuotedStrings() throws SyntaxErrorException {
+        Lexer lexer = new Lexer();
+        String code  = "{{ 'A string' }}";
+
+        TokenStream tokenStream = lexer.tokenize(code, "file");
+
+        Assert.assertEquals("1st token should be variable start", Token.Type.VAR_START, tokenStream.next().getType());
+        Token stringToken = tokenStream.next();
+        Assert.assertEquals("2nd token should be of type STRING", Token.Type.STRING, stringToken.getType());
+        Assert.assertEquals("STRING token value should be the string contents", "A string", stringToken.getValue());
+    }
+
+    @Test
+    public void lexesEscapedSingleQuotedStrings() throws SyntaxErrorException {
+        Lexer lexer = new Lexer();
+        String code  = "{{ 'A \\'string' }}";
+
+        TokenStream tokenStream = lexer.tokenize(code, "file");
+
+        Assert.assertEquals("1st token should be variable start", Token.Type.VAR_START, tokenStream.next().getType());
+        Token stringToken = tokenStream.next();
+        Assert.assertEquals("2nd token should be of type STRING", Token.Type.STRING, stringToken.getType());
+        Assert.assertEquals("STRING token value should be the escaped string contents", "A 'string", stringToken.getValue());
+    }
+
+    @Test
+    public void cantLexUnclosedString() throws SyntaxErrorException {
+        expectedException.expect(SyntaxErrorException.class);
+        expectedException.expectMessage("Unclosed \" in \"file\" at line 1.");
+
+        Lexer lexer = new Lexer();
+        String code  = "{{ \"A un unclosed string }}";
+
+        TokenStream tokenStream = lexer.tokenize(code, "file");
+    }
+
+    @Test
     public void canLexBlocks() throws SyntaxErrorException {
         Lexer lexer = new Lexer();
         String code = "{% aBlock %}";
