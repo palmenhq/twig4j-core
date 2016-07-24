@@ -10,6 +10,9 @@ public class TokenStream {
     private Integer current = -1;
     private String filename;
 
+    /**
+     * Constructs an empty tokens stream
+     */
     public TokenStream() {
         tokens = new ArrayList<>();
     }
@@ -25,10 +28,19 @@ public class TokenStream {
     /**
      * Constructs a token stream with file/template name
      * @param tokens The tokens
-     * @param filename The name of the template wich the tokens are associated with
+     * @param filename The name of the template which the tokens are associated with
      */
     public TokenStream(List<Token> tokens, String filename) {
         this.tokens = tokens;
+        this.filename = filename;
+    }
+
+    /**
+     * Constructs a token stream with file/template name
+     * @param filename The name of the template which the tokens are associated with
+     */
+    public TokenStream(String filename) {
+        this.tokens = new ArrayList<>();
         this.filename = filename;
     }
 
@@ -61,5 +73,37 @@ public class TokenStream {
      */
     public void add(Token token) {
         tokens.add(token);
+    }
+
+    /**
+     * Get all tokens (not recommended to use)
+     * @return All tokens
+     */
+    public List<Token> getTokens() {
+        return tokens;
+    }
+
+    /**
+     * Set all tokens
+     * @param tokens All tokens
+     */
+    public void setTokens(List<Token> tokens) {
+        this.tokens = tokens;
+    }
+
+    /**
+     * Get the template name
+     * @return filename The name of the template which the tokens are associated with
+     */
+    public String getFilename() {
+        return filename;
+    }
+
+    /**
+     * Set the template name
+     * @param filename The name of the template which the tokens are associated with
+     */
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 }
