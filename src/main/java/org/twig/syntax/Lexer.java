@@ -137,6 +137,11 @@ public class Lexer {
             }
         }
 
+        // This is the end of the file
+        pushToken(Token.Type.EOF);
+
+        // TODO Check "brackets"
+
         return this.tokenStream;
     }
 

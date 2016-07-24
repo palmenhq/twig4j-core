@@ -17,7 +17,18 @@ public class LexerTests {
 
         TokenStream tokenStream = lexer.tokenize(code, "aFile");
 
-        Assert.assertEquals(code, tokenStream.next().getValue());
+        Assert.assertEquals("Data should be tokenized", code, tokenStream.next().getValue());
+    }
+
+    @Test
+    public void addsEOF() throws SyntaxErrorException {
+        Lexer lexer = new Lexer();
+        String code = "data";
+
+        TokenStream tokenStream = lexer.tokenize(code, "aFile");
+
+        tokenStream.next();
+        Assert.assertEquals("Last token should be EOF", Token.Type.EOF, tokenStream.next().getType());
     }
 
     @Test
