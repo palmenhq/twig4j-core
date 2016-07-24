@@ -76,7 +76,7 @@ public class LexerTests {
     @Test
     public void cantLexUnclosedVariable() throws SyntaxErrorException {
         expectedException.expect(SyntaxErrorException.class);
-        expectedException.expectMessage("Unclosed variable in aFile at line 1.");
+        expectedException.expectMessage("Unclosed variable in \"aFile\" at line 1.");
 
         Lexer lexer = new Lexer();
         String code = "{{ unclosedVariable ";

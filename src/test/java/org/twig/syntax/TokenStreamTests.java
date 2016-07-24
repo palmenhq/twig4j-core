@@ -1,10 +1,15 @@
 package org.twig.syntax;
 
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.twig.exception.SyntaxErrorException;
 
 public class TokenStreamTests {
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+
     @Test
     public void canNext() throws SyntaxErrorException {
         TokenStream tokenStream = new TokenStream("aFile");
@@ -18,6 +23,17 @@ public class TokenStreamTests {
     }
 
     @Test
+    public void throwsSyntaxErrorWhenTryingToAccessTokenOutOfBounds() throws SyntaxErrorException {
+        expectedException.expect(SyntaxErrorException.class);
+        expectedException.expectMessage("Unexpected end of template in \"file\" at line 1.");
+
+        TokenStream tokenStream = new TokenStream("file");
+        tokenStream.add(new Token(Token.Type.EOF, null, 1));
+        tokenStream.next();
+        tokenStream.next();
+    }
+
+    @Test
     public void canLook() throws SyntaxErrorException {
         TokenStream tokenStream = new TokenStream("aFile");
         Token token1 = new Token(Token.Type.TEXT, "foo", 1);
@@ -27,4 +43,3 @@ public class TokenStreamTests {
         Assert.assertSame("1st nexted token should be 1st token even after looking", token1, tokenStream.next());
     }
 }
- 
