@@ -65,7 +65,7 @@ public class Lexer {
     private State state;
     // A list of the states, as states can be nestled
     private List<State> states;
-    // TODO: Not sure what this thing does yet, find out
+    // The nesting level so something, i.e. strings or brackets
     private List<Bracket> brackets;
     // The stream of tokens to return
     private TokenStream tokenStream;
@@ -315,6 +315,7 @@ public class Lexer {
 
     /**
      * Move past comment blocks
+     *
      * @throws SyntaxErrorException On any unclosed comments
      */
     protected void lexComment() throws SyntaxErrorException {
@@ -329,6 +330,11 @@ public class Lexer {
         popState();
     }
 
+    /**
+     * Lexes a string's contenst
+     *
+     * @throws SyntaxErrorException On unclosed strings
+     */
     protected void lexString() throws SyntaxErrorException {
         String codeAfterCursor = this.code.substring(this.cursor);
 
@@ -367,7 +373,7 @@ public class Lexer {
 
             // Closing of the string
             popState();
-            this.cursor ++;
+            this.cursor++;
         }
     }
 
