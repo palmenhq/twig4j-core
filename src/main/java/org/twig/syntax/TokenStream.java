@@ -54,6 +54,19 @@ public class TokenStream {
     }
 
     /**
+     * Sneak peak at the next token
+     * @return The found token
+     * @throws SyntaxErrorException If the next token doesn't exist
+     */
+    public Token look() throws SyntaxErrorException {
+        try {
+            return tokens.get(this.current + 1);
+        } catch (IndexOutOfBoundsException e) {
+            throw SyntaxErrorException.unexpectedEndOfTemplate(filename, tokens.get(current).getLine(), e);
+        }
+    }
+
+    /**
      * Sneak peak at a token at some specific index
      * @param index The index to look at
      * @return The found token

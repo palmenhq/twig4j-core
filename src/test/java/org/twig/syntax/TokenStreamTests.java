@@ -34,12 +34,22 @@ public class TokenStreamTests {
     }
 
     @Test
-    public void canLook() throws SyntaxErrorException {
+    public void canLookAtIndex() throws SyntaxErrorException {
         TokenStream tokenStream = new TokenStream("aFile");
         Token token1 = new Token(Token.Type.TEXT, "foo", 1);
         tokenStream.add(token1);
 
         Assert.assertSame("Look at token at index 0 should return 1st token", token1, tokenStream.look(0));
+        Assert.assertSame("1st nexted token should be 1st token even after looking", token1, tokenStream.next());
+    }
+
+    @Test
+    public void canLookAtNext() throws SyntaxErrorException {
+        TokenStream tokenStream = new TokenStream("aFile");
+        Token token1 = new Token(Token.Type.TEXT, "foo", 1);
+        tokenStream.add(token1);
+
+        Assert.assertSame("Look at token at next should return 1st token", token1, tokenStream.look());
         Assert.assertSame("1st nexted token should be 1st token even after looking", token1, tokenStream.next());
     }
 }
