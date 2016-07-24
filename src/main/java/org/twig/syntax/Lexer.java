@@ -138,6 +138,9 @@ public class Lexer {
                 case STRING:
                     lexString();
                     break;
+                case INTERPOLATION:
+                    lexInterpolation();
+                    break;
             }
         }
 
@@ -374,6 +377,30 @@ public class Lexer {
             // Closing of the string
             popState();
             this.cursor++;
+        }
+    }
+
+    /**
+     * Lexes a string interpolation and it's expressions
+     *
+     * @throws SyntaxErrorException If lexExpression() throws any syntax errors
+     */
+    protected void lexInterpolation() throws SyntaxErrorException {
+        Bracket currentBracket = this.brackets.get(brackets.size() - 1);
+
+        // If this is the end of the interpolation end it, otherwise lex the expression inside it
+        String codeAfterCursor = this.code.substring(this.cursor);
+        Matcher stringInterpolationEndMatcher = this.regexes.getInterpolationEnd().matcher(codeAfterCursor);
+        if (
+                currentBracket.getType().equals(this.options.getInterpolationOpen())
+                        && stringInterpolationEndMatcher.find(0)
+                ) {
+            this.brackets.remove(currentBracket);
+            pushToken(Token.Type.INTERPOLATION_END);
+            moveCursor(stringInterpolationEndMatcher.group(0));
+            popState();
+        } else {
+            lexExpression();
         }
     }
 

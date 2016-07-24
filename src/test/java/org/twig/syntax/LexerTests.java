@@ -148,6 +148,34 @@ public class LexerTests {
     }
 
     @Test
+    public void lexesInterploatedStrings() throws SyntaxErrorException {
+        Lexer lexer = new Lexer();
+        String code  = "foo {{ \"A #{variable} string\" }} bar";
+
+        TokenStream tokenStream = lexer.tokenize(code, "file");
+
+        Assert.assertEquals("1st token should be regular text", Token.Type.TEXT, tokenStream.next().getType());
+        Assert.assertEquals("2nd token should be var start", Token.Type.VAR_START, tokenStream.next().getType());
+
+        Token stringToken = tokenStream.next();
+        Assert.assertEquals("3nd token should be of type STRING", Token.Type.STRING, stringToken.getType());
+        Assert.assertEquals("3rd token value should be string contents before interolation start", "A ", stringToken.getValue());
+
+        Assert.assertEquals("4th token should be interpolation start", Token.Type.INTERPLATION_START, tokenStream.next().getType());
+        Token variableToken = tokenStream.next();
+        Assert.assertEquals("5th token should be of type NAME ", Token.Type.NAME, variableToken.getType());
+        Assert.assertEquals("NAME token should be have correct name", "variable", variableToken.getValue());
+        Assert.assertEquals("6th token should be interpolation end", Token.Type.INTERPOLATION_END, tokenStream.next().getType());
+
+        Token secondStringToken = tokenStream.next();
+        Assert.assertEquals("7th token should be another string", Token.Type.STRING, secondStringToken.getType());
+        Assert.assertEquals("String token should have correct string value", " string", secondStringToken.getValue());
+
+        Assert.assertEquals("8th token should be a var end type", Token.Type.VAR_END, tokenStream.next().getType());
+        Assert.assertEquals("9th token should be text", Token.Type.TEXT, tokenStream.next().getType());
+    }
+
+    @Test
     public void canLexBlocks() throws SyntaxErrorException {
         Lexer lexer = new Lexer();
         String code = "{% aBlock %}";
