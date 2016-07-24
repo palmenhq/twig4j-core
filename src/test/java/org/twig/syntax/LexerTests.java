@@ -45,6 +45,24 @@ public class LexerTests {
     }
 
     @Test
+    public void lexesMultilineVariables() throws SyntaxErrorException {
+        Lexer lexer = new Lexer();
+        String code = "{{\n" +
+                "aVariable\n" +
+                "}}";
+
+        TokenStream tokenStream = lexer.tokenize(code, "aFile");
+
+        Token variableStart = tokenStream.next();
+        Assert.assertEquals("Variable start token type should be of type VAR_START.", Token.Type.VAR_START, variableStart.getType());
+        Token variableName = tokenStream.next();
+        Assert.assertEquals("Variable name token type should be of type NAME.", Token.Type.NAME, variableName.getType());
+        Assert.assertEquals("Variable name token value should be the variable name.", "aVariable", variableName.getValue());
+        Token variableEnd = tokenStream.next();
+        Assert.assertEquals("Variable end token type should be of type VAR_END.", Token.Type.VAR_END, variableEnd.getType());
+    }
+
+    @Test
     public void cantLexUnclosedVariable() throws SyntaxErrorException {
         expectedException.expect(SyntaxErrorException.class);
         expectedException.expectMessage("Unclosed variable in aFile at line 1.");
@@ -72,6 +90,24 @@ public class LexerTests {
     }
 
     @Test
+    public void canLexMulitilneBlocks() throws SyntaxErrorException {
+        Lexer lexer = new Lexer();
+        String code = "{%\n" +
+                "aBlock\n" +
+                "%}";
+
+        TokenStream tokenStream = lexer.tokenize(code, "aFile");
+
+        Assert.assertEquals("1st token should be a block start", Token.Type.BLOCK_START, tokenStream.next().getType());
+
+        Token blockName = tokenStream.next();
+        Assert.assertEquals("2nd token should be a name", Token.Type.NAME, blockName.getType());
+        Assert.assertEquals("3rd token should be the block name", "aBlock", blockName.getValue());
+
+        Assert.assertEquals("4th token should be block end", Token.Type.BLOCK_END, tokenStream.next().getType());
+    }
+
+    @Test
     public void ignoresComments() throws SyntaxErrorException {
         Lexer lexer = new Lexer();
         String code = "foo {# This is a comment #} bar";
@@ -80,5 +116,20 @@ public class LexerTests {
 
         Assert.assertEquals("1st token should be text", "foo ", tokenStream.next().getValue());
         Assert.assertEquals("2nd token should be text", " bar", tokenStream.next().getValue());
+    }
+
+    @Test
+    public void canHandleMultilineComments() throws SyntaxErrorException {
+        Lexer lexer = new Lexer();
+        String code = "foo {# This \n" +
+                "is a \n" +
+                "multiline comment" +
+                "\n" +
+                "\n" +
+                "#}bar";
+
+        TokenStream tokenStream = lexer.tokenize(code, "aFile");
+        Assert.assertEquals("1st token should be text", "foo ", tokenStream.next().getValue());
+        Assert.assertEquals("2nd token should be text", "bar", tokenStream.next().getValue());
     }
 }
