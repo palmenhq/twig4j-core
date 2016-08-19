@@ -52,4 +52,15 @@ public class TokenStreamTests {
         Assert.assertSame("Look at token at next should return 1st token", token1, tokenStream.look());
         Assert.assertSame("1st nexted token should be 1st token even after looking", token1, tokenStream.next());
     }
+
+    @Test
+    public void canCheckIfEOF() throws SyntaxErrorException {
+        TokenStream tokenStream = new TokenStream("aFile");
+        tokenStream.add(new Token(Token.Type.TEXT, "foo", 1));
+        tokenStream.add(new Token(Token.Type.EOF, null, 1));
+
+        Assert.assertFalse("Should not be EOF when not at eof yet", tokenStream.isEOF());
+        tokenStream.next();
+        Assert.assertTrue("Should be eof when at eof", tokenStream.isEOF());
+    }
 }

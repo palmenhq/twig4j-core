@@ -7,7 +7,7 @@ import java.util.List;
 
 public class TokenStream {
     private List<Token> tokens;
-    private Integer current = -1;
+    private Integer current = 0;
     private String filename;
 
     /**
@@ -47,9 +47,9 @@ public class TokenStream {
     public Token next() throws SyntaxErrorException {
         try {
             current ++;
-            return tokens.get(current);
+            return tokens.get(current - 1);
         } catch (IndexOutOfBoundsException e) {
-            throw SyntaxErrorException.unexpectedEndOfTemplate(filename, tokens.get(current-1).getLine(), e);
+            throw SyntaxErrorException.unexpectedEndOfTemplate(filename, tokens.get(current-2).getLine(), e);
         }
     }
 
@@ -60,7 +60,7 @@ public class TokenStream {
      */
     public Token look() throws SyntaxErrorException {
         try {
-            return tokens.get(this.current + 1);
+            return tokens.get(this.current);
         } catch (IndexOutOfBoundsException e) {
             throw SyntaxErrorException.unexpectedEndOfTemplate(filename, tokens.get(current).getLine(), e);
         }
@@ -78,6 +78,22 @@ public class TokenStream {
         } catch (IndexOutOfBoundsException e) {
             throw SyntaxErrorException.unexpectedEndOfTemplate(filename, tokens.get(current).getLine(), e);
         }
+    }
+
+    /**
+     * Returns the current token
+     * @return The token
+     */
+    public Token getCurrent() {
+        return tokens.get(current);
+    }
+
+    /**
+     * Returns whether is at the end of the file
+     * @return Whether current token is EOF
+     */
+    public Boolean isEOF() {
+        return getCurrent().getType() == Token.Type.EOF;
     }
 
     /**
