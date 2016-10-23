@@ -15,6 +15,10 @@ public class ModuleTests {
         Module module = new Module(new ArrayList<>());
         module.setFileName("foo");
 
+        when(classCompilerStub.writeLine(anyString())).thenReturn(classCompilerStub);
+        when(classCompilerStub.write(anyString())).thenReturn(classCompilerStub);
+        when(classCompilerStub.unIndent()).thenReturn(classCompilerStub);
+
         module.compile(classCompilerStub);
 
         verify(classCompilerStub).writeLine("package org.twig.template;\n");
