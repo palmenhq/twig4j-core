@@ -16,6 +16,8 @@ jar {
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
+    compile 'net.openhft:compiler:2.2.5'
+
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.+'
 }
