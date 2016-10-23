@@ -34,6 +34,15 @@ public class HashMapLoader implements Loader {
         throw new LoaderException(String.format("Template \"%s\" is not defined", name));
     }
 
+    @Override
+    public String getCacheKey(String name) throws LoaderException {
+        if (!this.hashMap.containsKey(name)) {
+            throw new LoaderException(String.format("Template \"%s\" is not defined", name));
+        }
+
+        return this.hashMap.get(name);
+    }
+
     /**
      * Get the hash map
      * @return The hashMap with templates

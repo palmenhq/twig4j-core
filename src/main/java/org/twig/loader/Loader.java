@@ -13,4 +13,13 @@ public interface Loader {
      * @return The template source code
      */
     public String getSource(String name) throws LoaderException;
+
+    /**
+     * Gets the cache key to use for the cache for a given template name.
+     *
+     * @param name The name of the template to load
+     * @return The cache key
+     * @throws LoaderException When name is not found
+     */
+    public String getCacheKey(String name) throws LoaderException;
 }
