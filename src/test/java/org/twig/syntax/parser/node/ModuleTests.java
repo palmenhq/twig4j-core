@@ -47,7 +47,7 @@ public class ModuleTests {
         module.compile(classCompilerStub);
 
         verify(classCompilerStub).subCompile(bodyNodeStub);
-        verify(classCompilerStub).writeLine("protected String render(HashMap<String, String> context) {");
+        verify(classCompilerStub).writeLine("protected String doRender(HashMap<String, String> context) {");
         verify(classCompilerStub, times(2)).writeLine("}");
     }
 

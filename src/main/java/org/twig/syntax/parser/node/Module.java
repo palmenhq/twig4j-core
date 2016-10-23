@@ -46,7 +46,7 @@ public class Module implements Compilable {
 
     protected void compileRender(ClassCompiler compiler) throws LoaderException {
         compiler
-                .writeLine("protected String render(HashMap<String, String> context) {")
+                .writeLine("protected String doRender(HashMap<String, String> context) {")
                     .subCompile(this.getBodyNode())
                 .unIndent()
                 .writeLine("}");
