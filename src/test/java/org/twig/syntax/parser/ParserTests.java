@@ -20,10 +20,7 @@ public class ParserTests {
         Parser parser = new Parser();
         Module module = parser.parse(tokenStream);
 
-        Assert.assertEquals("Module should have one node", 1, module.getBodyNodes().size());
-
-        ArrayList<Node> bodyNodes = module.getBodyNodes();
-        Assert.assertEquals("One (text) node should be parsed", 1, bodyNodes.size());
-        Assert.assertEquals("Module node 1 should be of type text", "Hello world!", bodyNodes.get(0).getAttribute("data"));
+        Node bodyNode = module.getBodyNode();
+        Assert.assertEquals("Module node 1 should be of type text", "Hello world!", bodyNode.getAttribute("data"));
     }
 }

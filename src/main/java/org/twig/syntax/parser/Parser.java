@@ -43,9 +43,7 @@ public class Parser {
             throw e;
         }
 
-        ArrayList<Node> bodyNodeList = new ArrayList<>();
-        bodyNodeList.add(body);
-        Module node = new Module(bodyNodeList);
+        Module node = new Module(body);
 
         return node;
     }

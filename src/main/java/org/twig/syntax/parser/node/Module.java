@@ -7,22 +7,24 @@ import org.twig.exception.LoaderException;
 import java.util.ArrayList;
 
 public class Module implements Compilable {
-    ArrayList<Node> bodyNodes = new ArrayList<>();
+    Node bodyNode;
 
     protected String fileName = "";
 
-    public Module(ArrayList<Node> bodyNodes) {
-        this.bodyNodes = bodyNodes;
+    public Module(Node bodyNode) {
+        this.bodyNode = bodyNode;
     }
 
     @Override
     public void compile(ClassCompiler compiler) throws LoaderException {
         compileClassHeader(compiler);
 
+        compileRender(compiler);
+
         compileClassFooter(compiler);
     }
 
-    public void compileClassHeader(ClassCompiler compiler) throws LoaderException {
+    protected void compileClassHeader(ClassCompiler compiler) throws LoaderException {
         String className = compiler.getEnvironment().getTemplateClass(this.fileName);
         String baseClass = compiler.getEnvironment().getTemplateBaseClass();
 
@@ -36,18 +38,26 @@ public class Module implements Compilable {
                 .indent();
     }
 
-    public void compileClassFooter(ClassCompiler compiler) {
+    protected void compileClassFooter(ClassCompiler compiler) {
         compiler
                 .unIndent()
                 .writeLine("}");
     }
 
-    public ArrayList<Node> getBodyNodes() {
-        return bodyNodes;
+    protected void compileRender(ClassCompiler compiler) throws LoaderException {
+        compiler
+                .writeLine("protected String render(HashMap<String, String> context) {")
+                    .subCompile(this.getBodyNode())
+                .unIndent()
+                .writeLine("}");
     }
 
-    public void setBodyNodes(ArrayList<Node> bodyNodes) {
-        this.bodyNodes = bodyNodes;
+    public Node getBodyNode() {
+        return bodyNode;
+    }
+
+    public void setBodyNode(Node bodyNode) {
+        this.bodyNode = bodyNode;
     }
 
     public String getFileName() {
