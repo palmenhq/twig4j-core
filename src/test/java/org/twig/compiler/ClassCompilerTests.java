@@ -3,6 +3,10 @@ package org.twig.compiler;
 import org.junit.Assert;
 import org.junit.Test;
 import org.twig.Environment;
+import org.twig.exception.LoaderException;
+import org.twig.syntax.parser.node.Node;
+
+import static org.mockito.Mockito.*;
 
 public class ClassCompilerTests {
     @Test
@@ -39,5 +43,15 @@ public class ClassCompilerTests {
                 .write(code);
 
         Assert.assertEquals("Indented and then unIndented code is equal to written line", code, classCompiler.getSourceCode());
+    }
+
+    @Test
+    public void canSubCompile() throws LoaderException {
+        ClassCompiler classCompiler = new ClassCompiler(new Environment());
+        Node nodeStub = mock(Node.class);
+
+        classCompiler.subCompile(nodeStub);
+
+        verify(nodeStub).compile(classCompiler);
     }
 }

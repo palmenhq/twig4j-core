@@ -1,6 +1,7 @@
 package org.twig.compiler;
 
 import org.twig.Environment;
+import org.twig.exception.LoaderException;
 
 public class ClassCompiler {
     private int numberOfIndents = 0;
@@ -12,6 +13,20 @@ public class ClassCompiler {
      */
     public ClassCompiler(Environment environment) {
         this.environment = environment;
+    }
+
+    /**
+     * Add an indention and compile the passed node
+     *
+     * @param node The node to compile
+     * @return Itself
+     */
+    public ClassCompiler subCompile(Compilable node) throws LoaderException {
+        indent();
+
+        node.compile(this);
+
+        return this;
     }
 
     /**
