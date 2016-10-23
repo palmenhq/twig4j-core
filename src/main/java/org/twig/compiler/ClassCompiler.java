@@ -1,8 +1,18 @@
 package org.twig.compiler;
 
+import org.twig.Environment;
+
 public class ClassCompiler {
     private int numberOfIndents = 0;
     private StringBuilder sourceCode = new StringBuilder();
+    private Environment environment;
+
+    /**
+     * @param environment The Twig environment
+     */
+    public ClassCompiler(Environment environment) {
+        this.environment = environment;
+    }
 
     /**
      * Write source code with a trailing line break
@@ -72,5 +82,21 @@ public class ClassCompiler {
      */
     public String getSourceCode() {
         return sourceCode.toString();
+    }
+
+    /**
+     * @return The Twig environment
+     */
+    public Environment getEnvironment() {
+        return environment;
+    }
+
+    /**
+     * @param environment The Twig environment
+     */
+    public ClassCompiler setEnvironment(Environment environment) {
+        this.environment = environment;
+
+        return this;
     }
 }
