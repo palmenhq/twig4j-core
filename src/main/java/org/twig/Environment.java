@@ -10,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class Environment {
     private Loader loader;
+    private String templateBaseClass = "org.twig.template.BaseTemplate";
 
     public Environment() {
     }
@@ -80,5 +81,21 @@ public class Environment {
         this.loader = loader;
 
         return this;
+    }
+
+    /**
+     * Get the template base class name
+     * @return The template base class
+     */
+    public String getTemplateBaseClass() {
+        return templateBaseClass;
+    }
+
+    /**
+     * Set the template base class name
+     * @param templateBaseClass The template base class
+     */
+    public void setTemplateBaseClass(String templateBaseClass) {
+        this.templateBaseClass = templateBaseClass;
     }
 }
