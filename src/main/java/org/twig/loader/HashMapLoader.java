@@ -31,13 +31,13 @@ public class HashMapLoader implements Loader {
             return hashMap.get(name);
         }
 
-        throw new LoaderException(String.format("Template \"%s\" is not defined", name));
+        throw LoaderException.notDefined(name);
     }
 
     @Override
     public String getCacheKey(String name) throws LoaderException {
         if (!this.hashMap.containsKey(name)) {
-            throw new LoaderException(String.format("Template \"%s\" is not defined", name));
+            throw LoaderException.notDefined(name);
         }
 
         return this.hashMap.get(name);
