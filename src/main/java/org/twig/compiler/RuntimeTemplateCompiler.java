@@ -14,6 +14,12 @@ public class RuntimeTemplateCompiler {
         this.cachedCompiler = cachedCompiler;
     }
 
+    /**
+     * Compile a template class from java source code
+     * @param sourceCode The java code to compile
+     * @param name The name of the template class INCLUDING package name (ie org.twig.template.02ntueh0k2b20rckb9940ntqb_0)
+     * @return
+     */
     public Template compile(String sourceCode, String name) {
         try {
             Template template = (Template) cachedCompiler.loadFromJava(name, sourceCode).newInstance();

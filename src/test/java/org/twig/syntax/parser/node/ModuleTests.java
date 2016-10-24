@@ -26,7 +26,7 @@ public class ModuleTests {
         verify(classCompilerStub).writeLine(" * foo");
         verify(classCompilerStub).writeLine(" */");
         verify(classCompilerStub).write("public class hash_0");
-        verify(classCompilerStub).writeLine(" extends BaseClass {");
+        verify(classCompilerStub).writeLine(" extends org.twig.template.Template {");
         verify(classCompilerStub).indent();
         verify(classCompilerStub, times(2)).unIndent();
         verify(classCompilerStub, times(2)).writeLine("}");
@@ -47,7 +47,7 @@ public class ModuleTests {
         module.compile(classCompilerStub);
 
         verify(classCompilerStub).subCompile(bodyNodeStub);
-        verify(classCompilerStub).writeLine("protected String doRender(HashMap<String, String> context) {");
+        verify(classCompilerStub).writeLine("protected String doRender(java.util.HashMap<String, String> context) {");
         verify(classCompilerStub, times(2)).writeLine("}");
     }
 
@@ -59,6 +59,7 @@ public class ModuleTests {
         when(classCompilerStub.getEnvironment()).thenReturn(environmentStub);
 
         when(environmentStub.getTemplateClass("foo")).thenReturn("hash_0");
-        when(environmentStub.getTemplateBaseClass()).thenReturn("BaseClass");
+        when(environmentStub.getTemplateBaseClass()).thenReturn("org.twig.template.Template");
+        when(environmentStub.getTemplatePackage()).thenReturn("org.twig.template");
     }
 }

@@ -9,20 +9,23 @@ import org.twig.syntax.Lexer;
 import org.twig.syntax.TokenStream;
 import org.twig.syntax.parser.Parser;
 import org.twig.syntax.parser.node.Module;
+import org.twig.template.Template;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 
 public class Environment {
     private Loader loader;
     private String templatePackage = "org.twig.template";
-    private String templateBaseClass = templatePackage + ".Template";
+    private String templateBaseClass = "org.twig.template.Template";
     private Lexer lexer = new Lexer();
     private Parser parser = new Parser();
     private ClassCompiler classCompiler = new ClassCompiler(this);
     private RuntimeTemplateCompiler runtimeTemplateCompiler = new RuntimeTemplateCompiler();
+    private HashMap<String, Template> loadedTemplates = new HashMap<>();
 
     public Environment() {
     }
@@ -31,10 +34,39 @@ public class Environment {
         this.loader = loader;
     }
 
+    public Template loadTemplate(String name) throws LoaderException, TwigException {
+        return loadTemplate(name, 0);
+    }
+
+    public Template loadTemplate(String name, Integer index) throws LoaderException, TwigException {
+        String className = getTemplateClass(name);
+        String fullTemplateClassName = templatePackage + "." + className;
+
+        // Return already compiled template
+        if (loadedTemplates.containsKey(className)) {
+            return loadedTemplates.get(className);
+        }
+
+        try {
+            Template template = (Template) Class.forName(fullTemplateClassName).newInstance();
+
+            return template;
+        } catch (ClassNotFoundException e) {
+            String javaSourceCode = compileSource(getLoader().getSource(name), name);
+            Template template = this.runtimeTemplateCompiler.compile(javaSourceCode, fullTemplateClassName);
+
+            this.loadedTemplates.put(className, template);
+
+            return template;
+        } catch (Exception e) {
+            throw new TwigException(e.getMessage(), name, -1, e);
+        }
+    }
+
     /**
      * Compile a template source code into java code
      * @param templateSourceCode the source code to compile
-     * @param name the name of the template
+     * @param name the name of the template file
      * @return Compiled java code
      * @throws TwigException on syntax or loader errors
      */
@@ -42,6 +74,7 @@ public class Environment {
         try {
             TokenStream tokenStream = lexer.tokenize(templateSourceCode, name);
             Module module = parser.parse(tokenStream);
+
             String compiledClassSourceCode = classCompiler.compile(module).getSourceCode();
 
             return compiledClassSourceCode;
@@ -135,6 +168,14 @@ public class Environment {
     }
 
     /**
+     * Get the template package
+     * @return The template package
+     */
+    public String getTemplatePackage() {
+        return templatePackage;
+    }
+
+    /**
      * Set the template's package name (namespace)
      * @param templatePackage The package
      */
@@ -180,6 +221,25 @@ public class Environment {
      */
     public Environment setRuntimeTemplateCompiler(RuntimeTemplateCompiler runtimeTemplateCompiler) {
         this.runtimeTemplateCompiler = runtimeTemplateCompiler;
+
+        return this;
+    }
+
+    /**
+     * Get loaded templates
+     * @return
+     */
+    public HashMap<String, Template> getLoadedTemplates() {
+        return loadedTemplates;
+    }
+
+    /**
+     * Set all loaded templates
+     * @param loadedTemplates
+     * @return
+     */
+    public Environment setLoadedTemplates(HashMap<String, Template> loadedTemplates) {
+        this.loadedTemplates = loadedTemplates;
 
         return this;
     }

@@ -12,6 +12,7 @@ import org.twig.syntax.TokenStream;
 import org.twig.syntax.parser.Parser;
 import org.twig.syntax.parser.node.Module;
 import org.twig.syntax.parser.node.type.Body;
+import org.twig.template.Template;
 
 import java.util.HashMap;
 
@@ -42,8 +43,10 @@ public class EnvironmentTests {
         );
     }
 
+    @Test
     public void testCanCompileSource() throws TwigException {
-        Environment environment = new Environment();
+        Loader loaderStub = mock(HashMapLoader.class);
+        Environment environment = new Environment(loaderStub);
         Lexer lexerStub = mock(Lexer.class);
         Parser parserStub = mock(Parser.class);
         ClassCompiler compilerStub = mock(ClassCompiler.class);
@@ -55,16 +58,28 @@ public class EnvironmentTests {
                 .setParser(parserStub)
                 .setClassCompiler(compilerStub);
 
+        when(loaderStub.getSource("foo")).thenReturn("bar");
+        when(loaderStub.getCacheKey("foo")).thenReturn("templateCacheKey");
         when(lexerStub.tokenize("bar", "foo")).thenReturn(tokenStream);
         when(parserStub.parse(tokenStream)).thenReturn(module);
         when(compilerStub.compile(module)).thenReturn(compilerStub);
         when(compilerStub.getSourceCode()).thenReturn("compiled");
 
-        Assert.assertEquals("compiled", environment.compileSource("bar", "foo"));
+        Assert.assertEquals("Returned \"source code\" should be what compiler returned", "compiled", environment.compileSource("bar", "foo"));
 
         verify(lexerStub).tokenize("bar", "foo");
         verify(parserStub).parse(tokenStream);
         verify(compilerStub).compile(module);
         verify(compilerStub).getSourceCode();
+    }
+
+    @Test
+    public void testCanLoadTemplate() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("foo", "bar");
+        Environment environment = new Environment(new HashMapLoader(templates));
+
+        // Just test so this method doesn't throw any errors
+        Template loadedTemplate = environment.loadTemplate("foo");
     }
 }

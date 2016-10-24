@@ -1,5 +1,5 @@
 package org.twig.template;
 
 abstract public class Template {
-    abstract public String render();
+    public String render() { return ""; };
 }

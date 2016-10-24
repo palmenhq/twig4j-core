@@ -15,6 +15,11 @@ public class Module implements Compilable {
         this.bodyNode = bodyNode;
     }
 
+    public Module(Node bodyNode, String fileName) {
+        this.bodyNode = bodyNode;
+        this.fileName = fileName;
+    }
+
     @Override
     public void compile(ClassCompiler compiler) throws LoaderException {
         compileClassHeader(compiler);
@@ -29,7 +34,7 @@ public class Module implements Compilable {
         String baseClass = compiler.getEnvironment().getTemplateBaseClass();
 
         compiler
-                .writeLine("package org.twig.template;\n")
+                .writeLine("package " + compiler.getEnvironment().getTemplatePackage() + ";\n")
                 .writeLine("/**")
                 .writeLine(" * ".concat(this.fileName))
                 .writeLine(" */")
@@ -46,8 +51,10 @@ public class Module implements Compilable {
 
     protected void compileRender(ClassCompiler compiler) throws LoaderException {
         compiler
-                .writeLine("protected String doRender(HashMap<String, String> context) {")
+                .writeLine("protected String doRender(java.util.HashMap<String, String> context) {")
+                    .writeLine("String output = \"\";")
                     .subCompile(this.getBodyNode())
+                    .writeLine("return output;")
                 .unIndent()
                 .writeLine("}");
     }

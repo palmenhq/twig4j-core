@@ -43,7 +43,7 @@ public class Parser {
             throw e;
         }
 
-        Module node = new Module(body);
+        Module node = new Module(body, tokenStream.getFilename());
 
         return node;
     }
