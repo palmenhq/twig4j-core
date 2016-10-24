@@ -27,7 +27,7 @@ public class ModuleTests {
         verify(classCompilerStub).writeLine(" */");
         verify(classCompilerStub).write("public class hash_0");
         verify(classCompilerStub).writeLine(" extends org.twig.template.Template {");
-        verify(classCompilerStub).indent();
+        verify(classCompilerStub, times(2)).indent();
         verify(classCompilerStub, times(2)).unIndent();
         verify(classCompilerStub, times(2)).writeLine("}");
     }
@@ -46,7 +46,7 @@ public class ModuleTests {
 
         module.compile(classCompilerStub);
 
-        verify(classCompilerStub).subCompile(bodyNodeStub);
+        verify(classCompilerStub).compile(bodyNodeStub);
         verify(classCompilerStub).writeLine("protected String doRender(java.util.HashMap<String, String> context) {");
         verify(classCompilerStub, times(2)).writeLine("}");
     }
@@ -54,8 +54,10 @@ public class ModuleTests {
     private void setupClassCompilerStubWhens(ClassCompiler classCompilerStub, Environment environmentStub) throws LoaderException {
         when(classCompilerStub.writeLine(anyString())).thenReturn(classCompilerStub);
         when(classCompilerStub.write(anyString())).thenReturn(classCompilerStub);
+        when(classCompilerStub.indent()).thenReturn(classCompilerStub);
         when(classCompilerStub.unIndent()).thenReturn(classCompilerStub);
         when(classCompilerStub.subCompile(anyObject())).thenReturn(classCompilerStub);
+        when(classCompilerStub.compile(anyObject())).thenReturn(classCompilerStub);
         when(classCompilerStub.getEnvironment()).thenReturn(environmentStub);
 
         when(environmentStub.getTemplateClass("foo")).thenReturn("hash_0");

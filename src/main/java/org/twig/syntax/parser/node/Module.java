@@ -4,8 +4,6 @@ import org.twig.compiler.ClassCompiler;
 import org.twig.compiler.Compilable;
 import org.twig.exception.LoaderException;
 
-import java.util.ArrayList;
-
 public class Module implements Compilable {
     Node bodyNode;
 
@@ -52,8 +50,9 @@ public class Module implements Compilable {
     protected void compileRender(ClassCompiler compiler) throws LoaderException {
         compiler
                 .writeLine("protected String doRender(java.util.HashMap<String, String> context) {")
+                    .indent()
                     .writeLine("String output = \"\";")
-                    .subCompile(this.getBodyNode())
+                    .compile(this.getBodyNode())
                     .writeLine("return output;")
                 .unIndent()
                 .writeLine("}");

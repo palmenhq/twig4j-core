@@ -38,6 +38,14 @@ public class Environment {
         return loadTemplate(name, 0);
     }
 
+    public String render(String name) throws LoaderException, TwigException {
+        return loadTemplate(name).render();
+    }
+
+    public String render(String name, HashMap<String, String> context) throws LoaderException, TwigException {
+        return loadTemplate(name).render(context);
+    }
+
     public Template loadTemplate(String name, Integer index) throws LoaderException, TwigException {
         String className = getTemplateClass(name);
         String fullTemplateClassName = templatePackage + "." + className;

@@ -82,4 +82,15 @@ public class EnvironmentTests {
         // Just test so this method doesn't throw any errors
         Template loadedTemplate = environment.loadTemplate("foo");
     }
+
+    @Test
+    public void testCanRenderTemplate() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("foo", "bar");
+        Environment environment = new Environment(new HashMapLoader(templates));
+
+        String result = environment.render("foo");
+
+        Assert.assertEquals("Rendered result should be template contents", "bar", result);
+    }
 }
