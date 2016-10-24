@@ -70,6 +70,12 @@ public class Parser {
                     break;
                 case EOF:
                     break;
+                default:
+                    throw new SyntaxErrorException(
+                            "Lexer or parser ended up in unsupported state.",
+                            tokenStream.getFilename(),
+                            tokenStream.getCurrent().getLine()
+                    );
             }
         }
 

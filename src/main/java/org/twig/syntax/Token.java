@@ -43,7 +43,7 @@ public class Token {
      * @return Human readable token type
      * @throws Exception
      */
-    public static String typeToEnglish(Type type) throws Exception {
+    public static String typeToEnglish(Type type) {
         switch (type) {
             case EOF:
                 return "end of template";
@@ -72,7 +72,7 @@ public class Token {
             case INTERPOLATION_END:
                 return "end of string interpolation";
             default:
-                throw new Exception(String.format("Token of type \"%s\" does not exist.", type.toString()));
+                throw new RuntimeException(String.format("Token of type \"%s\" does not exist.", type.toString()));
 
         }
     }
