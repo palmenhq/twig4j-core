@@ -54,4 +54,13 @@ public class ClassCompilerTests {
 
         verify(nodeStub).compile(classCompiler);
     }
+
+    @Test
+    public void canCompile() throws LoaderException {
+        ClassCompiler classCompiler = new ClassCompiler(new Environment());
+        Node nodeStub = mock(Node.class);
+        classCompiler.compile(nodeStub);
+
+        verify(nodeStub).compile(classCompiler);
+    }
 }

@@ -30,6 +30,18 @@ public class ClassCompiler {
     }
 
     /**
+     * Compiles the passed node
+     * @param node The node to compile
+     * @return Itself
+     * @throws LoaderException
+     */
+    public ClassCompiler compile(Compilable node) throws LoaderException {
+        node.compile(this);
+
+        return this;
+    }
+
+    /**
      * Write source code with a trailing line break
      *
      * @param code The code to write
