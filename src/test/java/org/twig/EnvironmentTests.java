@@ -2,11 +2,20 @@ package org.twig;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.twig.compiler.ClassCompiler;
 import org.twig.exception.LoaderException;
+import org.twig.exception.TwigException;
 import org.twig.loader.HashMapLoader;
 import org.twig.loader.Loader;
+import org.twig.syntax.Lexer;
+import org.twig.syntax.TokenStream;
+import org.twig.syntax.parser.Parser;
+import org.twig.syntax.parser.node.Module;
+import org.twig.syntax.parser.node.type.Body;
 
 import java.util.HashMap;
+
+import static org.mockito.Mockito.*;
 
 public class EnvironmentTests {
     @Test
@@ -31,5 +40,31 @@ public class EnvironmentTests {
                 "fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9_1",
                 classNameWithDefinedIndex
         );
+    }
+
+    public void testCanCompileSource() throws TwigException {
+        Environment environment = new Environment();
+        Lexer lexerStub = mock(Lexer.class);
+        Parser parserStub = mock(Parser.class);
+        ClassCompiler compilerStub = mock(ClassCompiler.class);
+        TokenStream tokenStream = new TokenStream();
+        Module module = new Module(new Body(1));
+
+        environment
+                .setLexer(lexerStub)
+                .setParser(parserStub)
+                .setClassCompiler(compilerStub);
+
+        when(lexerStub.tokenize("bar", "foo")).thenReturn(tokenStream);
+        when(parserStub.parse(tokenStream)).thenReturn(module);
+        when(compilerStub.compile(module)).thenReturn(compilerStub);
+        when(compilerStub.getSourceCode()).thenReturn("compiled");
+
+        Assert.assertEquals("compiled", environment.compileSource("bar", "foo"));
+
+        verify(lexerStub).tokenize("bar", "foo");
+        verify(parserStub).parse(tokenStream);
+        verify(compilerStub).compile(module);
+        verify(compilerStub).getSourceCode();
     }
 }
