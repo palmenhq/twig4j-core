@@ -1,7 +1,11 @@
 package org.twig;
 
+import org.twig.compiler.ClassCompiler;
+import org.twig.compiler.RuntimeTemplateCompiler;
 import org.twig.exception.LoaderException;
 import org.twig.loader.Loader;
+import org.twig.syntax.Lexer;
+import org.twig.syntax.parser.Parser;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.UnsupportedEncodingException;
@@ -10,7 +14,12 @@ import java.security.NoSuchAlgorithmException;
 
 public class Environment {
     private Loader loader;
-    private String templateBaseClass = "org.twig.template.BaseTemplate";
+    private String templatePackage = "org.twig.template";
+    private String templateBaseClass = templatePackage + ".Template";
+    private Lexer lexer = new Lexer();
+    private Parser parser = new Parser();
+    private ClassCompiler classCompiler = new ClassCompiler(this);
+    private RuntimeTemplateCompiler runtimeTemplateCompiler = new RuntimeTemplateCompiler();
 
     public Environment() {
     }
@@ -57,7 +66,7 @@ public class Environment {
 
             return DatatypeConverter.printHexBinary(digest).toLowerCase();
         } catch (UnsupportedEncodingException e) {
-            // This'll never gonna happen
+            // This'll never happen
             throw new RuntimeException("Something impossible just happened");
         } catch (NoSuchAlgorithmException e) {
             // This'll never happen
@@ -97,5 +106,45 @@ public class Environment {
      */
     public void setTemplateBaseClass(String templateBaseClass) {
         this.templateBaseClass = templateBaseClass;
+    }
+
+    /**
+     * Set the template's package name (namespace)
+     * @param templatePackage The package
+     */
+    public void setTemplatePackage(String templatePackage) {
+        this.templatePackage = templatePackage;
+    }
+
+    /**
+     * Set the lexer
+     * @param lexer The lexer
+     */
+    public void setLexer(Lexer lexer) {
+        this.lexer = lexer;
+    }
+
+    /**
+     * Set the parser
+     * @param parser The parser
+     */
+    public void setParser(Parser parser) {
+        this.parser = parser;
+    }
+
+    /**
+     * Set the class compiler
+     * @param classCompiler The class compiler
+     */
+    public void setClassCompiler(ClassCompiler classCompiler) {
+        this.classCompiler = classCompiler;
+    }
+
+    /**
+     * Set the runtime template compiler
+     * @param runtimeTemplateCompiler
+     */
+    public void setRuntimeTemplateCompiler(RuntimeTemplateCompiler runtimeTemplateCompiler) {
+        this.runtimeTemplateCompiler = runtimeTemplateCompiler;
     }
 }
