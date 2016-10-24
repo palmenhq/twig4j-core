@@ -4,6 +4,7 @@ import org.twig.compiler.ClassCompiler;
 import org.twig.compiler.RuntimeTemplateCompiler;
 import org.twig.exception.LoaderException;
 import org.twig.exception.TwigException;
+import org.twig.exception.TwigRuntimeException;
 import org.twig.loader.Loader;
 import org.twig.syntax.Lexer;
 import org.twig.syntax.TokenStream;
@@ -34,19 +35,19 @@ public class Environment {
         this.loader = loader;
     }
 
-    public Template loadTemplate(String name) throws LoaderException, TwigException {
+    public Template loadTemplate(String name) throws LoaderException, TwigRuntimeException, TwigException {
         return loadTemplate(name, 0);
     }
 
-    public String render(String name) throws LoaderException, TwigException {
+    public String render(String name) throws LoaderException, TwigRuntimeException, TwigException {
         return loadTemplate(name).render();
     }
 
-    public String render(String name, HashMap<String, String> context) throws LoaderException, TwigException {
+    public String render(String name, HashMap<String, String> context) throws LoaderException, TwigRuntimeException, TwigException {
         return loadTemplate(name).render(context);
     }
 
-    public Template loadTemplate(String name, Integer index) throws LoaderException, TwigException {
+    public Template loadTemplate(String name, Integer index) throws LoaderException, TwigRuntimeException, TwigException {
         String className = getTemplateClass(name);
         String fullTemplateClassName = templatePackage + "." + className;
 

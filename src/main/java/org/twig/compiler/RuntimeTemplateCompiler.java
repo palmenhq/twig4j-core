@@ -2,6 +2,7 @@ package org.twig.compiler;
 
 import net.openhft.compiler.CachedCompiler;
 import net.openhft.compiler.CompilerUtils;
+import org.twig.exception.TwigRuntimeException;
 import org.twig.template.Template;
 
 public class RuntimeTemplateCompiler {
@@ -20,18 +21,20 @@ public class RuntimeTemplateCompiler {
      * @param name The name of the template class INCLUDING package name (ie org.twig.template.02ntueh0k2b20rckb9940ntqb_0)
      * @return
      */
-    public Template compile(String sourceCode, String name) {
+    public Template compile(String sourceCode, String name) throws TwigRuntimeException {
         try {
             Template template = (Template) cachedCompiler.loadFromJava(name, sourceCode).newInstance();
 
             return template;
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Mismatching class name and template class name when runtime compiling template");
-        } catch (InstantiationException e) {
-            throw new RuntimeException("InstantiationException: " + e.getMessage());
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("IllegalAccessException: " + e.getMessage());
+            throw new TwigRuntimeException("Failed to find compiled class " + name + ". Maybe it failed to compile?", e);
+        } catch (Exception e) {
+            throw new TwigRuntimeException(e.getMessage(), e);
         }
+    }
+
+    public CachedCompiler getCachedCompiler() {
+        return cachedCompiler;
     }
 
     public void setCachedCompiler(CachedCompiler cachedCompiler) {
