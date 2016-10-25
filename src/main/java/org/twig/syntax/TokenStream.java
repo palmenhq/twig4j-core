@@ -54,6 +54,19 @@ public class TokenStream {
     }
 
     /**
+     * Check whether the next token type is of the provided type
+     * @param type The type to check
+     * @return Whether the next token type is the same as the provided one
+     */
+    public boolean nextIs(Token.Type type) {
+        try {
+            return tokens.get(current + 1).getType() == type;
+        } catch (IndexOutOfBoundsException e) {
+            return false;
+        }
+    }
+
+    /**
      * Sneak peak at the next token
      * @return The found token
      * @throws SyntaxErrorException If the next token doesn't exist

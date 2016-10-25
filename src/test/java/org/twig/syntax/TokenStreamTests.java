@@ -63,4 +63,15 @@ public class TokenStreamTests {
         tokenStream.next();
         Assert.assertTrue("Should be eof when at eof", tokenStream.isEOF());
     }
+
+    @Test
+    public void canNextIs() throws SyntaxErrorException {
+        TokenStream tokenStream = new TokenStream("aFile");
+        tokenStream.add(new Token(Token.Type.STRING, "foo", 1));
+        tokenStream.add(new Token(Token.Type.TEXT, "bar", 1));
+        tokenStream.add(new Token(Token.Type.EOF, null, 1));
+
+        Assert.assertFalse("Next should not be type string", tokenStream.nextIs(Token.Type.STRING));
+        Assert.assertTrue("Next should be type text", tokenStream.nextIs(Token.Type.TEXT));
+    }
 }
