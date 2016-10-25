@@ -18,13 +18,8 @@ public class Text extends Node {
     @Override
     public void compile(ClassCompiler compiler) {
         String text = attributes.get("data");
-        text = escape(text);
-        compiler.writeLine("output = output.concat(\"".concat(text).concat("\");"));
-    }
-
-    private String escape(String text) {
-        return text.replace("\\", "\\\\")
-                .replace("\n", "\\n")
-                .replace("\"", "\\\"");
+        compiler.write("output = output.concat(");
+        compiler.writeString(text);
+        compiler.writeLine(");");
     }
 }

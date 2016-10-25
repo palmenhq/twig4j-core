@@ -63,4 +63,71 @@ public class ClassCompilerTests {
 
         verify(nodeStub).compile(classCompiler);
     }
+
+    @Test
+    public void canWriteString() {
+        ClassCompiler compiler = new ClassCompiler(new Environment());
+
+        Assert.assertEquals(
+                "String should be a java string",
+                "\"foo\"",
+                compiler.writeString("foo").getSourceCode()
+        );
+    }
+
+    @Test
+    public void canWriteStringWithQuotes() {
+        ClassCompiler compiler = new ClassCompiler(new Environment());
+        compiler.writeString("foo \"bar\"");
+
+        Assert.assertEquals(
+                "String with quotes should be escaped",
+                "\"foo \\\"bar\\\"\"",
+                compiler.getSourceCode()
+        );
+    }
+
+    @Test
+    public void canCWriteStringWithBackslashAndQuotes() {
+        ClassCompiler compiler = new ClassCompiler(new Environment());
+        compiler.writeString("foo \\\"bar\"");
+
+        Assert.assertEquals(
+                "String with backslashes and quotes should be escaped",
+                "\"foo \\\\\\\"bar\\\"\"",
+                compiler.getSourceCode()
+        );
+    }
+
+    @Test
+    public void canWriteStringWithNewline() {
+        ClassCompiler compiler = new ClassCompiler(new Environment());
+        compiler.writeString("foo\nbar");
+
+        Assert.assertEquals("String should contain a \\n where newline was", "\"foo\\nbar\"", compiler.getSourceCode());
+    }
+
+    @Test
+    public void canRepresentString() throws LoaderException {
+        ClassCompiler classCompiler = new ClassCompiler(new Environment());
+
+        classCompiler.representValue("a string");
+        Assert.assertEquals(
+                "Represent value should have compiled a string",
+                "\"a string\"",
+                classCompiler.getSourceCode()
+        );
+    }
+
+    @Test
+    public void canRepresentInteger() throws LoaderException {
+        ClassCompiler classCompiler = new ClassCompiler(new Environment());
+
+        classCompiler.representValue("1");
+        Assert.assertEquals(
+                "Represent value should have compiled an integer",
+                "1",
+                classCompiler.getSourceCode()
+        );
+    }
 }

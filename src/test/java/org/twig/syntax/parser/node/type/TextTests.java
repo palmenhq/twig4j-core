@@ -16,39 +16,9 @@ public class TextTests {
         data.put("data", "foo");
         Text text = new Text(new ArrayList<>(), data, 1, "");
         text.compile(compilerStub);
-        verify(compilerStub).writeLine("output = output.concat(\"foo\");");
-    }
 
-    @Test
-    public void canCompileWithQuotes() {
-        ClassCompiler compilerStub = mock(ClassCompiler.class);
-        HashMap<String, String> data = new HashMap<String, String>();
-        data.put("data", "foo \"bar\"");
-        Text text = new Text(new ArrayList<>(), data, 1, "");
-        text.compile(compilerStub);
-
-        verify(compilerStub).writeLine("output = output.concat(\"foo \\\"bar\\\"\");");
-    }
-
-    @Test
-    public void canCompileWithBackslashAndQuotes() {
-        ClassCompiler compilerStub = mock(ClassCompiler.class);
-        HashMap<String, String> data = new HashMap<String, String>();
-        data.put("data", "foo \\\"bar\"");
-        Text text = new Text(new ArrayList<>(), data, 1, "");
-        text.compile(compilerStub);
-
-        verify(compilerStub).writeLine("output = output.concat(\"foo \\\\\\\"bar\\\"\");");
-    }
-
-    @Test
-    public void canCompileWithNewline() {
-        ClassCompiler compilerStub = mock(ClassCompiler.class);
-        HashMap<String, String> data = new HashMap<String, String>();
-        data.put("data", "foo\nbar");
-        Text text = new Text(new ArrayList<>(), data, 1, "");
-        text.compile(compilerStub);
-
-        verify(compilerStub).writeLine("output = output.concat(\"foo\\nbar\");");
+        verify(compilerStub).write("output = output.concat(");
+        verify(compilerStub).writeString("foo");
+        verify(compilerStub).writeLine(");");
     }
 }

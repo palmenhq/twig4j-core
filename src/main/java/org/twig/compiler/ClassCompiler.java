@@ -69,6 +69,19 @@ public class ClassCompiler {
         return this;
     }
 
+    public ClassCompiler representValue(String value) {
+        if (value.matches("^(\\d+)$")) {
+            sourceCode.append(value);
+
+            return this;
+        }
+
+        // If nothing else matches this value it's a string
+        this.writeString(value);
+
+        return this;
+    }
+
     /**
      * Increases the indention level by 1
      *
@@ -100,6 +113,30 @@ public class ClassCompiler {
         }
 
         return this;
+    }
+
+    /**
+     * Write a string
+     *
+     * @param text The string to write
+     * @return this
+     */
+    public ClassCompiler writeString(String text) {
+        sourceCode.append("\"" + escapeString(text) + "\"");
+
+        return this;
+    }
+
+    /**
+     * Escapes the provided string to work in java string
+     *
+     * @param text The stirng to escape
+     * @return The escaped string
+     */
+    private String escapeString(String text) {
+        return text.replace("\\", "\\\\")
+                .replace("\n", "\\n")
+                .replace("\"", "\\\"");
     }
 
     /**
