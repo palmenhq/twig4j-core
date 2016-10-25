@@ -1,6 +1,7 @@
 package org.twig.exception;
 
 import org.twig.syntax.Lexer;
+import org.twig.syntax.Token;
 
 public class SyntaxErrorException extends TwigException {
     /**
@@ -111,5 +112,20 @@ public class SyntaxErrorException extends TwigException {
      */
     public static SyntaxErrorException unexpectedCharacter(String character, String templateName, Integer lineNumber) {
         return new SyntaxErrorException("Unexpected character \"" + character + "\".", templateName, lineNumber);
+    }
+
+    /**
+     * Create an unexpected token error
+     * @param token The token that was unexpected
+     * @param templateName The name of teh template/file the error occured in
+     * @param lineNumber The line the error occured on
+     * @return The exception
+     */
+    public static SyntaxErrorException unexpectedToken(Token token, String templateName, Integer lineNumber) {
+        return new SyntaxErrorException(
+                String.format("Unexpected token \"%s\" of value \"%s\".", Token.typeToEnglish(token.getType()), token.getValue()),
+                templateName,
+                lineNumber
+            );
     }
 }

@@ -13,6 +13,7 @@ import java.util.HashMap;
 public class Parser {
     // The token stream to parse
     private TokenStream tokenStream;
+    private ExpressionParser expressionParser = new ExpressionParser(this);
 
     /**
      * Parses a template
@@ -87,10 +88,39 @@ public class Parser {
     }
 
     /**
+     * Get the current token the token stream points to
+     *
+     * @return The token
+     */
+    public Token getCurrentToken() {
+        return tokenStream.getCurrent();
+    }
+
+    /**
      * Get the file name of the token stream currently being parsed
      * @return The file/template name
      */
     public String getFilename() {
         return tokenStream.getFilename();
+    }
+
+    public TokenStream getTokenStream() {
+        return tokenStream;
+    }
+
+    public Parser setTokenStream(TokenStream tokenStream) {
+        this.tokenStream = tokenStream;
+
+        return this;
+    }
+
+    public ExpressionParser getExpressionParser() {
+        return expressionParser;
+    }
+
+    public Parser setExpressionParser(ExpressionParser expressionParser) {
+        this.expressionParser = expressionParser;
+
+        return this;
     }
 }
