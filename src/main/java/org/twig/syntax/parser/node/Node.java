@@ -2,6 +2,7 @@ package org.twig.syntax.parser.node;
 
 import org.twig.compiler.ClassCompiler;
 import org.twig.compiler.Compilable;
+import org.twig.exception.LoaderException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,8 +38,10 @@ public class Node implements Compilable {
      *
      * @param compiler The compiler
      */
-    public void compile(ClassCompiler compiler) {
-        this.nodes.forEach((node) -> node.compile(compiler));
+    public void compile(ClassCompiler compiler) throws LoaderException {
+        for (Node node : nodes) {
+            node.compile(compiler);
+        }
     }
 
     /**

@@ -3,12 +3,13 @@ package org.twig.syntax.parser.node;
 import org.junit.Test;
 import org.twig.Environment;
 import org.twig.compiler.ClassCompiler;
+import org.twig.exception.LoaderException;
 
 import static org.mockito.Mockito.*;
 
 public class NodeTests {
     @Test
-    public void canCompileChildNodes() {
+    public void canCompileChildNodes() throws LoaderException {
         Node node = new Node(1);
         Node childNode1 = mock(Node.class);
         Node childNode2 = mock(Node.class);
