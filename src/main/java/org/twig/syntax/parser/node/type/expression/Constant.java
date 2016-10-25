@@ -1,16 +1,8 @@
 package org.twig.syntax.parser.node.type.expression;
 
 import org.twig.compiler.ClassCompiler;
-import org.twig.syntax.parser.node.Node;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-public class Constant extends Node {
-    public Constant(ArrayList<Node> nodes, HashMap<String, String> attributes, Integer line, String tag) {
-        super(nodes, attributes, line, tag);
-    }
-
+public class Constant extends Expression {
     public Constant(Integer line) {
         super(line);
     }
