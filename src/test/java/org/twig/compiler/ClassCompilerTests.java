@@ -25,6 +25,15 @@ public class ClassCompilerTests {
     }
 
     @Test
+    public void canWriteRaw() {
+        ClassCompiler classCompiler = new ClassCompiler(new Environment());
+        classCompiler.indent();
+        classCompiler.writeRaw("foo");
+
+        Assert.assertEquals("Written code should not be indented", "foo", classCompiler.getSourceCode());
+    }
+
+    @Test
     public void canIndent() {
         ClassCompiler classCompiler = new ClassCompiler(new Environment());
         String code = "import com.twig.something";

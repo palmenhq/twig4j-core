@@ -69,19 +69,6 @@ public class ClassCompiler {
         return this;
     }
 
-    public ClassCompiler representValue(String value) {
-        if (value.matches("^(\\d+)$")) {
-            sourceCode.append(value);
-
-            return this;
-        }
-
-        // If nothing else matches this value it's a string
-        this.writeString(value);
-
-        return this;
-    }
-
     /**
      * Increases the indention level by 1
      *
@@ -95,6 +82,37 @@ public class ClassCompiler {
 
         return this;
     }
+
+    /**
+     * Adds a raw string to the compiled code.
+     *
+     * @param value Something to write
+     * @return this
+     */
+    public ClassCompiler writeRaw(String value) {
+        sourceCode.append(value);
+
+        return this;
+    }
+
+    /**
+     * Write the provided string as native java or a string (ie. true instead of "true", but "aoeu" not aoeu)
+     * @param value The value to write
+     * @return this
+     */
+    public ClassCompiler representValue(String value) {
+        if (value.matches("^(\\d+)$")) {
+            sourceCode.append(value);
+
+            return this;
+        }
+
+        // If nothing else matches this value it's a string
+        this.writeString(value);
+
+        return this;
+    }
+
     public ClassCompiler indent() {
         numberOfIndents++;
 
