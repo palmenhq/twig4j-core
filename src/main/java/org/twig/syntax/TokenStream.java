@@ -44,6 +44,62 @@ public class TokenStream {
         this.filename = filename;
     }
 
+    /**
+     * @see TokenStream#expect(Token.Type, String, String)
+     */
+    public Token expect(Token.Type type) throws SyntaxErrorException {
+        return expect(type, null, null);
+    }
+
+    /**
+     * @see TokenStream#expect(Token.Type, String, String)
+     */
+    public Token expect(Token.Type type, String value) throws SyntaxErrorException {
+        return expect(type, value, null);
+    }
+
+    /**
+     * Tests a token and returns it or throws a syntax error.
+     *
+     * @return
+     * @throws SyntaxErrorException
+     */
+    public Token expect(Token.Type type, String value, String message) throws SyntaxErrorException {
+        Token token = tokens.get(current);
+        boolean tokenIsTypeAndMaybeValue;
+
+        if (value == null) {
+            tokenIsTypeAndMaybeValue = token.is(type);
+        } else {
+            tokenIsTypeAndMaybeValue = token.is(type, value);
+        }
+
+        if (!tokenIsTypeAndMaybeValue) {
+            StringBuilder exceptionMessage = new StringBuilder();
+            if (message != null) {
+                exceptionMessage.append(message).append(". ");
+            }
+            exceptionMessage.append(String.format("Unexpected token \"%s\" of value \"%s\"", Token.typeToEnglish(token.type), token.getValue()));
+            exceptionMessage.append(String.format(" (\"%s\" expected", Token.typeToEnglish(type)));
+            if (value != null) {
+                exceptionMessage.append(String.format(" with value \"%s\"", value));
+            }
+            exceptionMessage.append(")");
+
+            throw new SyntaxErrorException(exceptionMessage.toString(), this.filename, token.getLine());
+        }
+
+        next();
+
+        return token;
+    }
+
+    /**
+     * Sets the pointer to the next token and returns the old one.
+     *
+     * @return
+     * @throws SyntaxErrorException
+     */
     public Token next() throws SyntaxErrorException {
         try {
             current ++;

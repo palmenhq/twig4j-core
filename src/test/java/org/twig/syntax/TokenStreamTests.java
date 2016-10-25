@@ -74,4 +74,28 @@ public class TokenStreamTests {
         Assert.assertFalse("Next should not be type string", tokenStream.nextIs(Token.Type.STRING));
         Assert.assertTrue("Next should be type text", tokenStream.nextIs(Token.Type.TEXT));
     }
+
+    @Test(expected = SyntaxErrorException.class)
+    public void expectWillThrowException() throws SyntaxErrorException {
+        TokenStream tokenStream = new TokenStream("aFile");
+        tokenStream.add(new Token(Token.Type.TEXT, "foo", 1));
+        tokenStream.add(new Token(Token.Type.STRING, "bar", 1));
+        tokenStream.add(new Token(Token.Type.EOF, null, 1));
+
+        tokenStream.expect(Token.Type.BLOCK_START); // is actually TEXT
+    }
+
+    @Test
+    public void canExpect() throws SyntaxErrorException {
+        TokenStream tokenStream = new TokenStream("aFile");
+        Token firstToken = new Token(Token.Type.TEXT, "foo", 1);
+        Token expectedToken = new Token(Token.Type.STRING, "bar", 1);
+
+        tokenStream.add(firstToken);
+        tokenStream.add(expectedToken);
+        tokenStream.add(new Token(Token.Type.EOF, null, 1));
+
+        Token foundToken = tokenStream.expect(Token.Type.TEXT);
+        Assert.assertEquals("Found token from expect should be first token", firstToken, foundToken);
+    }
 }
