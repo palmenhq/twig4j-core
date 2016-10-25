@@ -6,7 +6,7 @@ import org.twig.syntax.parser.node.Node;
 import org.twig.syntax.parser.node.type.expression.Expression;
 
 public class PrintExpression extends Node {
-    public PrintExpression(Expression expression, Integer line) {
+    public PrintExpression(Node expression, Integer line) {
         super(line);
         addNode(expression);
     }
@@ -19,7 +19,7 @@ public class PrintExpression extends Node {
                 .writeRaw(");\n");
     }
 
-    public Expression getExpression() {
-        return (Expression)nodes.get(0);
+    public Node getExpression() {
+        return nodes.get(0);
     }
 }

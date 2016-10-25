@@ -5,6 +5,7 @@ import org.twig.syntax.Token;
 import org.twig.syntax.TokenStream;
 import org.twig.syntax.parser.node.Module;
 import org.twig.syntax.parser.node.Node;
+import org.twig.syntax.parser.node.type.PrintExpression;
 import org.twig.syntax.parser.node.type.Text;
 
 import java.util.ArrayList;
@@ -61,16 +62,24 @@ public class Parser {
         while (!tokenStream.isEOF()) {
             switch (tokenStream.getCurrent().getType()) {
                 case TEXT:
-                    Token token = tokenStream.next();
+                    Token textToken = tokenStream.next();
 
                     // Create attribute
                     HashMap<String, String> attributes = new HashMap<>();
-                    attributes.put("data", token.getValue());
+                    attributes.put("data", textToken.getValue());
 
-                    rv.add(new Text(new ArrayList<Node>(), attributes, token.getLine(), null));
+                    rv.add(new Text(new ArrayList<Node>(), attributes, textToken.getLine(), null));
                     break;
+
+                case VAR_START:
+                    Token varStartToken = tokenStream.next();
+                    Node expr = expressionParser.parseExpression();
+                    tokenStream.expect(Token.Type.VAR_END);
+                    rv.add(new PrintExpression(expr, varStartToken.getLine()));
+
                 case EOF:
                     break;
+
                 default:
                     throw new SyntaxErrorException(
                             "Lexer or parser ended up in unsupported state.",
