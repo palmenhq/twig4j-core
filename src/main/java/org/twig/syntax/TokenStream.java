@@ -60,7 +60,7 @@ public class TokenStream {
      */
     public boolean nextIs(Token.Type type) {
         try {
-            return tokens.get(current + 1).getType() == type;
+            return tokens.get(current + 1).is(type);
         } catch (IndexOutOfBoundsException e) {
             return false;
         }

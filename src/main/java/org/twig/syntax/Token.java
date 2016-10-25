@@ -77,6 +77,27 @@ public class Token {
         }
     }
 
+    /**
+     * Check whether the token is the same type as provided type
+     *
+     * @param type The type to test
+     * @return
+     */
+    public boolean is(Type type) {
+        return this.type == type;
+    }
+
+    /**
+     * Check whether the token is the same type as provided type and has the same value as the provided value
+     *
+     * @param type The type to test
+     * @param value The value to test
+     * @return
+     */
+    public boolean is(Type type, String value) {
+        return this.type == type && this.value.equals(value);
+    }
+
     @Override
     public String toString() {
         return this.type.toString();
