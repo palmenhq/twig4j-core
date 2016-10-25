@@ -20,6 +20,7 @@ public class ExpressionParserTests {
         Token trueToken = new Token(Token.Type.NAME, "true", 1);
         TokenStream tokenStream = new TokenStream();
         tokenStream.add(trueToken);
+        tokenStream.add(new Token(Token.Type.EOF, null, 1));
 
         Parser parserStub = mock(Parser.class);
         when(parserStub.getCurrentToken()).thenReturn(trueToken);
@@ -44,6 +45,7 @@ public class ExpressionParserTests {
         Token nullToken = new Token(Token.Type.NAME, "null", 1);
         TokenStream tokenStream = new TokenStream();
         tokenStream.add(nullToken);
+        tokenStream.add(new Token(Token.Type.EOF, null, 1));
 
         Parser parserStub = mock(Parser.class);
         when(parserStub.getCurrentToken()).thenReturn(nullToken);
@@ -67,6 +69,7 @@ public class ExpressionParserTests {
     public void testParseSimpleString() throws SyntaxErrorException {
         ArrayList<Token> tokens = new ArrayList<>();
         tokens.add(new Token(Token.Type.STRING, "foo", 1));
+        tokens.add(new Token(Token.Type.EOF, null, 1));
         TokenStream tokenStream = new TokenStream(tokens);
         Parser parser = mock(Parser.class);
 
@@ -91,58 +94,60 @@ public class ExpressionParserTests {
         );
     }
 
-//    @Test
-//    public void testParseInterpolatedString() throws SyntaxErrorException {
-//        ArrayList<Token> tokens = new ArrayList<>();
-//        // Token stream for "foo#{"bar"}"
-//        //tokens.add(new Token(Token.Type.VAR_START, null, 1));
-//        tokens.add(new Token(Token.Type.STRING, "foo", 1));
-//        tokens.add(new Token(Token.Type.INTERPLATION_START, null, 1));
-//        tokens.add(new Token(Token.Type.STRING, "bar", 1));
-//        tokens.add(new Token(Token.Type.INTERPOLATION_END, null, 1));
-//        TokenStream tokenStream = new TokenStream(tokens);
-//
-//        Parser parser = new Parser();
-//        ExpressionParser expressionParser = new ExpressionParser(parser);
-//        parser
-//                .setExpressionParser(expressionParser)
-//                .setTokenStream(tokenStream);
-//
-//        Node parsedString = expressionParser.parseStringExpression();
-//
-//        BinaryConcat expectedNode = new BinaryConcat(new Constant("foo", 1), new Constant("bar", 1), 1);
-//
-//        Assert.assertEquals(
-//                "Type of returned node should be BinaryConcat",
-//                expectedNode.getClass(),
-//                parsedString.getClass()
-//        );
-//        Assert.assertEquals(
-//                "Type of left should be Constant",
-//                expectedNode.getLeftNode().getClass(),
-//                parsedString.getNode(0).getClass()
-//        );
-//        Assert.assertEquals(
-//                "Value of left should be \"foo\"",
-//                expectedNode.getLeftNode().getAttribute("data"),
-//                parsedString.getNode(0).getAttribute("data")
-//        );
-//        Assert.assertEquals(
-//                "Type of right should be Constant",
-//                expectedNode.getRightNode().getClass(),
-//                parsedString.getNode(1).getClass()
-//        );
-//        Assert.assertEquals(
-//                "Value of right should be \"bar\"",
-//                expectedNode.getRightNode().getAttribute("data"),
-//                parsedString.getNode(1).getAttribute("data")
-//        );
-//    }
+    @Test
+    public void testParseInterpolatedString() throws SyntaxErrorException {
+        ArrayList<Token> tokens = new ArrayList<>();
+        // Token stream for "foo#{"bar"}"
+        //tokens.add(new Token(Token.Type.VAR_START, null, 1));
+        tokens.add(new Token(Token.Type.STRING, "foo", 1));
+        tokens.add(new Token(Token.Type.INTERPLATION_START, null, 1));
+        tokens.add(new Token(Token.Type.STRING, "bar", 1));
+        tokens.add(new Token(Token.Type.INTERPOLATION_END, null, 1));
+        tokens.add(new Token(Token.Type.EOF, null, 1));
+        TokenStream tokenStream = new TokenStream(tokens);
+
+        Parser parser = new Parser();
+        ExpressionParser expressionParser = new ExpressionParser(parser);
+        parser
+                .setExpressionParser(expressionParser)
+                .setTokenStream(tokenStream);
+
+        Node parsedString = expressionParser.parseStringExpression();
+
+        BinaryConcat expectedNode = new BinaryConcat(new Constant("foo", 1), new Constant("bar", 1), 1);
+
+        Assert.assertEquals(
+                "Type of returned node should be BinaryConcat",
+                expectedNode.getClass(),
+                parsedString.getClass()
+        );
+        Assert.assertEquals(
+                "Type of left should be Constant",
+                expectedNode.getLeftNode().getClass(),
+                parsedString.getNode(0).getClass()
+        );
+        Assert.assertEquals(
+                "Value of left should be \"foo\"",
+                expectedNode.getLeftNode().getAttribute("data"),
+                parsedString.getNode(0).getAttribute("data")
+        );
+        Assert.assertEquals(
+                "Type of right should be Constant",
+                expectedNode.getRightNode().getClass(),
+                parsedString.getNode(1).getClass()
+        );
+        Assert.assertEquals(
+                "Value of right should be \"bar\"",
+                expectedNode.getRightNode().getAttribute("data"),
+                parsedString.getNode(1).getAttribute("data")
+        );
+    }
 
     @Test
     public void testParsePrimaryExpressionString() throws SyntaxErrorException {
         ArrayList<Token> tokens = new ArrayList<>();
         tokens.add(new Token(Token.Type.STRING, "foo", 1));
+        tokens.add(new Token(Token.Type.EOF, null, 1));
         TokenStream tokenStream = new TokenStream(tokens);
         Parser parser = mock(Parser.class);
 

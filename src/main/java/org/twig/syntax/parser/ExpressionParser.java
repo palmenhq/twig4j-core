@@ -32,14 +32,44 @@ public class ExpressionParser {
         this.binaryOperators = binaryOperators;
     }
 
-    public Node parseExpression() {
+    /**
+     * @see ExpressionParser#parseExpression(Integer) - defaults to 0
+     */
+    public Node parseExpression() throws SyntaxErrorException {
         return parseExpression(0);
     }
 
-    public Node parseExpression(Integer precedence) {
-        return new Node(1);
+    /**
+     * Parse an expression
+     *
+     * @param precedence TODO find out what this thing is
+     * @return The node for the parsed expression
+     */
+    public Node parseExpression(Integer precedence) throws SyntaxErrorException {
+        Node expr = getPrimary();
+
+        // TODO do the binany while loop thing
+
+        return expr;
     }
 
+    /**
+     * TODO find a good doscription of this method
+     *
+     * @return The node for this expression
+     * @throws SyntaxErrorException On syntax errors
+     */
+    protected Node getPrimary() throws SyntaxErrorException {
+        // TODO check if unary or is opening parenthesis
+        return parsePrimaryExpression();
+    }
+
+    /**
+     * TODO find a good description of this method
+     *
+     * @return A node for the expression
+     * @throws SyntaxErrorException On syntax errors
+     */
     public Node parsePrimaryExpression() throws SyntaxErrorException {
         Token token = parser.getCurrentToken();
         Node node;
@@ -82,31 +112,26 @@ public class ExpressionParser {
 
     /**
      * Parse a string expression (a regular string or a string interpolation)
+     *
      * @return The nodes that represents the string expression
      * @throws SyntaxErrorException
      */
     public Node parseStringExpression() throws SyntaxErrorException {
-        Token currentToken = parser.getCurrentToken();
         TokenStream stream = parser.getTokenStream();
         ArrayList<Node> nodes = new ArrayList<>();
 
-        // Must be a string to parse the current string
-        if (stream.getCurrent().getType() != Token.Type.STRING) {
-            throw SyntaxErrorException.unexpectedToken(stream.getCurrent(), parser.getFilename(), stream.getCurrent().getLine());
-        }
-
-        // Add the current string
-        nodes.add(new Constant(currentToken.getValue(), currentToken.getLine()));
-        // a string cannot be followed by another string in a single expression
-        Boolean nextCanBeString = false;
+        Boolean nextCanBeString = true;
 
         while (true) {
-            if (nextCanBeString && stream.nextIs(Token.Type.STRING)) {
+            if (nextCanBeString && stream.getCurrent().is(Token.Type.STRING)) {
                 Token token = stream.next();
                 nodes.add(new Constant(token.getValue(), token.getLine()));
                 nextCanBeString = false;
-            } else if (stream.nextIs(Token.Type.INTERPLATION_START)) {
-                throw new RuntimeException("String interpolation not implemented yet"); // TODO fix string interpolation
+            } else if (stream.getCurrent().is(Token.Type.INTERPLATION_START)) {
+                stream.next();
+                nodes.add(parseExpression());
+                stream.expect(Token.Type.INTERPOLATION_END);
+                nextCanBeString = true;
             } else {
                 break;
             }
