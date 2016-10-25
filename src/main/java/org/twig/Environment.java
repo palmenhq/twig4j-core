@@ -21,6 +21,7 @@ import java.util.HashMap;
 public class Environment {
     private Loader loader;
     private String templatePackage = "org.twig.template";
+    private String templateClassPrefix = "Template_";
     private String templateBaseClass = "org.twig.template.Template";
     private Lexer lexer = new Lexer();
     private Parser parser = new Parser();
@@ -116,7 +117,7 @@ public class Environment {
     public String getTemplateClass(String name, Integer index) throws LoaderException {
         String key = this.getLoader().getCacheKey(name);
 
-        return hashText(key).concat("_").concat(index.toString());
+        return getTemplateClassPrefix().concat(hashText(key)).concat("_").concat(index.toString());
     }
 
     /**
@@ -174,6 +175,22 @@ public class Environment {
         this.templateBaseClass = templateBaseClass;
 
         return this;
+    }
+
+    /**
+     * Get the template class prefix (default Template_)
+     * @return
+     */
+    public String getTemplateClassPrefix() {
+        return templateClassPrefix;
+    }
+
+    /**
+     * Set the template class prefix
+     * @param templateClassPrefix
+     */
+    public void setTemplateClassPrefix(String templateClassPrefix) {
+        this.templateClassPrefix = templateClassPrefix;
     }
 
     /**
