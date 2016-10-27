@@ -27,9 +27,13 @@ public class ModuleTests {
         verify(classCompilerStub).writeLine(" */");
         verify(classCompilerStub).write("public class hash_0");
         verify(classCompilerStub).writeLine(" extends org.twig.template.Template {");
-        verify(classCompilerStub, times(2)).indent();
-        verify(classCompilerStub, times(2)).unIndent();
-        verify(classCompilerStub, times(2)).writeLine("}");
+        verify(classCompilerStub, times(3)).indent();
+        verify(classCompilerStub).writeLine("public String getTemplateName() {");
+        verify(classCompilerStub).write("return ");
+        verify(classCompilerStub).writeString("foo");
+        verify(classCompilerStub).writeRaw(";\n");
+        verify(classCompilerStub, times(3)).unIndent();
+        verify(classCompilerStub, times(3)).writeLine("}");
     }
 
     @Test
@@ -47,13 +51,15 @@ public class ModuleTests {
         module.compile(classCompilerStub);
 
         verify(classCompilerStub).compile(bodyNodeStub);
-        verify(classCompilerStub).writeLine("protected String doRender(java.util.HashMap<String, String> context) {");
-        verify(classCompilerStub, times(2)).writeLine("}");
+        verify(classCompilerStub).writeLine("protected String doRender(java.util.HashMap<String, String> context) throws TwigRuntimeException {");
+        verify(classCompilerStub, times(3)).writeLine("}");
     }
 
     private void setupClassCompilerStubWhens(ClassCompiler classCompilerStub, Environment environmentStub) throws LoaderException {
         when(classCompilerStub.writeLine(anyString())).thenReturn(classCompilerStub);
         when(classCompilerStub.write(anyString())).thenReturn(classCompilerStub);
+        when(classCompilerStub.writeRaw(anyString())).thenReturn(classCompilerStub);
+        when(classCompilerStub.writeString(anyString())).thenReturn(classCompilerStub);
         when(classCompilerStub.indent()).thenReturn(classCompilerStub);
         when(classCompilerStub.unIndent()).thenReturn(classCompilerStub);
         when(classCompilerStub.subCompile(anyObject())).thenReturn(classCompilerStub);

@@ -33,6 +33,7 @@ public class Module implements Compilable {
 
         compiler
                 .writeLine("package " + compiler.getEnvironment().getTemplatePackage() + ";\n")
+                .writeLine("import org.twig.exception.TwigRuntimeException;\n")
                 .writeLine("/**")
                 .writeLine(" * ".concat(this.fileName))
                 .writeLine(" */")
@@ -43,13 +44,20 @@ public class Module implements Compilable {
 
     protected void compileClassFooter(ClassCompiler compiler) {
         compiler
+                .writeLine("public String getTemplateName() {")
+                .indent()
+                    .write("return ")
+                    .writeString(getFileName())
+                    .writeRaw(";\n")
+                .unIndent()
+                .writeLine("}")
                 .unIndent()
                 .writeLine("}");
     }
 
     protected void compileRender(ClassCompiler compiler) throws LoaderException {
         compiler
-                .writeLine("protected String doRender(java.util.HashMap<String, String> context) {")
+                .writeLine("protected String doRender(java.util.HashMap<String, String> context) throws TwigRuntimeException {")
                     .indent()
                     .writeLine("String output = \"\";")
                     .compile(this.getBodyNode())

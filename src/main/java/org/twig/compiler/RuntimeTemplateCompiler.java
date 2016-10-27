@@ -2,16 +2,26 @@ package org.twig.compiler;
 
 import net.openhft.compiler.CachedCompiler;
 import net.openhft.compiler.CompilerUtils;
+import org.twig.Environment;
 import org.twig.exception.TwigRuntimeException;
 import org.twig.template.Template;
 
+import java.lang.reflect.Constructor;
+
 public class RuntimeTemplateCompiler {
     private CachedCompiler cachedCompiler = CompilerUtils.CACHED_COMPILER;
+    private Environment environment;
 
-    public RuntimeTemplateCompiler() {
+    public RuntimeTemplateCompiler(Environment environment) {
+        this.environment = environment;
     }
 
     public RuntimeTemplateCompiler(CachedCompiler cachedCompiler) {
+        this.cachedCompiler = cachedCompiler;
+    }
+
+    public RuntimeTemplateCompiler(Environment environment, CachedCompiler cachedCompiler) {
+        this.environment = environment;
         this.cachedCompiler = cachedCompiler;
     }
 
@@ -24,12 +34,13 @@ public class RuntimeTemplateCompiler {
     public Template compile(String sourceCode, String name) throws TwigRuntimeException {
         try {
             Template template = (Template) cachedCompiler.loadFromJava(name, sourceCode).newInstance();
+            template.setEnvironment(environment);
 
             return template;
         } catch (ClassNotFoundException e) {
             throw new TwigRuntimeException("Failed to find compiled class " + name + ". Maybe it failed to compile?", e);
         } catch (Exception e) {
-            throw new TwigRuntimeException(e.getMessage(), e);
+            throw new TwigRuntimeException("Exception " + e.toString() + " thrown by compiler when compiling template " + name + ".", e);
         }
     }
 
@@ -37,7 +48,15 @@ public class RuntimeTemplateCompiler {
         return cachedCompiler;
     }
 
-    public void setCachedCompiler(CachedCompiler cachedCompiler) {
+    public RuntimeTemplateCompiler setCachedCompiler(CachedCompiler cachedCompiler) {
         this.cachedCompiler = cachedCompiler;
+
+        return this;
+    }
+
+    public RuntimeTemplateCompiler setEnvironment(Environment environment) {
+        this.environment = environment;
+
+        return this;
     }
 }
