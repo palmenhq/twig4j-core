@@ -17,7 +17,7 @@ public class NameTests {
         Assert.assertEquals(
                 "Compiled source code should be correct",
                 "// line 1\n"
-                + "getContext(context, \"foo\", false, 1);\n",
+                + "getContext(context, \"foo\", false, 1)\n",
                 classCompiler.getSourceCode()
         );
     }

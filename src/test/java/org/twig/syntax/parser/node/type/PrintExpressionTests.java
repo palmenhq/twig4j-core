@@ -15,14 +15,15 @@ public class PrintExpressionTests {
         constant.addNode(constant);
         PrintExpression print = new PrintExpression(constant, 1);
 
-        when(compiler.write(anyString())).thenReturn(compiler);
-        when(compiler.writeRaw(anyString())).thenReturn(compiler);
+        when(compiler.writeLine(anyString())).thenReturn(compiler);
+        when(compiler.indent()).thenReturn(compiler);
+        when(compiler.unIndent()).thenReturn(compiler);
         when(compiler.compile(anyObject())).thenReturn(compiler);
 
         print.compile(compiler);
 
-        verify(compiler).write("output = output.concat(");
+        verify(compiler).writeLine("output = output.concat(");
         verify(compiler).compile(constant);
-        verify(compiler).writeRaw(");\n");
+        verify(compiler).writeLine(");");
     }
 }

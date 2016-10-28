@@ -6,6 +6,7 @@ import org.twig.syntax.TokenStream;
 import org.twig.syntax.parser.node.Node;
 import org.twig.syntax.parser.node.type.expression.BinaryConcat;
 import org.twig.syntax.parser.node.type.expression.Constant;
+import org.twig.syntax.parser.node.type.expression.Name;
 
 import java.util.ArrayList;
 
@@ -76,6 +77,7 @@ public class ExpressionParser {
 
         switch(token.getType()) {
             case NAME:
+                parser.getTokenStream().next();
                 switch (token.getValue()) {
                     case "true":
                     case "TRUE":
@@ -93,8 +95,8 @@ public class ExpressionParser {
                         break;
                     default:
                         // TODO check for function
-                        // TODO create name
-                        node = new Node(token.getLine());
+
+                        node = new Name(token.getValue(), token.getLine());
                 }
                 break;
 

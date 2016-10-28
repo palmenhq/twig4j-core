@@ -24,6 +24,7 @@ public class ExpressionParserTests {
 
         Parser parserStub = mock(Parser.class);
         when(parserStub.getCurrentToken()).thenReturn(trueToken);
+        when(parserStub.getTokenStream()).thenReturn(tokenStream);
 
         ExpressionParser expressionParser = new ExpressionParser(parserStub);
         Node boolConstant = expressionParser.parsePrimaryExpression();
@@ -49,6 +50,7 @@ public class ExpressionParserTests {
 
         Parser parserStub = mock(Parser.class);
         when(parserStub.getCurrentToken()).thenReturn(nullToken);
+        when(parserStub.getTokenStream()).thenReturn(tokenStream);
 
         ExpressionParser expressionParser = new ExpressionParser(parserStub);
         Node boolConstant = expressionParser.parsePrimaryExpression();
@@ -168,6 +170,34 @@ public class ExpressionParserTests {
                 "Value should be \"foo\"",
                 expectedNode.getAttribute("data"),
                 parsedString.getAttribute("data")
+        );
+    }
+
+    @Test
+    public void testParsePrimaryExpressionVariable() throws SyntaxErrorException {
+        ArrayList<Token> tokens = new ArrayList<>();
+        tokens.add(new Token(Token.Type.NAME, "foo", 1));
+        tokens.add(new Token(Token.Type.EOF, null, 1));
+        TokenStream tokenStream = new TokenStream(tokens);
+        Parser parser = mock(Parser.class);
+
+        ExpressionParser expressionParser = new ExpressionParser(parser);
+
+        when(parser.getTokenStream()).thenReturn(tokenStream);
+        when(parser.getCurrentToken()).thenReturn(tokens.get(0));
+
+        Node parsedString = expressionParser.parsePrimaryExpression();
+        Node expectedNode = new Name("foo", 1);
+
+        Assert.assertEquals(
+                "Type of returned node should be Name",
+                expectedNode.getClass(),
+                parsedString.getClass()
+        );
+        Assert.assertEquals(
+                "Value should be \"foo\"",
+                expectedNode.getAttribute("name"),
+                parsedString.getAttribute("name")
         );
     }
 }

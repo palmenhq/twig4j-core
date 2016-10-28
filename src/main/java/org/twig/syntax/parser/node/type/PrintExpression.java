@@ -14,9 +14,11 @@ public class PrintExpression extends Node {
     @Override
     public void compile(ClassCompiler compiler) throws LoaderException {
         compiler
-                .write("output = output.concat(")
-                .compile(getExpression())
-                .writeRaw(");\n");
+                .writeLine("output = output.concat(")
+                .indent()
+                    .compile(getExpression())
+                .unIndent()
+                .writeLine(");");
     }
 
     public Node getExpression() {

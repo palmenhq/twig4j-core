@@ -21,6 +21,6 @@ public class TwigRuntimeException extends TwigException {
      * @return
      */
     public static TwigRuntimeException variableDoesNotExist(String variable, String templateName, Integer lineNumber) {
-        return new TwigRuntimeException("Variable " + variable +  "does not exist.", templateName, lineNumber);
+        return new TwigRuntimeException("Variable " + variable +  " does not exist.", templateName, lineNumber);
     }
 }

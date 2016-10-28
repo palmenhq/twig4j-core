@@ -13,6 +13,6 @@ public class Name extends Expression {
     public void compile(ClassCompiler compiler) throws LoaderException {
         compiler
                 .addDebugInfo(this)
-                .writeLine("getContext(context, \"" + getAttribute("name") + "\", false, " + getLine() +");");
+                .writeLine("getContext(context, \"" + getAttribute("name") + "\", false, " + getLine() +")");
     }
 }
