@@ -8,7 +8,7 @@ import org.twig.loader.HashMapLoader;
 
 import java.util.HashMap;
 
-public class RenderTests {
+public class RenderTextTests {
     private Environment environment;
 
     @Test
