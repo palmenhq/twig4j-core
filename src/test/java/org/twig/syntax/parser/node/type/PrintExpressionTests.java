@@ -22,8 +22,8 @@ public class PrintExpressionTests {
 
         print.compile(compiler);
 
-        verify(compiler).writeLine("output = output.concat(");
+        verify(compiler).writeLine("output = output.concat(String.valueOf(");
         verify(compiler).compile(constant);
-        verify(compiler).writeLine(");");
+        verify(compiler).writeLine("));");
     }
 }
