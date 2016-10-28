@@ -6,6 +6,9 @@ import org.twig.Environment;
 import org.twig.exception.LoaderException;
 import org.twig.syntax.parser.node.Node;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import static org.mockito.Mockito.*;
 
 public class ClassCompilerTests {
@@ -136,6 +139,19 @@ public class ClassCompilerTests {
         Assert.assertEquals(
                 "Represent value should have compiled an integer",
                 "1",
+                classCompiler.getSourceCode()
+        );
+    }
+
+    @Test
+    public void canAddDebugInfo() {
+        ClassCompiler classCompiler = new ClassCompiler(new Environment());
+
+        classCompiler.indent().addDebugInfo(new Node(new ArrayList<Node>(), new HashMap<String, String>(), 1337, "Idk"));
+
+        Assert.assertEquals(
+                "Add debug info should write an indented line comment with the line number",
+                "    // line 1337\n",
                 classCompiler.getSourceCode()
         );
     }

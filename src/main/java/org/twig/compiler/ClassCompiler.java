@@ -113,26 +113,6 @@ public class ClassCompiler {
         return this;
     }
 
-    public ClassCompiler indent() {
-        numberOfIndents++;
-
-        return this;
-    }
-
-
-    /**
-     * Decreases the indention level by 1
-     *
-     * @return this
-     */
-    public ClassCompiler unIndent() {
-        if (numberOfIndents > 0) {
-            numberOfIndents--;
-        }
-
-        return this;
-    }
-
     /**
      * Write a string
      *
@@ -155,6 +135,36 @@ public class ClassCompiler {
         return text.replace("\\", "\\\\")
                 .replace("\n", "\\n")
                 .replace("\"", "\\\"");
+    }
+
+    public ClassCompiler addDebugInfo(LineAware node) {
+        writeLine("// line " + node.getLine());
+
+        return this;
+    }
+
+    /**
+     * Increase the number of indents
+     * @return this
+     */
+    public ClassCompiler indent() {
+        numberOfIndents++;
+
+        return this;
+    }
+
+
+    /**
+     * Decreases the indention level by 1
+     *
+     * @return this
+     */
+    public ClassCompiler unIndent() {
+        if (numberOfIndents > 0) {
+            numberOfIndents--;
+        }
+
+        return this;
     }
 
     /**

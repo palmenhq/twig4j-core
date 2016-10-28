@@ -2,6 +2,7 @@ package org.twig.syntax.parser.node;
 
 import org.twig.compiler.ClassCompiler;
 import org.twig.compiler.Compilable;
+import org.twig.compiler.LineAware;
 import org.twig.exception.LoaderException;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.HashMap;
 /**
  * Represents something in the AST.
  */
-public class Node implements Compilable {
+public class Node implements Compilable, LineAware {
     // The nodes belonging to this node
     protected ArrayList<Node> nodes;
     // The attributes belonging to this node
