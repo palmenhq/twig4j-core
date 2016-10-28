@@ -2,7 +2,10 @@ package org.twig.template;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.twig.Environment;
 import org.twig.exception.TwigRuntimeException;
+
+import static org.mockito.Mockito.*;
 
 import java.util.HashMap;
 
@@ -25,6 +28,11 @@ public class TemplateTests {
     @Test(expected = TwigRuntimeException.class)
     public void testAccessUndefinedVariableThrowsRuntimeException() throws TwigRuntimeException {
         Template template = new TestVariableTemplate();
+        Environment environment = mock(Environment.class);
+
+        when(environment.isStrictVariables()).thenReturn(true);
+
+        template.setEnvironment(environment);
 
         template.render(new HashMap<>());
     }

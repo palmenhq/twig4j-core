@@ -23,6 +23,7 @@ public class Environment {
     private String templatePackage = "org.twig.template";
     private String templateClassPrefix = "Template_";
     private String templateBaseClass = "org.twig.template.Template";
+    private boolean strictVariables = false;
     private Lexer lexer = new Lexer();
     private Parser parser = new Parser();
     private ClassCompiler classCompiler = new ClassCompiler(this);
@@ -207,6 +208,22 @@ public class Environment {
      */
     public Environment setTemplatePackage(String templatePackage) {
         this.templatePackage = templatePackage;
+
+        return this;
+    }
+
+    public boolean isStrictVariables() {
+        return strictVariables;
+    }
+
+    public Environment enableStrictVariables() {
+        strictVariables = true;
+
+        return this;
+    }
+
+    public Environment disableStrictVariables() {
+        strictVariables = false;
 
         return this;
     }

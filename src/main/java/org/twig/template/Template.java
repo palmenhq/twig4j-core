@@ -35,7 +35,7 @@ abstract public class Template {
      */
     protected String getContext(HashMap<String, String> context, String item, boolean ignoreStrictChecks, Integer line) throws TwigRuntimeException {
         if (!context.containsKey(item)) {
-            if (ignoreStrictChecks) {
+            if (ignoreStrictChecks || !environment.isStrictVariables()) {
                 return "";
             } else {
                 throw TwigRuntimeException.variableDoesNotExist(item, getTemplateName(), line);
@@ -45,6 +45,10 @@ abstract public class Template {
         return context.get(item);
     }
 
+    /**
+     * Set the environment
+     * @param environment The environment
+     */
     public void setEnvironment(Environment environment) {
         this.environment = environment;
     }
