@@ -137,6 +137,18 @@ public class LexerTests {
     }
 
     @Test
+    public void lexesIntegers() throws SyntaxErrorException {
+        Lexer lexer = new Lexer();
+        String code = "{{ 1 }}";
+        TokenStream tokenStream = lexer.tokenize(code, "file");
+
+        Assert.assertEquals("1st toke should be var start", Token.Type.VAR_START, tokenStream.next().getType());
+        Token numberToken = tokenStream.next();
+        Assert.assertEquals("2nd token should be of type number", Token.Type.NUMBER, numberToken.getType());
+        Assert.assertEquals("2nd token should have value \"1\"", "1", numberToken.getValue());
+    }
+
+    @Test
     public void cantLexUnclosedString() throws SyntaxErrorException {
         expectedException.expect(SyntaxErrorException.class);
         expectedException.expectMessage("Unclosed \" in \"file\" at line 1.");

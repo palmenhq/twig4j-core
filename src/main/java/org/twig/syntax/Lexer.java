@@ -289,6 +289,15 @@ public class Lexer {
             return;
         }
 
+        // Numbers
+        Matcher numberMatcher = this.regexes.getExpressionNumber().matcher(codeAfterCursor);
+        if (numberMatcher.find(0)) {
+            pushToken(Token.Type.NUMBER, numberMatcher.group(0));
+            moveCursor(numberMatcher.group(0));
+
+            return;
+        }
+
         // Regular string contents
         Matcher stringMatcher = this.regexes.getExpressionString().matcher(codeAfterCursor);
         if (stringMatcher.find(0)) {
