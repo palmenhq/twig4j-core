@@ -24,6 +24,7 @@ public class Environment {
     private String templateClassPrefix = "Template_";
     private String templateBaseClass = "org.twig.template.Template";
     private boolean strictVariables = false;
+    private boolean debug = false;
     private Lexer lexer = new Lexer();
     private Parser parser = new Parser();
     private ClassCompiler classCompiler = new ClassCompiler(this);
@@ -224,6 +225,22 @@ public class Environment {
 
     public Environment disableStrictVariables() {
         strictVariables = false;
+
+        return this;
+    }
+
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public Environment enableDebug() {
+        debug = true;
+
+        return this;
+    }
+
+    public Environment disableDebug() {
+        debug = false;
 
         return this;
     }

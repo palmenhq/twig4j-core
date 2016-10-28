@@ -33,6 +33,12 @@ public class RuntimeTemplateCompiler {
      */
     public Template compile(String sourceCode, String name) throws TwigRuntimeException {
         try {
+            if (environment.isDebug()) {
+                System.out.println("Compiling template " + name);
+                System.out.print(sourceCode);
+
+            }
+
             Template template = (Template) cachedCompiler.loadFromJava(name, sourceCode).newInstance();
             template.setEnvironment(environment);
 
