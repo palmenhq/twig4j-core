@@ -14,10 +14,10 @@ public class RenderMathsTests {
     @Test
     public void canRenderNumber() throws TwigException {
         HashMap<String, String> templates = new HashMap<>();
-        templates.put("foo.twig", "{{ 112341234.12341234 }}");
+        templates.put("foo.twig", "{{ 1134.12341 }}");
         setupEnvironment(templates);
 
-        Assert.assertEquals("112341234.12341234 should be rendered", "112341234.12341234", environment.render("foo.twig"));
+        Assert.assertEquals("1134.12341 should be rendered", "1134.12341", environment.render("foo.twig"));
     }
 
     @Test

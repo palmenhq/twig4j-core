@@ -81,4 +81,32 @@ public class ParserTests {
                 module.getBodyNode().getNode(0).getAttribute("name")
         );
     }
+
+    @Test
+    public void canParseInteger() throws SyntaxErrorException {
+        TokenStream tokenStream = new TokenStream("aFile");
+        tokenStream.add(new Token(Token.Type.VAR_START, null, 1));
+        tokenStream.add(new Token(Token.Type.NUMBER, "1", 1));
+        tokenStream.add(new Token(Token.Type.VAR_END, null, 1));
+        tokenStream.add(new Token(Token.Type.EOF, null, 1));
+
+        Parser parser = new Parser();
+        Module module = parser.parse(tokenStream);
+
+        Assert.assertEquals(
+                "Body should be af type PrintExpression",
+                PrintExpression.class,
+                module.getBodyNode().getClass()
+        );
+        Assert.assertEquals(
+                "Printed expression should be of type Constant",
+                Constant.class,
+                module.getBodyNode().getNode(0).getClass()
+        );
+        Assert.assertEquals(
+                "Integer value should be correct",
+                "1",
+                module.getBodyNode().getNode(0).getAttribute("data")
+        );
+    }
 }

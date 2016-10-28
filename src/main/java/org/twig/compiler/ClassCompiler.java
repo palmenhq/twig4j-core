@@ -101,8 +101,8 @@ public class ClassCompiler {
      * @return this
      */
     public ClassCompiler representValue(String value) {
-        if (value.matches("^(\\d+)$")) {
-            sourceCode.append(value);
+        if (value.matches("^(\\d+)$") || value.matches("^[\\d\\.]+$")) {
+            writeRaw(value);
 
             return this;
         }

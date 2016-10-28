@@ -100,6 +100,11 @@ public class ExpressionParser {
                 }
                 break;
 
+            case NUMBER:
+                parser.getTokenStream().next();
+                node = new Constant(token.getValue(), token.getLine());
+                break;
+
             case STRING:
             case INTERPLATION_START:
                 node = parseStringExpression();
