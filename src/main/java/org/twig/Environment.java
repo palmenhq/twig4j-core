@@ -5,9 +5,12 @@ import org.twig.compiler.RuntimeTemplateCompiler;
 import org.twig.exception.LoaderException;
 import org.twig.exception.TwigException;
 import org.twig.exception.TwigRuntimeException;
+import org.twig.extension.Core;
+import org.twig.extension.Extension;
 import org.twig.loader.Loader;
 import org.twig.syntax.Lexer;
 import org.twig.syntax.TokenStream;
+import org.twig.syntax.operator.Operator;
 import org.twig.syntax.parser.Parser;
 import org.twig.syntax.parser.node.Module;
 import org.twig.template.Template;
@@ -16,26 +19,36 @@ import javax.xml.bind.DatatypeConverter;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Environment {
-    private Loader loader;
     private String templatePackage = "org.twig.template";
     private String templateClassPrefix = "Template_";
     private String templateBaseClass = "org.twig.template.Template";
     private boolean strictVariables = false;
     private boolean debug = false;
+
+    private HashMap<String, Operator> binaryOperators = new HashMap<>();
+    private HashMap<String, Operator> unaryOperators = new HashMap<>();
+    private boolean hasInitedExtensions = false;
+
+    private Loader loader;
     private Lexer lexer = new Lexer();
     private Parser parser = new Parser();
     private ClassCompiler classCompiler = new ClassCompiler(this);
     private RuntimeTemplateCompiler runtimeTemplateCompiler = new RuntimeTemplateCompiler(this);
     private HashMap<String, Template> loadedTemplates = new HashMap<>();
 
+    private ArrayList<Extension> extensions = new ArrayList<>();
+
     public Environment() {
     }
 
     public Environment(Loader loader) {
         this.loader = loader;
+
+        addExtension(new Core());
     }
 
     public Template loadTemplate(String name) throws LoaderException, TwigRuntimeException, TwigException {
@@ -51,6 +64,10 @@ public class Environment {
     }
 
     public Template loadTemplate(String name, Integer index) throws LoaderException, TwigRuntimeException, TwigException {
+        if (!hasInitedExtensions) {
+            initExtensions();
+        }
+
         String className = getTemplateClass(name);
         String fullTemplateClassName = templatePackage + "." + className;
 
@@ -83,6 +100,10 @@ public class Environment {
      * @throws TwigException on syntax or loader errors
      */
     public String compileSource(String templateSourceCode, String name) throws TwigException {
+        if (!hasInitedExtensions) {
+            initExtensions();
+        }
+
         try {
             TokenStream tokenStream = lexer.tokenize(templateSourceCode, name);
             Module module = parser.parse(tokenStream);
@@ -141,6 +162,29 @@ public class Environment {
             // This'll never happen
             throw new RuntimeException("Something impossible just happened");
         }
+    }
+
+    /**
+     * Initializes all extensions added to Twig
+     * @return this
+     */
+    protected Environment initExtensions() {
+        if (hasInitedExtensions) {
+            return this;
+        }
+
+        hasInitedExtensions = true;
+
+        extensions.forEach(this::initExtension);
+
+        return this;
+    }
+
+    protected void initExtension(Extension extension) {
+
+        // Operators
+        this.unaryOperators.putAll(extension.getUnaryOperators());
+        this.binaryOperators.putAll(extension.getBinaryOperators());
     }
 
     /**
@@ -245,6 +289,34 @@ public class Environment {
         return this;
     }
 
+    public HashMap<String, Operator> getBinaryOperators() {
+        if (!hasInitedExtensions) {
+            initExtensions();
+        }
+
+        return binaryOperators;
+    }
+
+    public Environment addBinaryOperator(String name, Operator operator) {
+        binaryOperators.put(name, operator);
+
+        return this;
+    }
+
+    public HashMap<String, Operator> getUnaryOperators() {
+        if (!hasInitedExtensions) {
+            initExtensions();
+        }
+
+        return unaryOperators;
+    }
+
+    public Environment addUnaryOperator(String name, Operator operator) {
+        unaryOperators.put(name, operator);
+
+        return this;
+    }
+
     /**
      * Set the lexer
      * @param lexer The lexer
@@ -300,6 +372,18 @@ public class Environment {
      */
     public Environment setLoadedTemplates(HashMap<String, Template> loadedTemplates) {
         this.loadedTemplates = loadedTemplates;
+
+        return this;
+    }
+
+    /**
+     * Add a new twig extension
+     *
+     * @param extension The extension
+     * @return this
+     */
+    public Environment addExtension(Extension extension) {
+        extensions.add(extension);
 
         return this;
     }
