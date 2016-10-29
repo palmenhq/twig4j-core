@@ -6,6 +6,7 @@ import org.twig.utils.StringModule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -69,7 +70,7 @@ public class Lexer {
     // A list of the states, as states can be nestled
     private List<State> states;
     // The nesting level so something, i.e. strings or brackets
-    private List<Bracket> brackets;
+    private Stack<Bracket> brackets;
     // The stream of tokens to return
     private TokenStream tokenStream;
     // Options for the lexer (ie the variable and block open/close tags should look like)
@@ -123,7 +124,7 @@ public class Lexer {
         this.tokenStream = new TokenStream(this.filename);
         this.position = -1;
         this.tagPositions = new ArrayList<>();
-        this.brackets = new ArrayList<>();
+        this.brackets = new Stack<>();
         this.states = new ArrayList<>();
         if (this.options == null) {
             this.options = new LexerOptions();
@@ -167,7 +168,7 @@ public class Lexer {
 
         // If there are unclosed elements left
         if (this.brackets.size() > 0) {
-            Bracket bracket = brackets.remove(brackets.size() - 1);
+            Bracket bracket = brackets.pop();
             throw SyntaxErrorException.unclosedSomething(bracket.getType(), this.filename, bracket.getLine());
         }
 
@@ -318,6 +319,32 @@ public class Lexer {
             return;
         }
 
+        // Punctuation (one character at a time)
+        Matcher punctuationMatcher = this.regexes.getPunctuation().matcher(codeAfterCursor);
+        if (punctuationMatcher.find(0)) {
+            String punctuation = punctuationMatcher.group(0);
+
+            if (punctuation.equals("(") || punctuation.equals("{") || punctuation.equals("[")) {
+                brackets.push(new Bracket(punctuation, line));
+            } else if (punctuation.equals(")") || punctuation.equals("}") || punctuation.equals("]")) {
+                if (brackets.size() == 0) {
+                    throw SyntaxErrorException.unclosedSomething(punctuation, filename, line);
+                }
+
+                // Find whatever was opened previously
+                Bracket bracket = brackets.pop();
+                String correspondingClosingBracket = bracket.getType().replace('(', ')').replace('{', '}').replace('[', ']');
+                if (!correspondingClosingBracket.equals(punctuation)) {
+                    throw SyntaxErrorException.unclosedSomething(punctuation, filename, bracket.getLine());
+                }
+            }
+
+            pushToken(Token.Type.PUNCTUATION, punctuation);
+            moveCursor(punctuation);
+
+            return;
+        }
+
         // Regular string contents
         Matcher stringMatcher = this.regexes.getExpressionString().matcher(codeAfterCursor);
         if (stringMatcher.find(0)) {
@@ -333,7 +360,7 @@ public class Lexer {
         Matcher openingStringMatcher = this.regexes.getDoubleQuoteStringDelimiter().matcher(codeAfterCursor);
         if (openingStringMatcher.find(0)) {
             // Increase bracket depth
-            this.brackets.add(new Bracket("\"", this.line));
+            this.brackets.push(new Bracket("\"", this.line));
             pushState(State.STRING);
             moveCursor(openingStringMatcher.group(0));
 
@@ -375,7 +402,7 @@ public class Lexer {
         if (stringInterpolationStartMatcher.find(0)) {
             // We're now doing string interpolation
             // Add a depth in brackets
-            this.brackets.add(new Bracket(this.options.getInterpolationOpen(), this.line));
+            this.brackets.push(new Bracket(this.options.getInterpolationOpen(), this.line));
             pushToken(Token.Type.INTERPLATION_START);
             moveCursor(stringInterpolationStartMatcher.group(0));
             pushState(State.INTERPOLATION);
@@ -397,7 +424,7 @@ public class Lexer {
         Matcher stringDoubleQuoteDelimiterMatcher = this.regexes.getDoubleQuoteStringDelimiter().matcher(codeAfterCursor);
         if (stringDoubleQuoteDelimiterMatcher.find(0)) {
             // Move up one bracket level
-            Bracket bracket = this.brackets.remove(this.brackets.size() - 1);
+            Bracket bracket = this.brackets.pop();
             // Check so the cursor is actually at a quote
             if (this.code.charAt(this.cursor) != '"') {
                 throw SyntaxErrorException.unclosedSomething(bracket.getType(), this.filename, this.line);
@@ -415,16 +442,16 @@ public class Lexer {
      * @throws SyntaxErrorException If lexExpression() throws any syntax errors
      */
     protected void lexInterpolation() throws SyntaxErrorException {
-        Bracket currentBracket = this.brackets.get(brackets.size() - 1);
+        Bracket currentBracket = this.brackets.get(this.brackets.size() - 1);
 
         // If this is the end of the interpolation end it, otherwise lex the expression inside it
         String codeAfterCursor = this.code.substring(this.cursor);
         Matcher stringInterpolationEndMatcher = this.regexes.getInterpolationEnd().matcher(codeAfterCursor);
         if (
-                currentBracket.getType().equals(this.options.getInterpolationOpen())
-                        && stringInterpolationEndMatcher.find(0)
-                ) {
-            this.brackets.remove(currentBracket);
+            currentBracket.getType().equals(this.options.getInterpolationOpen())
+            && stringInterpolationEndMatcher.find(0)
+        ) {
+            this.brackets.pop();
             pushToken(Token.Type.INTERPOLATION_END);
             moveCursor(stringInterpolationEndMatcher.group(0));
             popState();

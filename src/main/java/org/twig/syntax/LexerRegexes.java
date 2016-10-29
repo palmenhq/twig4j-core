@@ -115,6 +115,12 @@ public class LexerRegexes {
         return Pattern.compile(pattern);
     }
 
+    public Pattern getPunctuation() {
+        String pattern = "^\\s*[" + Pattern.quote("()[]{}?:.,|") + "]";
+
+        return Pattern.compile(pattern);
+    }
+
     /**
      * Get all the operators' regexes
      * @return

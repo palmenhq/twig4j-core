@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.twig.Environment;
 import org.twig.exception.SyntaxErrorException;
+import org.twig.exception.TwigException;
 
 public class LexerTests {
     @Rule
@@ -205,6 +206,48 @@ public class LexerTests {
 
         Assert.assertEquals("8th token should be a var end type", Token.Type.VAR_END, tokenStream.next().getType());
         Assert.assertEquals("9th token should be text", Token.Type.TEXT, tokenStream.next().getType());
+    }
+
+    @Test
+    public void lexesPunctuation() throws SyntaxErrorException {
+        Lexer lexer = new Lexer(new Environment());
+        String code = "{{ [foo.bar()] }}";
+
+        TokenStream tokenStream = lexer.tokenize(code, "file");
+
+        Assert.assertEquals("1st token should be var start", Token.Type.VAR_START, tokenStream.next().getType());
+
+        Token squareBracket = tokenStream.next();
+        Assert.assertEquals("2nd token should be a punctuation", Token.Type.PUNCTUATION, squareBracket.getType());
+        Assert.assertEquals("2nd token should be a square bracket", "[", squareBracket.getValue());
+
+        Assert.assertEquals("3rd token should be a name", Token.Type.NAME, tokenStream.next().getType());
+
+        Token dot = tokenStream.next();
+        Assert.assertEquals("4th token should be a punctuation", Token.Type.PUNCTUATION, dot.getType());
+        Assert.assertEquals("4th token should be a dot", ".", dot.getValue());
+
+        Assert.assertEquals("5th token should be a name", Token.Type.NAME, tokenStream.next().getType());
+
+        Token openingParenthesis = tokenStream.next();
+        Assert.assertEquals("6th token should be a punctuation", Token.Type.PUNCTUATION, openingParenthesis.getType());
+        Assert.assertEquals("6th token should be an opening parenthesis", "(", openingParenthesis.getValue());
+
+        Token closingParenthesis = tokenStream.next();
+        Assert.assertEquals("7th token should be a punctuation", Token.Type.PUNCTUATION, closingParenthesis.getType());
+        Assert.assertEquals("7th token should be a closing parenthesis", ")", closingParenthesis.getValue());
+
+        Token closingSquareBracket = tokenStream.next();
+        Assert.assertEquals("8th token should be a punctuation", Token.Type.PUNCTUATION, closingSquareBracket.getType());
+        Assert.assertEquals("8th token should be a closing square bracket", "]", closingSquareBracket.getValue());
+    }
+
+    @Test(expected = SyntaxErrorException.class)
+    public void throwsErrorOnUnclosedParenthesis() throws TwigException {
+        Lexer lexer = new Lexer(new Environment());
+        String code = "{{ foo( }}";
+
+        lexer.tokenize(code, "foo");
     }
 
     @Test
