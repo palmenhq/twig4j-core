@@ -8,9 +8,7 @@ import org.twig.loader.HashMapLoader;
 
 import java.util.HashMap;
 
-public class RenderTextTests {
-    private Environment environment;
-
+public class RenderTextTests extends FunctionalTests {
     @Test
     public void canRenderText() throws TwigException {
         HashMap<String, String> templates = new HashMap<>();
@@ -41,10 +39,25 @@ public class RenderTextTests {
         Assert.assertEquals("Rendered variable should be equal to value", "baz", environment.render("foo.twig", ctx));
     }
 
-    private void setupEnvironment(HashMap<String, String> templates) {
-        environment = new Environment(new HashMapLoader(templates));
+    @Test
+    public void canRenderInterpolatedString() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("foo.twig", "{{ \"interpolated #{bar}\" }}");
+        templates.put("bar.twig", "{{ 'not interpolated #{string}' }}");
+        setupEnvironment(templates);
 
-        environment.enableDebug();
-        environment.enableStrictVariables();
+        HashMap<String, String> ctx = new HashMap<>();
+        ctx.put("bar", "string");
+
+        Assert.assertEquals(
+                "Rendered double-quoted strings should be interpolated",
+                "interpolated string",
+                environment.render("foo.twig", ctx)
+        );
+        Assert.assertEquals(
+                "Rendered single-quoted strings should not be interpolated",
+                "not interpolated #{string}",
+                environment.render("bar.twig")
+        );
     }
 }

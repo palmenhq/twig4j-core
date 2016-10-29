@@ -8,9 +8,7 @@ import org.twig.loader.HashMapLoader;
 
 import java.util.HashMap;
 
-public class RenderMathsTests {
-    private Environment environment;
-
+public class RenderMathsTests extends FunctionalTests {
     @Test
     public void canRenderNumber() throws TwigException {
         HashMap<String, String> templates = new HashMap<>();
@@ -29,12 +27,5 @@ public class RenderMathsTests {
 
         Assert.assertEquals("1 + 1 should be 2", "2", environment.render("addition.twig"));
         Assert.assertEquals("1 + 2 + 3 + 4 should be 10", "10", environment.render("multiple-addition.twig"));
-    }
-
-    private void setupEnvironment(HashMap<String, String> templates) {
-        environment = new Environment(new HashMapLoader(templates));
-
-        environment.enableDebug();
-        environment.enableStrictVariables();
     }
 }
