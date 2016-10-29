@@ -16,12 +16,12 @@ public class BinaryAddTests {
         BinaryAdd concatNode = new BinaryAdd(left, right, 1);
 
         when(compilerStub.writeRaw(anyString())).thenReturn(compilerStub);
-        when(compilerStub.compile(anyObject())).thenReturn(compilerStub);
+        when(compilerStub.subCompile(anyObject())).thenReturn(compilerStub);
 
         concatNode.compile(compilerStub);
 
-        verify(compilerStub).compile(left);
+        verify(compilerStub).subCompile(left);
         verify(compilerStub).writeRaw(" + ");
-        verify(compilerStub).compile(right);
+        verify(compilerStub).subCompile(right);
     }
 }

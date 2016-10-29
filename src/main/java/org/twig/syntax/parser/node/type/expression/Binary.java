@@ -16,14 +16,14 @@ abstract public class Binary extends Expression {
     public void compile(ClassCompiler compiler) throws LoaderException {
         compiler
                 .writeRaw("(")
-                .compile(getLeftNode())
+                .subCompile(getLeftNode())
                 .writeRaw(" ");
 
         compileOperator(compiler);
 
         compiler
                 .writeRaw(" ")
-                .compile(getRightNode())
+                .subCompile(getRightNode())
                 .writeRaw(")");
     }
 

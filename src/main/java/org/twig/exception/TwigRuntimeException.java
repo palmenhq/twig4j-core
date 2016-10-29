@@ -23,4 +23,11 @@ public class TwigRuntimeException extends TwigException {
     public static TwigRuntimeException variableDoesNotExist(String variable, String templateName, Integer lineNumber) {
         return new TwigRuntimeException("Variable " + variable +  " does not exist.", templateName, lineNumber);
     }
+
+    public static TwigRuntimeException badOperatorFailedNode(String operator, String templateName, Integer line, Throwable cause) {
+        TwigRuntimeException e = new TwigRuntimeException("Bad operator \"" + operator + "\" (failed to instantiate binary node).", templateName, line);
+        e.initCause(cause);
+
+        return e;
+    }
 }

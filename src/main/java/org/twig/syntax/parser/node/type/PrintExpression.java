@@ -15,9 +15,7 @@ public class PrintExpression extends Node {
     public void compile(ClassCompiler compiler) throws LoaderException {
         compiler
                 .writeLine("output = output.concat(String.valueOf(")
-                .indent()
-                    .compile(getExpression())
-                .unIndent()
+                    .subCompile(getExpression())
                 .writeLine("));");
     }
 

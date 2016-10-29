@@ -2,7 +2,9 @@ package org.twig.syntax.parser;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.twig.Environment;
 import org.twig.exception.SyntaxErrorException;
+import org.twig.exception.TwigRuntimeException;
 import org.twig.syntax.Token;
 import org.twig.syntax.TokenStream;
 import org.twig.syntax.parser.node.Module;
@@ -11,16 +13,14 @@ import org.twig.syntax.parser.node.type.PrintExpression;
 import org.twig.syntax.parser.node.type.expression.Constant;
 import org.twig.syntax.parser.node.type.expression.Name;
 
-import static org.mockito.Mockito.*;
-
 public class ParserTests {
     @Test
-    public void canParseText() throws SyntaxErrorException {
+    public void canParseText() throws SyntaxErrorException, TwigRuntimeException {
         TokenStream tokenStream = new TokenStream("aFile");
         tokenStream.add(new Token(Token.Type.TEXT, "Hello world!", 1));
         tokenStream.add(new Token(Token.Type.EOF, null, 2));
 
-        Parser parser = new Parser();
+        Parser parser = new Parser(new Environment());
         Module module = parser.parse(tokenStream);
 
         Node bodyNode = module.getBodyNode();
@@ -28,14 +28,14 @@ public class ParserTests {
     }
 
     @Test
-    public void canParseStringPrint() throws SyntaxErrorException {
+    public void canParseStringPrint() throws SyntaxErrorException, TwigRuntimeException {
         TokenStream tokenStream = new TokenStream("aFile");
         tokenStream.add(new Token(Token.Type.VAR_START, null, 1));
         tokenStream.add(new Token(Token.Type.STRING, "foo", 1));
         tokenStream.add(new Token(Token.Type.VAR_END, null, 1));
         tokenStream.add(new Token(Token.Type.EOF, null, 1));
 
-        Parser parser = new Parser();
+        Parser parser = new Parser(new Environment());
 
         Constant stringConstant = new Constant("foo", 1);
         Module module = parser.parse(tokenStream);
@@ -53,14 +53,14 @@ public class ParserTests {
     }
 
     @Test
-    public void canParseVariable() throws SyntaxErrorException {
+    public void canParseVariable() throws SyntaxErrorException, TwigRuntimeException {
         TokenStream tokenStream = new TokenStream("aFile");
         tokenStream.add(new Token(Token.Type.VAR_START, null, 1));
         tokenStream.add(new Token(Token.Type.NAME, "foo", 1));
         tokenStream.add(new Token(Token.Type.VAR_END, null, 1));
         tokenStream.add(new Token(Token.Type.EOF, null, 1));
 
-        Parser parser = new Parser();
+        Parser parser = new Parser(new Environment());
 
         Name name = new Name("foo", 1);
         Module module = parser.parse(tokenStream);
@@ -83,14 +83,14 @@ public class ParserTests {
     }
 
     @Test
-    public void canParseInteger() throws SyntaxErrorException {
+    public void canParseInteger() throws SyntaxErrorException, TwigRuntimeException {
         TokenStream tokenStream = new TokenStream("aFile");
         tokenStream.add(new Token(Token.Type.VAR_START, null, 1));
         tokenStream.add(new Token(Token.Type.NUMBER, "1", 1));
         tokenStream.add(new Token(Token.Type.VAR_END, null, 1));
         tokenStream.add(new Token(Token.Type.EOF, null, 1));
 
-        Parser parser = new Parser();
+        Parser parser = new Parser(new Environment());
         Module module = parser.parse(tokenStream);
 
         Assert.assertEquals(

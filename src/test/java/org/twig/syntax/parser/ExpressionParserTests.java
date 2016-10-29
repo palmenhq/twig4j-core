@@ -2,10 +2,15 @@ package org.twig.syntax.parser;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.twig.Environment;
 import org.twig.exception.SyntaxErrorException;
+import org.twig.exception.TwigRuntimeException;
 import org.twig.syntax.Token;
 import org.twig.syntax.TokenStream;
+import org.twig.syntax.parser.node.Module;
 import org.twig.syntax.parser.node.Node;
+import org.twig.syntax.parser.node.type.PrintExpression;
+import org.twig.syntax.parser.node.type.expression.BinaryAdd;
 import org.twig.syntax.parser.node.type.expression.BinaryConcat;
 import org.twig.syntax.parser.node.type.expression.Constant;
 import org.twig.syntax.parser.node.type.expression.Name;
@@ -16,7 +21,7 @@ import static org.mockito.Mockito.*;
 
 public class ExpressionParserTests {
     @Test
-    public void testParsePrimaryExpressionBool() throws SyntaxErrorException {
+    public void testParsePrimaryExpressionBool() throws SyntaxErrorException, TwigRuntimeException {
         Token trueToken = new Token(Token.Type.NAME, "true", 1);
         TokenStream tokenStream = new TokenStream();
         tokenStream.add(trueToken);
@@ -42,7 +47,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void testParsePrimaryExpressionNull() throws SyntaxErrorException {
+    public void testParsePrimaryExpressionNull() throws SyntaxErrorException, TwigRuntimeException {
         Token nullToken = new Token(Token.Type.NAME, "null", 1);
         TokenStream tokenStream = new TokenStream();
         tokenStream.add(nullToken);
@@ -68,7 +73,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void testParseSimpleString() throws SyntaxErrorException {
+    public void testParseSimpleString() throws SyntaxErrorException, TwigRuntimeException {
         ArrayList<Token> tokens = new ArrayList<>();
         tokens.add(new Token(Token.Type.STRING, "foo", 1));
         tokens.add(new Token(Token.Type.EOF, null, 1));
@@ -97,7 +102,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void testParseInterpolatedString() throws SyntaxErrorException {
+    public void testParseInterpolatedString() throws SyntaxErrorException, TwigRuntimeException {
         ArrayList<Token> tokens = new ArrayList<>();
         // Token stream for "foo#{"bar"}"
         //tokens.add(new Token(Token.Type.VAR_START, null, 1));
@@ -108,7 +113,7 @@ public class ExpressionParserTests {
         tokens.add(new Token(Token.Type.EOF, null, 1));
         TokenStream tokenStream = new TokenStream(tokens);
 
-        Parser parser = new Parser();
+        Parser parser = new Parser(new Environment());
         ExpressionParser expressionParser = new ExpressionParser(parser);
         parser
                 .setExpressionParser(expressionParser)
@@ -146,7 +151,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void testParsePrimaryExpressionString() throws SyntaxErrorException {
+    public void testParsePrimaryExpressionString() throws SyntaxErrorException, TwigRuntimeException {
         ArrayList<Token> tokens = new ArrayList<>();
         tokens.add(new Token(Token.Type.STRING, "foo", 1));
         tokens.add(new Token(Token.Type.EOF, null, 1));
@@ -174,7 +179,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void testParsePrimaryExpressionVariable() throws SyntaxErrorException {
+    public void testParsePrimaryExpressionVariable() throws SyntaxErrorException, TwigRuntimeException {
         ArrayList<Token> tokens = new ArrayList<>();
         tokens.add(new Token(Token.Type.NAME, "foo", 1));
         tokens.add(new Token(Token.Type.EOF, null, 1));
@@ -198,6 +203,41 @@ public class ExpressionParserTests {
                 "Value should be \"foo\"",
                 expectedNode.getAttribute("name"),
                 parsedString.getAttribute("name")
+        );
+    }
+
+    @Test
+    public void canParseAddition() throws SyntaxErrorException, TwigRuntimeException {
+        TokenStream tokenStream = new TokenStream("aFile");
+        tokenStream.add(new Token(Token.Type.VAR_START, null, 1));
+        tokenStream.add(new Token(Token.Type.NUMBER, "1", 1));
+        tokenStream.add(new Token(Token.Type.OPERATOR, "+", 1));
+        tokenStream.add(new Token(Token.Type.NUMBER, "2", 1));
+        tokenStream.add(new Token(Token.Type.VAR_END, null, 1));
+        tokenStream.add(new Token(Token.Type.EOF, null, 1));
+
+        Parser parser = new Parser(new Environment());
+        Module module = parser.parse(tokenStream);
+
+        Assert.assertEquals(
+                "Body node should be a PrintExpression",
+                PrintExpression.class,
+                module.getBodyNode().getClass()
+        );
+        Assert.assertEquals(
+                "Printed expression should be a binary add",
+                BinaryAdd.class,
+                module.getBodyNode().getNode(0).getClass()
+        );
+        Assert.assertEquals(
+                "Left item sholud be number 1",
+                "1",
+                module.getBodyNode().getNode(0).getNode(0).getAttribute("data")
+        );
+        Assert.assertEquals(
+                "Right item sholud be number 2",
+                "2",
+                module.getBodyNode().getNode(0).getNode(1).getAttribute("data")
         );
     }
 }

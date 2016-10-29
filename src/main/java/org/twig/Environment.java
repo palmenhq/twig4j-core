@@ -36,7 +36,7 @@ public class Environment {
 
     private Loader loader;
     private Lexer lexer = new Lexer(this);
-    private Parser parser = new Parser();
+    private Parser parser = new Parser(this);
     private ClassCompiler classCompiler = new ClassCompiler(this);
     private RuntimeTemplateCompiler runtimeTemplateCompiler = new RuntimeTemplateCompiler(this);
     private HashMap<String, Template> loadedTemplates = new HashMap<>();

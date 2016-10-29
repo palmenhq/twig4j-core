@@ -1,6 +1,8 @@
 package org.twig.syntax.parser;
 
+import org.twig.Environment;
 import org.twig.exception.SyntaxErrorException;
+import org.twig.exception.TwigRuntimeException;
 import org.twig.syntax.Token;
 import org.twig.syntax.TokenStream;
 import org.twig.syntax.parser.node.Module;
@@ -14,7 +16,14 @@ import java.util.HashMap;
 public class Parser {
     // The token stream to parse
     private TokenStream tokenStream;
+    // The expression parser
     private ExpressionParser expressionParser = new ExpressionParser(this);
+    // The Twig environment
+    private Environment environment;
+
+    public Parser(Environment environment) {
+        this.environment = environment;
+    }
 
     /**
      * Parses a template
@@ -22,7 +31,7 @@ public class Parser {
      * @return The Module node (which represents a twig file)
      * @throws SyntaxErrorException
      */
-    public Module parse(TokenStream tokenStream) throws SyntaxErrorException {
+    public Module parse(TokenStream tokenStream) throws SyntaxErrorException, TwigRuntimeException {
         // TODO: Find out wth line 64-82 does
 
         // TODO: Create node visitors
@@ -55,7 +64,7 @@ public class Parser {
      * @return The body nodes
      * @throws SyntaxErrorException
      */
-    public Node subparse() throws SyntaxErrorException {
+    public Node subparse() throws SyntaxErrorException, TwigRuntimeException {
         Integer lineno = tokenStream.getCurrent().getLine();
         ArrayList<Node> rv = new ArrayList<>();
 
@@ -129,6 +138,16 @@ public class Parser {
 
     public Parser setExpressionParser(ExpressionParser expressionParser) {
         this.expressionParser = expressionParser;
+
+        return this;
+    }
+
+    public Environment getEnvironment() {
+        return environment;
+    }
+
+    public Parser setEnvironment(Environment environment) {
+        this.environment = environment;
 
         return this;
     }

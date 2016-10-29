@@ -1,8 +1,10 @@
 package org.twig.syntax.parser;
 
 import org.twig.exception.SyntaxErrorException;
+import org.twig.exception.TwigRuntimeException;
 import org.twig.syntax.Token;
 import org.twig.syntax.TokenStream;
+import org.twig.syntax.operator.Operator;
 import org.twig.syntax.parser.node.Node;
 import org.twig.syntax.parser.node.type.expression.BinaryConcat;
 import org.twig.syntax.parser.node.type.expression.Constant;
@@ -36,7 +38,7 @@ public class ExpressionParser {
     /**
      * @see ExpressionParser#parseExpression(Integer) - defaults to 0
      */
-    public Node parseExpression() throws SyntaxErrorException {
+    public Node parseExpression() throws SyntaxErrorException, TwigRuntimeException {
         return parseExpression(0);
     }
 
@@ -46,10 +48,32 @@ public class ExpressionParser {
      * @param precedence TODO find out what this thing is
      * @return The node for the parsed expression
      */
-    public Node parseExpression(Integer precedence) throws SyntaxErrorException {
+    public Node parseExpression(Integer precedence) throws SyntaxErrorException, TwigRuntimeException {
         Node expr = getPrimary();
+        Token token = parser.getCurrentToken();
 
-        // TODO do the binany while loop thing
+        while(isBinary(token.getValue()) && getBinaryOperator(token.getValue()).getPrecedence() >= precedence) {
+            Token operatorToken = token;
+            Operator operator = getBinaryOperator(token.getValue());
+            parser.getTokenStream().next();
+
+            // TODO find out what the "callable" thing is for binary operators
+            Node expr2 = parseExpression(
+                    operator.getAssociativity() == Operator.Associativity.LEFT
+                            ? (operator.getPrecedence() + 1) : operator.getPrecedence()
+            );
+            Class nodeClass = operator.getNodeClass();
+
+            try {
+                expr = (Node)nodeClass
+                        .getConstructor(Node.class, Node.class, Integer.class)
+                        .newInstance(expr, expr2, token.getLine());
+            } catch (Exception e) {
+                throw TwigRuntimeException.badOperatorFailedNode(operatorToken.getValue(), parser.getFilename(), operatorToken.getLine(), e);
+            }
+
+            token = parser.getCurrentToken();
+        }
 
         return expr;
     }
@@ -60,7 +84,7 @@ public class ExpressionParser {
      * @return The node for this expression
      * @throws SyntaxErrorException On syntax errors
      */
-    protected Node getPrimary() throws SyntaxErrorException {
+    protected Node getPrimary() throws SyntaxErrorException, TwigRuntimeException {
         // TODO check if unary or is opening parenthesis
         return parsePrimaryExpression();
     }
@@ -71,7 +95,7 @@ public class ExpressionParser {
      * @return A node for the expression
      * @throws SyntaxErrorException On syntax errors
      */
-    public Node parsePrimaryExpression() throws SyntaxErrorException {
+    public Node parsePrimaryExpression() throws SyntaxErrorException, TwigRuntimeException {
         Token token = parser.getCurrentToken();
         Node node;
 
@@ -123,7 +147,7 @@ public class ExpressionParser {
      * @return The nodes that represents the string expression
      * @throws SyntaxErrorException
      */
-    public Node parseStringExpression() throws SyntaxErrorException {
+    public Node parseStringExpression() throws SyntaxErrorException, TwigRuntimeException {
         TokenStream stream = parser.getTokenStream();
         ArrayList<Node> nodes = new ArrayList<>();
 
@@ -151,5 +175,23 @@ public class ExpressionParser {
         }
 
         return expression;
+    }
+
+    /**
+     * Check whether the operator is in the binary operators map in the env
+     * @param operator The operator to check for
+     * @return
+     */
+    public boolean isBinary(String operator) {
+        return this.parser.getEnvironment().getBinaryOperators().containsKey(operator);
+    }
+
+    /**
+     * Get an operator from the twig environment by the name
+     * @param operator The operator name
+     * @return
+     */
+    public Operator getBinaryOperator(String operator) {
+        return this.parser.getEnvironment().getBinaryOperators().get(operator);
     }
 }

@@ -26,6 +26,8 @@ public class ClassCompiler {
 
         node.compile(this);
 
+        unIndent();
+
         return this;
     }
 
@@ -36,6 +38,10 @@ public class ClassCompiler {
      * @throws LoaderException
      */
     public ClassCompiler compile(Compilable node) throws LoaderException {
+        // Reset compiler
+        sourceCode = new StringBuilder();
+        numberOfIndents = 0;
+
         node.compile(this);
 
         return this;

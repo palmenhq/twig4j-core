@@ -60,7 +60,7 @@ public class Module implements Compilable {
                 .writeLine("protected String doRender(java.util.HashMap<String, ?> context) throws TwigRuntimeException {")
                     .indent()
                     .writeLine("String output = \"\";")
-                    .compile(this.getBodyNode())
+                    .subCompile(this.getBodyNode())
                     .writeLine("return output;")
                 .unIndent()
                 .writeLine("}");

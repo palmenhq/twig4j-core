@@ -18,12 +18,12 @@ public class PrintExpressionTests {
         when(compiler.writeLine(anyString())).thenReturn(compiler);
         when(compiler.indent()).thenReturn(compiler);
         when(compiler.unIndent()).thenReturn(compiler);
-        when(compiler.compile(anyObject())).thenReturn(compiler);
+        when(compiler.subCompile(anyObject())).thenReturn(compiler);
 
         print.compile(compiler);
 
         verify(compiler).writeLine("output = output.concat(String.valueOf(");
-        verify(compiler).compile(constant);
+        verify(compiler).subCompile(constant);
         verify(compiler).writeLine("));");
     }
 }
