@@ -1,14 +1,19 @@
 package org.twig.syntax;
 
+import org.twig.syntax.operator.Operator;
+
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class LexerRegexes {
     private LexerOptions options;
-    private List<String> unaryOperators;
-    private List<String> binaryOperators;
+    private Map<String, Operator> unaryOperators;
+    private Map<String, Operator> binaryOperators;
 
-    public LexerRegexes(LexerOptions options, List<String> unaryOperators, List<String> binaryOperators) {
+    public LexerRegexes(LexerOptions options, Map<String, Operator> unaryOperators, Map<String, Operator> binaryOperators) {
         this.options = options;
         this.unaryOperators = unaryOperators;
         this.binaryOperators = binaryOperators;
@@ -110,6 +115,34 @@ public class LexerRegexes {
         return Pattern.compile(pattern);
     }
 
+    /**
+     * Get all the operators' regexes
+     * @return
+     */
+    public Pattern getOperators() {
+        StringBuilder pattern = new StringBuilder();
+        pattern.append("^(");
+
+        HashMap<String, Operator> allOperators = new HashMap<>();
+        allOperators.putAll(unaryOperators);
+        allOperators.putAll(binaryOperators);
+
+        Iterator<Map.Entry<String, Operator>> it = allOperators.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, Operator> operator = it.next();
+            pattern.append(Pattern.quote(operator.getKey()));
+
+            if (it.hasNext()) {
+                pattern.append("|");
+            }
+        }
+
+        pattern.append(")");
+
+        return Pattern.compile(pattern.toString());
+    }
+
+
     public Pattern getExpressionName() {
         return Pattern.compile("^[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*");
     }
@@ -134,11 +167,11 @@ public class LexerRegexes {
         this.options = options;
     }
 
-    public void setUnaryOperators(List<String> unaryOperators) {
+    public void setUnaryOperators(Map<String, Operator> unaryOperators) {
         this.unaryOperators = unaryOperators;
     }
 
-    public void setBinaryOperators(List<String> binaryOperators) {
+    public void setBinaryOperators(Map<String, Operator> binaryOperators) {
         this.binaryOperators = binaryOperators;
     }
 }

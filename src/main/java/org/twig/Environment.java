@@ -21,6 +21,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Environment {
     private String templatePackage = "org.twig.template";
@@ -34,20 +35,25 @@ public class Environment {
     private boolean hasInitedExtensions = false;
 
     private Loader loader;
-    private Lexer lexer = new Lexer();
+    private Lexer lexer = new Lexer(this);
     private Parser parser = new Parser();
     private ClassCompiler classCompiler = new ClassCompiler(this);
     private RuntimeTemplateCompiler runtimeTemplateCompiler = new RuntimeTemplateCompiler(this);
     private HashMap<String, Template> loadedTemplates = new HashMap<>();
 
-    private ArrayList<Extension> extensions = new ArrayList<>();
+    private List<Extension> extensions = new ArrayList<>();
 
     public Environment() {
+        init();
     }
 
     public Environment(Loader loader) {
         this.loader = loader;
 
+        init();
+    }
+
+    private void init() {
         addExtension(new Core());
     }
 

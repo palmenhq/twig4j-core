@@ -1,5 +1,6 @@
 package org.twig.syntax;
 
+import org.twig.Environment;
 import org.twig.exception.SyntaxErrorException;
 import org.twig.utils.StringModule;
 
@@ -45,6 +46,8 @@ public class Lexer {
         }
     }
 
+    // Twig runtime environment
+    private Environment environment;
     // The code to tokenize
     private String code;
     // The file name of the code (used in error messages)
@@ -75,12 +78,11 @@ public class Lexer {
     private LexerRegexes regexes;
 
     /**
-     * Constructor with default configuration
+     * Constructor with the environment
+     * @param environment The environment
      */
-    public Lexer() {
-        options = new LexerOptions();
-        // TODO set the operator lists
-        regexes = new LexerRegexes(options, new ArrayList<>(), new ArrayList<>());
+    public Lexer(Environment environment) {
+        this.environment = environment;
     }
 
     /**
@@ -90,8 +92,17 @@ public class Lexer {
      */
     public Lexer(LexerOptions options) {
         this.options = options;
-        // TODO set the operator lists
-        regexes = new LexerRegexes(this.options, new ArrayList<>(), new ArrayList<>());
+    }
+
+    /**
+     * Constructor with custom configuration and environment
+     *
+     * @param options The options to use
+     */
+    public Lexer(LexerOptions options, Environment environment) {
+        this.options = options;
+        this.environment = new Environment();
+        regexes = new LexerRegexes(this.options, environment.getUnaryOperators(), environment.getBinaryOperators());
     }
 
     /**
@@ -114,6 +125,13 @@ public class Lexer {
         this.tagPositions = new ArrayList<>();
         this.brackets = new ArrayList<>();
         this.states = new ArrayList<>();
+        if (this.options == null) {
+            this.options = new LexerOptions();
+        }
+        if (this.regexes == null) {
+            this.regexes = new LexerRegexes(this.options, environment.getUnaryOperators(), environment.getBinaryOperators());
+        }
+
         // The initial state should always be TEXT
         pushState(State.TEXT);
 
@@ -275,8 +293,10 @@ public class Lexer {
             }
         }
 
-        if (false) {
-            // TODO operators
+        Matcher operatorMatcher = this.regexes.getOperators().matcher(codeAfterCursor);
+        if (operatorMatcher.find(0)) {
+            pushToken(Token.Type.OPERATOR, operatorMatcher.group(0));
+            moveCursor(operatorMatcher.group(0));
             return;
         }
 
@@ -504,5 +524,29 @@ public class Lexer {
         while (matcher.find()) {
             this.tagPositions.add(new TokenPosition(matcher.start(), matcher.group()));
         }
+    }
+
+    /**
+     * Set the environment
+     *
+     * @param environment
+     * @return this
+     */
+    public Lexer setEnvironment(Environment environment) {
+        this.environment = environment;
+
+        return this;
+    }
+
+    /**
+     * Set the options
+     *
+     * @param options
+     * @return this
+     */
+    public Lexer setOptions(LexerOptions options) {
+        this.options = options;
+
+        return this;
     }
 }

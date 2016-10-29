@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.twig.Environment;
 import org.twig.exception.SyntaxErrorException;
 
 public class LexerTests {
@@ -12,7 +13,7 @@ public class LexerTests {
 
     @Test
     public void lexesCodeWithDataOnly() throws SyntaxErrorException {
-        Lexer lexer = new Lexer();
+        Lexer lexer = new Lexer(new Environment());
         String code = "data";
 
         TokenStream tokenStream = lexer.tokenize(code, "aFile");
@@ -22,7 +23,7 @@ public class LexerTests {
 
     @Test
     public void addsEOF() throws SyntaxErrorException {
-        Lexer lexer = new Lexer();
+        Lexer lexer = new Lexer(new Environment());
         String code = "data";
 
         TokenStream tokenStream = lexer.tokenize(code, "aFile");
@@ -33,7 +34,7 @@ public class LexerTests {
 
     @Test
     public void lexesVariables() throws SyntaxErrorException {
-        Lexer lexer = new Lexer();
+        Lexer lexer = new Lexer(new Environment());
         String code = "data {{ aVariable }} more data";
 
         TokenStream tokenStream = lexer.tokenize(code, "aFile");
@@ -57,7 +58,7 @@ public class LexerTests {
 
     @Test
     public void lexesMultilineVariables() throws SyntaxErrorException {
-        Lexer lexer = new Lexer();
+        Lexer lexer = new Lexer(new Environment());
         String code = "{{\n" +
                 "aVariable\n" +
                 "}}";
@@ -78,7 +79,7 @@ public class LexerTests {
         expectedException.expect(SyntaxErrorException.class);
         expectedException.expectMessage("Unclosed variable in \"aFile\" at line 1.");
 
-        Lexer lexer = new Lexer();
+        Lexer lexer = new Lexer(new Environment());
         String code = "{{ unclosedVariable ";
 
         lexer.tokenize(code, "aFile");
@@ -86,7 +87,7 @@ public class LexerTests {
 
     @Test
     public void lexesDoulbeQuotedStrings() throws SyntaxErrorException {
-        Lexer lexer = new Lexer();
+        Lexer lexer = new Lexer(new Environment());
         String code  = "{{ \"A string\" }}";
 
         TokenStream tokenStream = lexer.tokenize(code, "file");
@@ -99,7 +100,7 @@ public class LexerTests {
 
     @Test
     public void lexesEscapedDoubleQuotedStrings() throws SyntaxErrorException {
-        Lexer lexer = new Lexer();
+        Lexer lexer = new Lexer(new Environment());
         String code  = "{{ \"A \\\"string\" }}";
 
         TokenStream tokenStream = lexer.tokenize(code, "file");
@@ -112,7 +113,7 @@ public class LexerTests {
 
     @Test
     public void lexesSingleQuotedStrings() throws SyntaxErrorException {
-        Lexer lexer = new Lexer();
+        Lexer lexer = new Lexer(new Environment());
         String code  = "{{ 'A string' }}";
 
         TokenStream tokenStream = lexer.tokenize(code, "file");
@@ -125,7 +126,7 @@ public class LexerTests {
 
     @Test
     public void lexesEscapedSingleQuotedStrings() throws SyntaxErrorException {
-        Lexer lexer = new Lexer();
+        Lexer lexer = new Lexer(new Environment());
         String code  = "{{ 'A \\'string' }}";
 
         TokenStream tokenStream = lexer.tokenize(code, "file");
@@ -138,14 +139,33 @@ public class LexerTests {
 
     @Test
     public void lexesIntegers() throws SyntaxErrorException {
-        Lexer lexer = new Lexer();
+        Lexer lexer = new Lexer(new Environment());
         String code = "{{ 1 }}";
         TokenStream tokenStream = lexer.tokenize(code, "file");
 
-        Assert.assertEquals("1st toke should be var start", Token.Type.VAR_START, tokenStream.next().getType());
+        Assert.assertEquals("1st token should be var start", Token.Type.VAR_START, tokenStream.next().getType());
         Token numberToken = tokenStream.next();
         Assert.assertEquals("2nd token should be of type number", Token.Type.NUMBER, numberToken.getType());
         Assert.assertEquals("2nd token should have value \"1\"", "1", numberToken.getValue());
+    }
+
+    @Test
+    public void lexesIntegersWithAddOperator() throws SyntaxErrorException {
+        Environment environment = new Environment();
+        Lexer lexer = new Lexer(environment);
+        String code = "{{ 1 + 1 }}";
+        TokenStream tokenStream = lexer.tokenize(code, "file");
+
+        Assert.assertEquals("1st token should be var start", Token.Type.VAR_START, tokenStream.next().getType());
+        Token number1Token = tokenStream.next();
+        Assert.assertEquals("2nd token should be of type number", Token.Type.NUMBER, number1Token.getType());
+        Assert.assertEquals("2nd token should have value \"1\"", "1", number1Token.getValue());
+        Token additionToken = tokenStream.next();
+        Assert.assertEquals("3rd token should be operator", Token.Type.OPERATOR, additionToken.getType());
+        Assert.assertEquals("3rd token should be a plus", "+", additionToken.getValue());
+        Token number2Token = tokenStream.next();
+        Assert.assertEquals("4th token should be of type number", Token.Type.NUMBER, number2Token.getType());
+        Assert.assertEquals("4th ~token should have value \"1\"", "1", number2Token.getValue());
     }
 
     @Test
@@ -153,7 +173,7 @@ public class LexerTests {
         expectedException.expect(SyntaxErrorException.class);
         expectedException.expectMessage("Unclosed \" in \"file\" at line 1.");
 
-        Lexer lexer = new Lexer();
+        Lexer lexer = new Lexer(new Environment());
         String code  = "{{ \"A un unclosed string }}";
 
         TokenStream tokenStream = lexer.tokenize(code, "file");
@@ -161,7 +181,7 @@ public class LexerTests {
 
     @Test
     public void lexesInterploatedStrings() throws SyntaxErrorException {
-        Lexer lexer = new Lexer();
+        Lexer lexer = new Lexer(new Environment());
         String code  = "foo {{ \"A #{variable} string\" }} bar";
 
         TokenStream tokenStream = lexer.tokenize(code, "file");
@@ -189,7 +209,7 @@ public class LexerTests {
 
     @Test
     public void canLexBlocks() throws SyntaxErrorException {
-        Lexer lexer = new Lexer();
+        Lexer lexer = new Lexer(new Environment());
         String code = "{% aBlock %}";
 
         TokenStream tokenStream = lexer.tokenize(code, "aFile");
@@ -205,7 +225,7 @@ public class LexerTests {
 
     @Test
     public void canLexMulitilneBlocks() throws SyntaxErrorException {
-        Lexer lexer = new Lexer();
+        Lexer lexer = new Lexer(new Environment());
         String code = "{%\n" +
                 "aBlock\n" +
                 "%}";
@@ -223,7 +243,7 @@ public class LexerTests {
 
     @Test
     public void ignoresComments() throws SyntaxErrorException {
-        Lexer lexer = new Lexer();
+        Lexer lexer = new Lexer(new Environment());
         String code = "foo {# This is a comment #} bar";
 
         TokenStream tokenStream = lexer.tokenize(code, "aFile");
@@ -234,7 +254,7 @@ public class LexerTests {
 
     @Test
     public void canHandleMultilineComments() throws SyntaxErrorException {
-        Lexer lexer = new Lexer();
+        Lexer lexer = new Lexer(new Environment());
         String code = "foo {# This \n" +
                 "is a \n" +
                 "multiline comment" +
