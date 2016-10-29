@@ -22,17 +22,9 @@ import java.util.ArrayList;
  */
 public class ExpressionParser {
     private Parser parser;
-    private ArrayList<String> unaryOperators;
-    private ArrayList<String> binaryOperators;
 
     public ExpressionParser(Parser parser) {
         this.parser = parser;
-    }
-
-    public ExpressionParser(Parser parser, ArrayList<String> unaryOperators, ArrayList<String> binaryOperators) {
-        this.parser = parser;
-        this.unaryOperators = unaryOperators;
-        this.binaryOperators = binaryOperators;
     }
 
     /**
