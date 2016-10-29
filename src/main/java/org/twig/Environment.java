@@ -65,7 +65,7 @@ public class Environment {
         return loadTemplate(name).render();
     }
 
-    public String render(String name, HashMap<String, String> context) throws LoaderException, TwigRuntimeException, TwigException {
+    public String render(String name, HashMap<String, ?> context) throws LoaderException, TwigRuntimeException, TwigException {
         return loadTemplate(name).render(context);
     }
 

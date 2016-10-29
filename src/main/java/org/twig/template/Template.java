@@ -12,11 +12,11 @@ abstract public class Template {
         return render(new HashMap<>());
     }
 
-    public String render(HashMap<String, String> context) throws TwigRuntimeException {
+    public String render(HashMap<String, ?> context) throws TwigRuntimeException {
         return doRender(context);
     }
 
-    abstract protected String doRender(HashMap<String, String> context) throws TwigRuntimeException;
+    abstract protected String doRender(HashMap<String, ?> context) throws TwigRuntimeException;
 
     /**
      * Get the template file name
@@ -29,11 +29,11 @@ abstract public class Template {
      * Get a variable from the provided context
      *
      * @param context The context to get the variable from
-     * @param item The variable names
+     * @param item The variable name
      * @param ignoreStrictChecks Whether to throw an error or just fail silently and return empty string
      * @return
      */
-    protected String getContext(HashMap<String, String> context, String item, boolean ignoreStrictChecks, Integer line) throws TwigRuntimeException {
+    protected Object getContext(HashMap<String, ?> context, String item, boolean ignoreStrictChecks, Integer line) throws TwigRuntimeException {
         if (!context.containsKey(item)) {
             if (ignoreStrictChecks || !environment.isStrictVariables()) {
                 return "";
