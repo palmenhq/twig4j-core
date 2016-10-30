@@ -6,11 +6,10 @@ import org.twig.syntax.Token;
 import org.twig.syntax.TokenStream;
 import org.twig.syntax.operator.Operator;
 import org.twig.syntax.parser.node.Node;
-import org.twig.syntax.parser.node.type.expression.BinaryConcat;
-import org.twig.syntax.parser.node.type.expression.Constant;
-import org.twig.syntax.parser.node.type.expression.Name;
+import org.twig.syntax.parser.node.type.expression.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Parses expressions.
@@ -41,7 +40,7 @@ public class ExpressionParser {
      * @return The node for the parsed expression
      */
     public Node parseExpression(Integer precedence) throws SyntaxErrorException, TwigRuntimeException {
-        Node expr = getPrimary();
+        Expression expr = getPrimary();
         Token token = parser.getCurrentToken();
 
         while(isBinary(token.getValue()) && getBinaryOperator(token.getValue()).getPrecedence() >= precedence) {
@@ -57,7 +56,7 @@ public class ExpressionParser {
             Class nodeClass = operator.getNodeClass();
 
             try {
-                expr = (Node)nodeClass
+                expr = (Expression)nodeClass
                         .getConstructor(Node.class, Node.class, Integer.class)
                         .newInstance(expr, expr2, token.getLine());
             } catch (Exception e) {
@@ -67,7 +66,7 @@ public class ExpressionParser {
             token = parser.getCurrentToken();
         }
 
-        return expr;
+        return parsePostfixExpression(expr);
     }
 
     /**
@@ -76,7 +75,7 @@ public class ExpressionParser {
      * @return The node for this expression
      * @throws SyntaxErrorException On syntax errors
      */
-    protected Node getPrimary() throws SyntaxErrorException, TwigRuntimeException {
+    protected Expression getPrimary() throws SyntaxErrorException, TwigRuntimeException {
         // TODO check if unary or is opening parenthesis
         return parsePrimaryExpression();
     }
@@ -87,9 +86,9 @@ public class ExpressionParser {
      * @return A node for the expression
      * @throws SyntaxErrorException On syntax errors
      */
-    public Node parsePrimaryExpression() throws SyntaxErrorException, TwigRuntimeException {
+    public Expression parsePrimaryExpression() throws SyntaxErrorException, TwigRuntimeException {
         Token token = parser.getCurrentToken();
-        Node node;
+        Expression node;
 
         switch(token.getType()) {
             case NAME:
@@ -139,7 +138,7 @@ public class ExpressionParser {
      * @return The nodes that represents the string expression
      * @throws SyntaxErrorException
      */
-    public Node parseStringExpression() throws SyntaxErrorException, TwigRuntimeException {
+    public Expression parseStringExpression() throws SyntaxErrorException, TwigRuntimeException {
         TokenStream stream = parser.getTokenStream();
         ArrayList<Node> nodes = new ArrayList<>();
 
@@ -161,12 +160,134 @@ public class ExpressionParser {
         }
 
         // Add a concat for each node in the list if more than one
-        Node expression = nodes.remove(0);
+        Expression expression = (Expression)nodes.remove(0);
         for (Node node : nodes) {
             expression = new BinaryConcat(expression, node, node.getLine());
         }
 
         return expression;
+    }
+
+    /**
+     * Parse something that comes after a NAME
+     *
+     * @param node The node that's has something post it
+     * @return
+     * @throws SyntaxErrorException
+     */
+    public Expression parsePostfixExpression(Expression node) throws SyntaxErrorException, TwigRuntimeException {
+        while (true) {
+            Token token = parser.getCurrentToken();
+
+            if (token.getType() != Token.Type.PUNCTUATION) {
+                break;
+            }
+
+            if (token.getValue().equals(".") || token.getValue().equals("[")) {
+                node = parseSubscripExpression(node);
+            } else if (false) {
+                // TODO filters
+            } else {
+                break;
+            }
+        }
+
+        return node;
+    }
+
+    /**
+     *
+     * @param node
+     * @return
+     * @throws SyntaxErrorException
+     */
+    public Expression parseSubscripExpression(Expression node) throws SyntaxErrorException, TwigRuntimeException {
+        TokenStream tokenStream = parser.getTokenStream();
+        Token token = tokenStream.next();
+        Array arguments = new Array(token.getLine());
+        String type = "any";
+        Expression arg = null;
+
+        if (token.getValue().equals(".")) {
+            token = tokenStream.next();
+            if (
+                    token.getType() == Token.Type.NAME
+                    || token.getType() == Token.Type.NUMBER
+                    || token.getType() == Token.Type.OPERATOR // TODO get if matches name operator
+            ) {
+                arg = new Constant(token.getValue(), token.getLine());
+
+                // If this is a method
+                if (parser.getCurrentToken().is(Token.Type.PUNCTUATION, "(")) {
+                    type = "method";
+
+                    // Add all nodes to the argument
+                    parseArguments().getNodes().forEach(arguments::addNode);
+                }
+            } else {
+                throw new SyntaxErrorException("Expected name or number", tokenStream.getFilename(), token.getLine());
+            }
+
+            // TODO check if this is a macro
+        }
+
+        return new GetAttr(node, arg, arguments, type, token.getLine());
+    }
+
+    /**
+     * @see static#parseArguments(boolean, boolean)
+     * Defaults both parameters to false
+     *
+     * @return The argument nodes
+     * @throws SyntaxErrorException
+     */
+    public Node parseArguments() throws SyntaxErrorException, TwigRuntimeException {
+        return parseArguments(false, false);
+    }
+
+    /**
+     * @see static#parseArguments(boolean, boolean)
+     * Defaults isFunctionDefinition to false
+     *
+     * @param useNamedArguments Whether to use named arguments
+     * @return The argument nodes
+     * @throws SyntaxErrorException
+     */
+    public Node parseArguments(boolean useNamedArguments) throws SyntaxErrorException, TwigRuntimeException {
+        return parseArguments(useNamedArguments, false);
+    }
+
+    /**
+     * Parse function/method arguments
+     * @param useNamedArguments Whether to use named arguments
+     * @param isFunctionDefinition Whether these arguments are for a function definition or a call
+     * @return
+     * @throws SyntaxErrorException
+     */
+    public Node parseArguments(boolean useNamedArguments, boolean isFunctionDefinition) throws SyntaxErrorException, TwigRuntimeException {
+        ArrayList<Node> arguments = new ArrayList<>();
+        TokenStream stream = parser.getTokenStream();
+
+        stream.expect(Token.Type.PUNCTUATION, "(", "A list of arguments must begin with an opening parenthesis");
+
+        while (!stream.getCurrent().is(Token.Type.PUNCTUATION, ")")) {
+            if (arguments.size() != 0) {
+                stream.expect(Token.Type.PUNCTUATION, ",", "Arguments must be separated by a comma");
+            }
+
+            // TODO check for definition
+            Node value = parseExpression();
+
+            // TODO check for named arguments
+
+            // TODO something about the isFunctionDefinition and something about useNamedArguments
+            arguments.add(value);
+
+        }
+
+        stream.expect(Token.Type.PUNCTUATION, ")", "A list of arguments must be closed by a parenthesis");
+
+        return new Node(arguments, new HashMap<>(), -1, stream.getFilename());
     }
 
     /**

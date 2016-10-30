@@ -4,16 +4,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.twig.Environment;
 import org.twig.exception.SyntaxErrorException;
+import org.twig.exception.TwigException;
 import org.twig.exception.TwigRuntimeException;
 import org.twig.syntax.Token;
 import org.twig.syntax.TokenStream;
 import org.twig.syntax.parser.node.Module;
 import org.twig.syntax.parser.node.Node;
 import org.twig.syntax.parser.node.type.PrintExpression;
-import org.twig.syntax.parser.node.type.expression.BinaryAdd;
-import org.twig.syntax.parser.node.type.expression.BinaryConcat;
-import org.twig.syntax.parser.node.type.expression.Constant;
-import org.twig.syntax.parser.node.type.expression.Name;
+import org.twig.syntax.parser.node.type.expression.*;
 
 import java.util.ArrayList;
 
@@ -238,6 +236,97 @@ public class ExpressionParserTests {
                 "Right item sholud be number 2",
                 "2",
                 module.getBodyNode().getNode(0).getNode(1).getAttribute("data")
+        );
+    }
+
+    @Test
+    public void canParseArguments() throws TwigException {
+        TokenStream tokenStream = new TokenStream("aFile");
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, "(", 1));
+        tokenStream.add(new Token(Token.Type.NAME, "foo", 1));
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, ",", 1));
+        tokenStream.add(new Token(Token.Type.NUMBER, "1", 1));
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, ")", 1));
+        tokenStream.add(new Token(Token.Type.EOF, null, 1));
+        Parser parserStub = new Parser(new Environment());
+        parserStub.setTokenStream(tokenStream);
+
+        ExpressionParser expressionParser = new ExpressionParser(parserStub);
+        Node arguments = expressionParser.parseArguments();
+
+        Assert.assertEquals(
+                "First argument should be of type name",
+                Name.class,
+                arguments.getNode(0).getClass()
+        );
+        Assert.assertEquals(
+                "First argument should have value \"foo\"",
+                "foo",
+                arguments.getNode(0).getAttribute("name")
+        );
+        Assert.assertEquals(
+                "2nd argument should be of type constant",
+                Constant.class,
+                arguments.getNode(1).getClass()
+        );
+        Assert.assertEquals(
+                "2nd argument should have value 1",
+                "1",
+                arguments.getNode(1).getAttribute("data")
+        );
+    }
+
+    @Test
+    public void canParseMethod() throws TwigException {
+        TokenStream tokenStream = new TokenStream("aFile");
+        tokenStream.add(new Token(Token.Type.NAME, "foo", 1));
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, ".", 1));
+        tokenStream.add(new Token(Token.Type.NAME, "bar", 1));
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, "(", 1));
+        tokenStream.add(new Token(Token.Type.STRING, "baz", 1));
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, ")", 1));
+        tokenStream.add(new Token(Token.Type.EOF, null, 1));
+        Parser parserStub = new Parser(new Environment());
+        parserStub.setTokenStream(tokenStream);
+
+        ExpressionParser expressionParser = new ExpressionParser(parserStub);
+
+        Node parsedExpression = expressionParser.parseExpression();
+
+        Assert.assertEquals(
+                "Returned node should be of type GetAttr",
+                GetAttr.class,
+                parsedExpression.getClass()
+        );
+        Assert.assertEquals(
+                "1st getattr node (the node) should be of type name",
+                Name.class,
+                parsedExpression.getNode(0).getClass()
+        );
+        Assert.assertEquals(
+                "1st getattr node (the node should be \"foo\"",
+                "foo",
+                parsedExpression.getNode(0).getAttribute("name")
+        );
+        Assert.assertEquals(
+                "2nd getattr node (the attribute) should be of type constant",
+                Constant.class,
+                parsedExpression.getNode(1).getClass()
+        );
+        Assert.assertEquals(
+                "2nd getattr node (the attribute) should be \"bar\"",
+                "bar",
+                parsedExpression.getNode(1).getAttribute("data")
+        );
+        Assert.assertEquals(
+                "3rd getattr node (the arguments) should be of type array",
+                Array.class,
+                parsedExpression.getNode(2).getClass()
+        );
+        Assert.assertEquals(
+                "3rd getattr node (the attribute) should contain 1 sub node (=1 argument)",
+                1,
+                parsedExpression.getNode(2).getNodes().size()
         );
     }
 }

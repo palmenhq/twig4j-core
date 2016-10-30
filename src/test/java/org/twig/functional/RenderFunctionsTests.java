@@ -11,15 +11,17 @@ import java.util.HashMap;
 public class RenderFunctionsTests extends FunctionalTests {
     @Test
     public void canRenderContextObjectMethods() throws TwigException {
-        TestClass foo = new TestClass();
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig", "{{ foo.getSomething() }}");
         setupEnvironment(templates);
 
-        Assert.assertEquals("Method return vale should be rendered", "foo", environment.render("foo.twig"));
+        HashMap<String, Object> ctx = new HashMap<>();
+        ctx.put("foo", new TestClass());
+
+        Assert.assertEquals("Method return vale should be rendered", "foo", environment.render("foo.twig", ctx));
     }
 
-    private class TestClass {
+    public class TestClass {
         public String getSomething() {
             return "foo";
         }
