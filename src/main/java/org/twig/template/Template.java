@@ -3,7 +3,10 @@ package org.twig.template;
 import org.twig.Environment;
 import org.twig.exception.TwigRuntimeException;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 abstract public class Template {
     protected Environment environment;
@@ -43,6 +46,60 @@ abstract public class Template {
         }
 
         return context.get(item);
+    }
+
+    protected Object getAttribute(Object object, String item, List<Object> arguments, String type) throws TwigRuntimeException {
+        return getAttribute(object, item, arguments, type, false, false);
+    }
+
+    protected Object getAttribute(Object object, String item, List<Object> arguments, String type, boolean isDefinedTest, boolean ignoreStrictChecks) throws TwigRuntimeException {
+        if (!type.equals("method")) {
+            // TODO the array thing
+        }
+
+        if (object == null) {
+            if (ignoreStrictChecks) {
+                return null;
+            } else {
+                throw new TwigRuntimeException("Impossible to invoke a method (\"" + item + "\") on a null variable", getTemplateName(), -1);
+            }
+        }
+
+        // TODO do the object property check
+
+        // TODO check for get*, is*, has*
+
+        List<Class> argumentClasses = new ArrayList<>();
+        for (Object argument : arguments) {
+            argumentClasses.add(argument.getClass());
+        }
+
+        try {
+            Method methodToInvoke = object.getClass().getDeclaredMethod(item, argumentClasses.toArray(new Class[argumentClasses.size()]));
+
+            return methodToInvoke.invoke(object, arguments.toArray());
+        } catch (NoSuchMethodException e) {
+            throw new TwigRuntimeException(
+                    "No such method \"" + item + "\" on object of type \"" + object.getClass().getName() + "\"",
+                    getTemplateName(),
+                    -1,
+                    e
+            );
+        } catch (IllegalAccessException e) {
+            throw new TwigRuntimeException(
+                    "Call to inaccessible method \"" + item + "\" on object of type \"" + object.getClass().getName() + "\"",
+                    getTemplateName(),
+                    -1,
+                    e
+            );
+        } catch (Exception e) {
+            throw new TwigRuntimeException(
+                    "Bad call to method \"" + item + "\" on object of type \"" + object.getClass().getName() + "\"",
+                    getTemplateName(),
+                    -1,
+                    e
+            );
+        }
     }
 
     /**
