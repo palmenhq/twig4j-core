@@ -8,6 +8,11 @@ public class TwigRuntimeException extends TwigException {
         super(rawMessage, templateName, lineNumber);
     }
 
+    public TwigRuntimeException(String rawMessage, String templateName, Integer lineNumber, Throwable e) {
+        super(rawMessage, templateName, lineNumber);
+        this.initCause(e);
+    }
+
     public TwigRuntimeException(String rawMessage, Throwable cause) {
         super(rawMessage);
         this.initCause(cause);
