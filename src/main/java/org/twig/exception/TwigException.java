@@ -84,7 +84,7 @@ public class TwigException extends Exception {
             message += " in \"" + templateName + "\"";
         }
 
-        if (lineNumber != null) {
+        if (lineNumber != null && lineNumber > -1) {
             message += " at line " + lineNumber;
         }
 

@@ -3,6 +3,7 @@ package org.twig.template;
 import org.twig.Environment;
 import org.twig.exception.TwigRuntimeException;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,12 +93,12 @@ abstract public class Template {
                     -1,
                     e
             );
-        } catch (Exception e) {
+        } catch (InvocationTargetException e) {
             throw new TwigRuntimeException(
-                    "Bad call to method \"" + item + "\" on object of type \"" + object.getClass().getName() + "\"",
+                    "Method \"" + object.getClass().getName() + "#" + item + "()\" threw exception " + e.getCause().getClass().getName() + " \"" + e.getCause().getMessage() + "\"",
                     getTemplateName(),
                     -1,
-                    e
+                    e.getCause()
             );
         }
     }
