@@ -2,6 +2,7 @@ package org.twig.syntax.parser.node.type.expression;
 
 import org.twig.compiler.ClassCompiler;
 import org.twig.exception.LoaderException;
+import org.twig.exception.TwigRuntimeException;
 import org.twig.syntax.parser.node.Node;
 
 public class Array extends Expression {
@@ -10,7 +11,7 @@ public class Array extends Expression {
     }
 
     @Override
-    public void compile(ClassCompiler compiler) throws LoaderException {
+    public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException{
         compiler.writeRaw("java.util.Arrays.asList(");
 
         boolean isFirst = true;

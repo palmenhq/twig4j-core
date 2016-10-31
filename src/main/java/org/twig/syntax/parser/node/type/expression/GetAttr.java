@@ -2,6 +2,7 @@ package org.twig.syntax.parser.node.type.expression;
 
 import org.twig.compiler.ClassCompiler;
 import org.twig.exception.LoaderException;
+import org.twig.exception.TwigRuntimeException;
 
 public class GetAttr extends Expression {
     public GetAttr(Integer line) {
@@ -18,7 +19,7 @@ public class GetAttr extends Expression {
     }
 
     @Override
-    public void compile(ClassCompiler compiler) throws LoaderException {
+    public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
         compiler
                 .writeRaw("getAttribute(")
                 .subCompile(getNode(0)) // The "name" node

@@ -2,8 +2,8 @@ package org.twig.syntax.parser.node.type;
 
 import org.twig.compiler.ClassCompiler;
 import org.twig.exception.LoaderException;
+import org.twig.exception.TwigRuntimeException;
 import org.twig.syntax.parser.node.Node;
-import org.twig.syntax.parser.node.type.expression.Expression;
 
 public class PrintExpression extends Node {
     public PrintExpression(Node expression, Integer line) {
@@ -12,7 +12,7 @@ public class PrintExpression extends Node {
     }
 
     @Override
-    public void compile(ClassCompiler compiler) throws LoaderException {
+    public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
         compiler
                 .writeLine("output = output.concat(String.valueOf(")
                     .subCompile(getExpression())

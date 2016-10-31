@@ -2,6 +2,7 @@ package org.twig.syntax.parser.node.type.expression;
 
 import org.twig.compiler.ClassCompiler;
 import org.twig.exception.LoaderException;
+import org.twig.exception.TwigRuntimeException;
 import org.twig.syntax.parser.node.Node;
 
 abstract public class Binary extends Expression {
@@ -13,7 +14,7 @@ abstract public class Binary extends Expression {
     }
 
     @Override
-    public void compile(ClassCompiler compiler) throws LoaderException {
+    public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
         compiler
                 .writeRaw("(")
                 .subCompile(getLeftNode())
@@ -38,15 +39,23 @@ abstract public class Binary extends Expression {
      * Get the node on the left
      * @return The node
      */
-    public Node getLeftNode() {
-        return getNode(0);
+    public Node getLeftNode() throws TwigRuntimeException {
+        try {
+            return getNode(0);
+        } catch (TwigRuntimeException e) {
+            throw new TwigRuntimeException("Trying to access left node when not set", e);
+        }
     }
 
     /**
      * Get the node on the left
      * @return The node
      */
-    public Node getRightNode() {
-        return getNode(1);
+    public Node getRightNode() throws TwigRuntimeException {
+        try {
+            return getNode(1);
+        } catch (TwigRuntimeException e) {
+            throw new TwigRuntimeException("Trying to access right node when not set", e);
+        }
     }
 }

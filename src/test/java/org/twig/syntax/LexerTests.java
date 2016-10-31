@@ -7,13 +7,14 @@ import org.junit.rules.ExpectedException;
 import org.twig.Environment;
 import org.twig.exception.SyntaxErrorException;
 import org.twig.exception.TwigException;
+import org.twig.exception.TwigRuntimeException;
 
 public class LexerTests {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
     @Test
-    public void lexesCodeWithDataOnly() throws SyntaxErrorException {
+    public void lexesCodeWithDataOnly() throws SyntaxErrorException, TwigRuntimeException {
         Lexer lexer = new Lexer(new Environment());
         String code = "data";
 
@@ -23,7 +24,7 @@ public class LexerTests {
     }
 
     @Test
-    public void addsEOF() throws SyntaxErrorException {
+    public void addsEOF() throws SyntaxErrorException, TwigRuntimeException {
         Lexer lexer = new Lexer(new Environment());
         String code = "data";
 
@@ -34,7 +35,7 @@ public class LexerTests {
     }
 
     @Test
-    public void lexesVariables() throws SyntaxErrorException {
+    public void lexesVariables() throws SyntaxErrorException, TwigRuntimeException {
         Lexer lexer = new Lexer(new Environment());
         String code = "data {{ aVariable }} more data";
 
@@ -58,7 +59,7 @@ public class LexerTests {
     }
 
     @Test
-    public void lexesMultilineVariables() throws SyntaxErrorException {
+    public void lexesMultilineVariables() throws SyntaxErrorException, TwigRuntimeException {
         Lexer lexer = new Lexer(new Environment());
         String code = "{{\n" +
                 "aVariable\n" +
@@ -76,7 +77,7 @@ public class LexerTests {
     }
 
     @Test
-    public void cantLexUnclosedVariable() throws SyntaxErrorException {
+    public void cantLexUnclosedVariable() throws SyntaxErrorException, TwigRuntimeException {
         expectedException.expect(SyntaxErrorException.class);
         expectedException.expectMessage("Unclosed variable in \"aFile\" at line 1.");
 
@@ -87,7 +88,7 @@ public class LexerTests {
     }
 
     @Test
-    public void lexesDoulbeQuotedStrings() throws SyntaxErrorException {
+    public void lexesDoulbeQuotedStrings() throws SyntaxErrorException, TwigRuntimeException {
         Lexer lexer = new Lexer(new Environment());
         String code  = "{{ \"A string\" }}";
 
@@ -100,7 +101,7 @@ public class LexerTests {
     }
 
     @Test
-    public void lexesEscapedDoubleQuotedStrings() throws SyntaxErrorException {
+    public void lexesEscapedDoubleQuotedStrings() throws SyntaxErrorException, TwigRuntimeException {
         Lexer lexer = new Lexer(new Environment());
         String code  = "{{ \"A \\\"string\" }}";
 
@@ -113,7 +114,7 @@ public class LexerTests {
     }
 
     @Test
-    public void lexesSingleQuotedStrings() throws SyntaxErrorException {
+    public void lexesSingleQuotedStrings() throws SyntaxErrorException, TwigRuntimeException {
         Lexer lexer = new Lexer(new Environment());
         String code  = "{{ 'A string' }}";
 
@@ -126,7 +127,7 @@ public class LexerTests {
     }
 
     @Test
-    public void lexesEscapedSingleQuotedStrings() throws SyntaxErrorException {
+    public void lexesEscapedSingleQuotedStrings() throws SyntaxErrorException, TwigRuntimeException {
         Lexer lexer = new Lexer(new Environment());
         String code  = "{{ 'A \\'string' }}";
 
@@ -139,7 +140,7 @@ public class LexerTests {
     }
 
     @Test
-    public void lexesIntegers() throws SyntaxErrorException {
+    public void lexesIntegers() throws SyntaxErrorException, TwigRuntimeException {
         Lexer lexer = new Lexer(new Environment());
         String code = "{{ 1 }}";
         TokenStream tokenStream = lexer.tokenize(code, "file");
@@ -151,7 +152,7 @@ public class LexerTests {
     }
 
     @Test
-    public void lexesIntegersWithAddOperator() throws SyntaxErrorException {
+    public void lexesIntegersWithAddOperator() throws SyntaxErrorException, TwigRuntimeException {
         Environment environment = new Environment();
         Lexer lexer = new Lexer(environment);
         String code = "{{ 1 + 1 }}";
@@ -170,7 +171,7 @@ public class LexerTests {
     }
 
     @Test
-    public void cantLexUnclosedString() throws SyntaxErrorException {
+    public void cantLexUnclosedString() throws SyntaxErrorException, TwigRuntimeException {
         expectedException.expect(SyntaxErrorException.class);
         expectedException.expectMessage("Unclosed \" in \"file\" at line 1.");
 
@@ -181,7 +182,7 @@ public class LexerTests {
     }
 
     @Test
-    public void lexesInterploatedStrings() throws SyntaxErrorException {
+    public void lexesInterploatedStrings() throws SyntaxErrorException, TwigRuntimeException {
         Lexer lexer = new Lexer(new Environment());
         String code  = "foo {{ \"A #{variable} string\" }} bar";
 
@@ -209,7 +210,7 @@ public class LexerTests {
     }
 
     @Test
-    public void lexesPunctuation() throws SyntaxErrorException {
+    public void lexesPunctuation() throws SyntaxErrorException, TwigRuntimeException {
         Lexer lexer = new Lexer(new Environment());
         String code = "{{ [foo.bar()] }}";
 
@@ -251,7 +252,7 @@ public class LexerTests {
     }
 
     @Test
-    public void canLexBlocks() throws SyntaxErrorException {
+    public void canLexBlocks() throws SyntaxErrorException, TwigRuntimeException {
         Lexer lexer = new Lexer(new Environment());
         String code = "{% aBlock %}";
 
@@ -267,7 +268,7 @@ public class LexerTests {
     }
 
     @Test
-    public void canLexMulitilneBlocks() throws SyntaxErrorException {
+    public void canLexMulitilneBlocks() throws SyntaxErrorException, TwigRuntimeException {
         Lexer lexer = new Lexer(new Environment());
         String code = "{%\n" +
                 "aBlock\n" +
@@ -285,7 +286,7 @@ public class LexerTests {
     }
 
     @Test
-    public void ignoresComments() throws SyntaxErrorException {
+    public void ignoresComments() throws SyntaxErrorException, TwigRuntimeException {
         Lexer lexer = new Lexer(new Environment());
         String code = "foo {# This is a comment #} bar";
 
@@ -296,7 +297,7 @@ public class LexerTests {
     }
 
     @Test
-    public void canHandleMultilineComments() throws SyntaxErrorException {
+    public void canHandleMultilineComments() throws SyntaxErrorException, TwigRuntimeException {
         Lexer lexer = new Lexer(new Environment());
         String code = "foo {# This \n" +
                 "is a \n" +

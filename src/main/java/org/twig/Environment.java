@@ -163,10 +163,10 @@ public class Environment {
             return DatatypeConverter.printHexBinary(digest).toLowerCase();
         } catch (UnsupportedEncodingException e) {
             // This'll never happen
-            throw new RuntimeException("Something impossible just happened");
+            throw new RuntimeException("Something impossible just happened", e);
         } catch (NoSuchAlgorithmException e) {
             // This'll never happen
-            throw new RuntimeException("Something impossible just happened");
+            throw new RuntimeException("Something impossible just happened", e);
         }
     }
 

@@ -3,13 +3,14 @@ package org.twig.syntax.parser.node.type;
 import org.junit.Test;
 import org.twig.compiler.ClassCompiler;
 import org.twig.exception.LoaderException;
+import org.twig.exception.TwigRuntimeException;
 import org.twig.syntax.parser.node.type.expression.Constant;
 
 import static org.mockito.Mockito.*;
 
 public class PrintExpressionTests {
     @Test
-    public void canCompile() throws LoaderException {
+    public void canCompile() throws LoaderException, TwigRuntimeException {
         ClassCompiler compiler = mock(ClassCompiler.class);
         Constant constant = new Constant(1);
         constant.addNode(constant);

@@ -4,6 +4,7 @@ import org.twig.compiler.ClassCompiler;
 import org.twig.compiler.Compilable;
 import org.twig.compiler.LineAware;
 import org.twig.exception.LoaderException;
+import org.twig.exception.TwigRuntimeException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +40,7 @@ public class Node implements Compilable, LineAware {
      *
      * @param compiler The compiler
      */
-    public void compile(ClassCompiler compiler) throws LoaderException {
+    public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
         for (Node node : nodes) {
             node.compile(compiler);
         }
@@ -71,11 +72,9 @@ public class Node implements Compilable, LineAware {
      * @param name The name of the attribute
      * @return The attribute
      */
-    public String getAttribute(String name) {
+    public String getAttribute(String name) throws TwigRuntimeException {
         if (!attributes.containsKey(name)) {
-            throw new RuntimeException(
-                    String.format("Attribute \"%s\" does not exist for Node \"%s\".", name, getClass().toString())
-            );
+            throw TwigRuntimeException.nodeAttributeDoesNotExist(name, this, getLine());
         }
 
         return attributes.get(name);
@@ -125,11 +124,9 @@ public class Node implements Compilable, LineAware {
      * @param index The index of the node
      * @return The node
      */
-    public Node getNode(Integer index) {
+    public Node getNode(Integer index) throws TwigRuntimeException {
         if (!hasNode(index)) {
-            throw new RuntimeException(
-                    String.format("Node \"%d\" does not exist for Node \"%s\".", index, getClass().toString())
-            );
+            throw TwigRuntimeException.noNodeWithIndexExists(index, this);
         }
 
         return nodes.get(index);

@@ -3,6 +3,7 @@ package org.twig.syntax.parser.node;
 import org.twig.compiler.ClassCompiler;
 import org.twig.compiler.Compilable;
 import org.twig.exception.LoaderException;
+import org.twig.exception.TwigRuntimeException;
 
 public class Module implements Compilable {
     Node bodyNode;
@@ -19,7 +20,7 @@ public class Module implements Compilable {
     }
 
     @Override
-    public void compile(ClassCompiler compiler) throws LoaderException {
+    public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
         compileClassHeader(compiler);
 
         compileRender(compiler);
@@ -55,13 +56,13 @@ public class Module implements Compilable {
                 .writeLine("}");
     }
 
-    protected void compileRender(ClassCompiler compiler) throws LoaderException {
+    protected void compileRender(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
         compiler
                 .writeLine("protected String doRender(java.util.HashMap<String, ?> context) throws TwigRuntimeException {")
                     .indent()
                     .writeLine("String output = \"\";")
                     .subCompile(this.getBodyNode())
-                    .writeLine("return output;")
+                .writeLine("return output;")
                 .unIndent()
                 .writeLine("}");
     }

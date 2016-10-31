@@ -4,13 +4,14 @@ import org.junit.Test;
 import org.twig.Environment;
 import org.twig.compiler.ClassCompiler;
 import org.twig.exception.LoaderException;
+import org.twig.exception.TwigRuntimeException;
 import org.twig.syntax.parser.node.type.Body;
 
 import static org.mockito.Mockito.*;
 
 public class ModuleTests {
     @Test
-    public void canCompileHeaderAndFooter() throws LoaderException {
+    public void canCompileHeaderAndFooter() throws LoaderException, TwigRuntimeException {
         ClassCompiler classCompilerStub = mock(ClassCompiler.class);
         Environment environmentStub = mock(Environment.class);
 
@@ -37,7 +38,7 @@ public class ModuleTests {
     }
 
     @Test
-    public void canCompileBody() throws LoaderException {
+    public void canCompileBody() throws LoaderException, TwigRuntimeException {
         ClassCompiler classCompilerStub = mock(ClassCompiler.class);
         Environment environmentStub = mock(Environment.class);
 
@@ -55,7 +56,7 @@ public class ModuleTests {
         verify(classCompilerStub, times(3)).writeLine("}");
     }
 
-    private void setupClassCompilerStubWhens(ClassCompiler classCompilerStub, Environment environmentStub) throws LoaderException {
+    private void setupClassCompilerStubWhens(ClassCompiler classCompilerStub, Environment environmentStub) throws LoaderException, TwigRuntimeException {
         when(classCompilerStub.writeLine(anyString())).thenReturn(classCompilerStub);
         when(classCompilerStub.write(anyString())).thenReturn(classCompilerStub);
         when(classCompilerStub.writeRaw(anyString())).thenReturn(classCompilerStub);

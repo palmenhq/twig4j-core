@@ -2,6 +2,7 @@ package org.twig.syntax.parser.node.type.expression;
 
 import org.twig.compiler.ClassCompiler;
 import org.twig.exception.LoaderException;
+import org.twig.exception.TwigRuntimeException;
 
 public class Name extends Expression {
     public Name(String name, Integer line) {
@@ -10,7 +11,7 @@ public class Name extends Expression {
     }
 
     @Override
-    public void compile(ClassCompiler compiler) throws LoaderException {
+    public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
         compiler
                 .addDebugInfo(this)
                 .writeLine("getContext(context, \"" + getAttribute("name") + "\", false, " + getLine() +")");

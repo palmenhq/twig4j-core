@@ -5,12 +5,13 @@ import org.junit.Test;
 import org.twig.Environment;
 import org.twig.compiler.ClassCompiler;
 import org.twig.exception.LoaderException;
+import org.twig.exception.TwigRuntimeException;
 
 import static org.mockito.Mockito.*;
 
 public class ArrayTests {
     @Test
-    public void canCompile() throws LoaderException {
+    public void canCompile() throws LoaderException, TwigRuntimeException {
         ClassCompiler compiler = new ClassCompiler(new Environment());
 
         Array array = new Array(1);

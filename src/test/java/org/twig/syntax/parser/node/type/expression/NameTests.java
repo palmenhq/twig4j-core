@@ -5,10 +5,11 @@ import org.junit.Test;
 import org.twig.Environment;
 import org.twig.compiler.ClassCompiler;
 import org.twig.exception.LoaderException;
+import org.twig.exception.TwigRuntimeException;
 
 public class NameTests {
     @Test
-    public void canCompile() throws LoaderException {
+    public void canCompile() throws LoaderException, TwigRuntimeException {
         ClassCompiler classCompiler = new ClassCompiler(new Environment());
         Name nameNode = new Name("foo", 1);
 

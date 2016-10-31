@@ -2,6 +2,7 @@ package org.twig.syntax;
 
 import org.twig.Environment;
 import org.twig.exception.SyntaxErrorException;
+import org.twig.exception.TwigRuntimeException;
 import org.twig.utils.StringModule;
 
 import java.util.ArrayList;
@@ -114,7 +115,7 @@ public class Lexer {
      * @return The stream of tokens from the source
      * @throws SyntaxErrorException If we can't keep on tokenizing for some reason (i.e. missing closing tag)
      */
-    public TokenStream tokenize(String code, String filename) throws SyntaxErrorException {
+    public TokenStream tokenize(String code, String filename) throws SyntaxErrorException, TwigRuntimeException {
         this.code = code;
         this.filename = filename;
         this.cursor = 0;
@@ -243,7 +244,7 @@ public class Lexer {
      *
      * @throws SyntaxErrorException If we can't keep on tokenizing for some reason (i.e. missing closing tag)
      */
-    protected void lexVariable() throws SyntaxErrorException {
+    protected void lexVariable() throws SyntaxErrorException, TwigRuntimeException {
         Matcher endVarTagMatcher = this.regexes.getLexVariableEnd().matcher(this.code.substring(this.cursor));
 
         // Check if this is the variable closing token
@@ -257,7 +258,7 @@ public class Lexer {
         }
     }
 
-    protected void lexBlock() throws SyntaxErrorException {
+    protected void lexBlock() throws SyntaxErrorException, TwigRuntimeException {
         Matcher endBlockTagMatcher = this.regexes.getLexBlockEnd().matcher(this.code.substring(this.cursor));
 
         // Check if this is the variable closing token
@@ -377,7 +378,7 @@ public class Lexer {
      *
      * @throws SyntaxErrorException On any unclosed comments
      */
-    protected void lexComment() throws SyntaxErrorException {
+    protected void lexComment() throws SyntaxErrorException, TwigRuntimeException {
         Matcher endCommentTagMatcher = this.regexes.getLexCommentEnd().matcher(this.code.substring(this.cursor));
 
         // Check if this is the variable closing token
@@ -394,7 +395,7 @@ public class Lexer {
      *
      * @throws SyntaxErrorException On unclosed strings
      */
-    protected void lexString() throws SyntaxErrorException {
+    protected void lexString() throws SyntaxErrorException, TwigRuntimeException {
         String codeAfterCursor = this.code.substring(this.cursor);
 
         // If this is a string interpolation
@@ -441,7 +442,7 @@ public class Lexer {
      *
      * @throws SyntaxErrorException If lexExpression() throws any syntax errors
      */
-    protected void lexInterpolation() throws SyntaxErrorException {
+    protected void lexInterpolation() throws SyntaxErrorException, TwigRuntimeException {
         Bracket currentBracket = this.brackets.get(this.brackets.size() - 1);
 
         // If this is the end of the interpolation end it, otherwise lex the expression inside it
@@ -502,9 +503,9 @@ public class Lexer {
     /**
      * Resets the state to the previous state
      */
-    protected void popState() {
+    protected void popState() throws TwigRuntimeException {
         if (states.size() == 0) {
-            throw new RuntimeException("Cannot pop state without a previous state");
+            throw TwigRuntimeException.popStateWithoutState(filename, line);
         }
 
         states.remove(states.size() - 1);

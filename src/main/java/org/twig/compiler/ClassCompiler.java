@@ -2,6 +2,7 @@ package org.twig.compiler;
 
 import org.twig.Environment;
 import org.twig.exception.LoaderException;
+import org.twig.exception.TwigRuntimeException;
 
 public class ClassCompiler {
     private int numberOfIndents = 0;
@@ -21,7 +22,7 @@ public class ClassCompiler {
      * @param node The node to compile
      * @return Itself
      */
-    public ClassCompiler subCompile(Compilable node) throws LoaderException {
+    public ClassCompiler subCompile(Compilable node) throws LoaderException, TwigRuntimeException {
         indent();
 
         node.compile(this);
@@ -37,7 +38,7 @@ public class ClassCompiler {
      * @return Itself
      * @throws LoaderException
      */
-    public ClassCompiler compile(Compilable node) throws LoaderException {
+    public ClassCompiler compile(Compilable node) throws LoaderException, TwigRuntimeException {
         // Reset compiler
         sourceCode = new StringBuilder();
         numberOfIndents = 0;

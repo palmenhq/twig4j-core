@@ -1,5 +1,7 @@
 package org.twig.exception;
 
+import org.twig.syntax.parser.node.Node;
+
 /**
  * Throws i.e. when failing to compile java code
  */
@@ -29,10 +31,66 @@ public class TwigRuntimeException extends TwigException {
         return new TwigRuntimeException("Variable " + variable +  " does not exist.", templateName, lineNumber);
     }
 
+    /**
+     * Throw when trying to access an attribute that does not exist in a node
+     *
+     * @param attribute
+     * @param node
+     * @param template
+     * @param lineNumber
+     * @return
+     */
+    public static TwigRuntimeException nodeAttributeDoesNotExist(String attribute, Node node, Integer lineNumber) {
+        return new TwigRuntimeException(
+                String.format("Attribute \"%s\" does not exist for Node \"%s\".", attribute, node.getClass().getName()),
+                null,
+                lineNumber
+        );
+    }
+
+    /**
+     * When trying to get a node from another node when a node with that index does not exist
+     *
+     * @param index
+     * @param node
+     * @return
+     */
+    public static TwigRuntimeException noNodeWithIndexExists(Integer index, Node node) {
+        return new TwigRuntimeException(
+                String.format("Node \"%d\" does not exist for Node \"%s\".", index, node.getClass().getName()),
+                null,
+                node.getLine()
+        );
+    }
+
+    /**
+     * Throw when failing to instantiate an operator class (i.e. the class is badly configured)
+     *
+     * @param operator
+     * @param templateName
+     * @param line
+     * @param cause
+     * @return
+     */
     public static TwigRuntimeException badOperatorFailedNode(String operator, String templateName, Integer line, Throwable cause) {
-        TwigRuntimeException e = new TwigRuntimeException("Bad operator \"" + operator + "\" (failed to instantiate binary node).", templateName, line);
+        TwigRuntimeException e = new TwigRuntimeException(
+                "Bad operator \"" + operator + "\" (failed to instantiate binary node).",
+                templateName,
+                line
+        );
         e.initCause(cause);
 
         return e;
+    }
+
+    /**
+     * When trying to pop a state without a previous state
+     *
+     * @param templateName
+     * @param lineNumber
+     * @return
+     */
+    public static TwigRuntimeException popStateWithoutState(String templateName, Integer lineNumber) {
+        return new TwigRuntimeException("Cannot pop state without a previous state", templateName, lineNumber);
     }
 }
