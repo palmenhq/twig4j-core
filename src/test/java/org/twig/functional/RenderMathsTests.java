@@ -28,4 +28,15 @@ public class RenderMathsTests extends FunctionalTests {
         Assert.assertEquals("1 + 1 should be 2", "2", environment.render("addition.twig"));
         Assert.assertEquals("1 + 2 + 3 + 4 should be 10", "10", environment.render("multiple-addition.twig"));
     }
+
+    @Test
+    public void canDoSubtraction() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("subtraction.twig", "{{ 2 - 1 }}");
+        templates.put("multiple-subtraction.twig", "{{ 4 - 3 - 2-1 }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals("2 - 1 should be 1", "1", environment.render("subtraction.twig"));
+        Assert.assertEquals("4 - 3 - 2 - 1 should be -2", "-2", environment.render("multiple-subtraction.twig"));
+    }
 }

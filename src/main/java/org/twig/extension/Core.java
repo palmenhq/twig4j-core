@@ -17,6 +17,7 @@ public class Core implements Extension {
         HashMap<String, Operator> operators = new HashMap<>();
 
         operators.put("+", new BinaryAdd());
+        operators.put("-", new BinarySubtract());
 
         return operators;
     }
