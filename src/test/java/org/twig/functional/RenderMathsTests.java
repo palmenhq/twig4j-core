@@ -39,4 +39,46 @@ public class RenderMathsTests extends FunctionalTests {
         Assert.assertEquals("2 - 1 should be 1", "1", environment.render("subtraction.twig"));
         Assert.assertEquals("4 - 3 - 2 - 1 should be -2", "-2", environment.render("multiple-subtraction.twig"));
     }
+
+    @Test
+    public void canDoMultiplication() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("multiplication.twig", "{{ 2 * 5}}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals("2 * 5 should be 10", "10", environment.render("multiplication.twig"));
+    }
+
+    @Test
+    public void canDoOddDivision() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("division.twig", "{{ 5 / 2 }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals("5/2 should be 2.5", "2.5", environment.render("division.twig"));
+    }
+
+    @Test
+    public void canDoEvenDivision() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("division.twig", "{{ 10 / 2 }}");
+        setupEnvironment(templates);
+        String result = environment.render("division.twig");
+
+        Assert.assertEquals("10/2 should be 5.0", "5.0", result);
+
+    }
+
+    @Test
+    public void canDoAdditionAndSubtractionAndMultiplication() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("maths.twig", "{{ 1 + 2 * 5 - 2 / 2 }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals(
+                "(1 + 2 * 5 - 2 / 2) should be 10.0 (since we're doing division)",
+                "10.0",
+                environment.render("maths.twig")
+        );
+    }
 }
