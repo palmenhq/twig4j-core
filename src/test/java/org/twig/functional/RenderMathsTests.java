@@ -81,4 +81,17 @@ public class RenderMathsTests extends FunctionalTests {
                 environment.render("maths.twig")
         );
     }
+
+    @Test
+    public void canDoMathsWithParenthesises() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("maths.twig", "{{ (1 + 2) * (5 - 2) / 3 }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals(
+                "((1 + 2) * (5 - 2) / 3) should be 3.0",
+                "3.0",
+                environment.render("maths.twig")
+        );
+    }
 }

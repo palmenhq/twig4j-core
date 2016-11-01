@@ -29,7 +29,7 @@ public class ExpressionParser {
     /**
      * @see ExpressionParser#parseExpression(Integer) - defaults to 0
      */
-    public Node parseExpression() throws SyntaxErrorException, TwigRuntimeException {
+    public Expression parseExpression() throws SyntaxErrorException, TwigRuntimeException {
         return parseExpression(0);
     }
 
@@ -39,7 +39,7 @@ public class ExpressionParser {
      * @param precedence TODO find out what this thing is
      * @return The node for the parsed expression
      */
-    public Node parseExpression(Integer precedence) throws SyntaxErrorException, TwigRuntimeException {
+    public Expression parseExpression(Integer precedence) throws SyntaxErrorException, TwigRuntimeException {
         Expression expr = getPrimary();
         Token token = parser.getCurrentToken();
 
@@ -76,7 +76,16 @@ public class ExpressionParser {
      * @throws SyntaxErrorException On syntax errors
      */
     protected Expression getPrimary() throws SyntaxErrorException, TwigRuntimeException {
-        // TODO check if unary or is opening parenthesis
+        Token token = parser.getCurrentToken();
+        // TODO check if unary
+
+        if (token.is(Token.Type.PUNCTUATION, "(")) {
+            parser.getTokenStream().next();
+            Expression expression = parseExpression();
+            parser.getTokenStream().expect(Token.Type.PUNCTUATION, ")");
+
+            return parsePostfixExpression(expression);
+        }
         return parsePrimaryExpression();
     }
 

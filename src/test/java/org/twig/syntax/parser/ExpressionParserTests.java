@@ -240,6 +240,53 @@ public class ExpressionParserTests {
     }
 
     @Test
+    public void canParseMathsWithParenthesis() throws SyntaxErrorException, TwigRuntimeException {
+        TokenStream tokenStream = new TokenStream("aFile");
+        tokenStream.add(new Token(Token.Type.VAR_START, null, 1));
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, "(", 1));
+        tokenStream.add(new Token(Token.Type.NUMBER, "1", 1));
+        tokenStream.add(new Token(Token.Type.OPERATOR, "+", 1));
+        tokenStream.add(new Token(Token.Type.NUMBER, "2", 1));
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, ")", 1));
+        tokenStream.add(new Token(Token.Type.OPERATOR, "*", 1));
+        tokenStream.add(new Token(Token.Type.NUMBER, "2", 1));
+        tokenStream.add(new Token(Token.Type.VAR_END, null, 1));
+        tokenStream.add(new Token(Token.Type.EOF, null, 1));
+
+        Parser parser = new Parser(new Environment());
+        Module module = parser.parse(tokenStream);
+
+        Assert.assertEquals(
+                "First node should be multiplication (since 1 + 1 is wrapped in parenthesises)",
+                BinaryMultiply.class,
+                module.getBodyNode().getNode(0).getClass()
+        );
+        Assert.assertEquals(
+                "Multiplication node should have left expression binary addition",
+                BinaryAdd.class,
+                module.getBodyNode().getNode(0).getNode(0).getClass()
+        );
+        Assert.assertEquals(
+                "Multiplication node should have right expression constant",
+                Constant.class,
+                module.getBodyNode().getNode(0).getNode(1).getClass()
+        );
+    }
+
+    @Test(expected = SyntaxErrorException.class)
+    public void cantParseUnclosedParenthesis() throws SyntaxErrorException, TwigRuntimeException {
+        TokenStream tokenStream = new TokenStream("aFile");
+        tokenStream.add(new Token(Token.Type.VAR_START, null, 1));
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, "(", 1));
+        tokenStream.add(new Token(Token.Type.NUMBER, "1", 1));
+        tokenStream.add(new Token(Token.Type.VAR_END, null, 1));
+        tokenStream.add(new Token(Token.Type.EOF, null, 1));
+
+        Parser parser = new Parser(new Environment());
+        parser.parse(tokenStream);
+    }
+
+    @Test
     public void canParseArguments() throws TwigException {
         TokenStream tokenStream = new TokenStream("aFile");
         tokenStream.add(new Token(Token.Type.PUNCTUATION, "(", 1));
