@@ -107,4 +107,17 @@ public class RenderMathsTests extends FunctionalTests {
                 environment.render("floor.twig")
         );
     }
+
+    @Test
+    public void canDoModulo() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("mod.twig", "{{ 3 % 2 }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals(
+                "(3 % 2) should be 1",
+                "1",
+                environment.render("mod.twig")
+        );
+    }
 }

@@ -22,6 +22,7 @@ public class Core implements Extension {
         operators.put("*", new BinaryMultiply());
         operators.put("/", new BinaryDivide());
         operators.put("//", new BinaryFloorDivide());
+        operators.put("%", new BinaryMod());
 
         return operators;
     }
