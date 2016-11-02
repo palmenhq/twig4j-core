@@ -23,6 +23,7 @@ public class Core implements Extension {
         operators.put("/", new BinaryDivide());
         operators.put("//", new BinaryFloorDivide());
         operators.put("%", new BinaryMod());
+        operators.put("**", new BinaryPowerOf());
 
         return operators;
     }

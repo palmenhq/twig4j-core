@@ -120,4 +120,13 @@ public class RenderMathsTests extends FunctionalTests {
                 environment.render("mod.twig")
         );
     }
+
+    @Test
+    public void canDoPowerOf() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("powerOf.twig", "{{ 3 ** 3 }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals("(3 ** 3) should be 27.0", "27.0", environment.render("powerOf.twig"));
+    }
 }
