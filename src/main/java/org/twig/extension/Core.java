@@ -21,6 +21,7 @@ public class Core implements Extension {
         operators.put("~", new BinaryConcat());
         operators.put("*", new BinaryMultiply());
         operators.put("/", new BinaryDivide());
+        operators.put("//", new BinaryFloorDivide());
 
         return operators;
     }

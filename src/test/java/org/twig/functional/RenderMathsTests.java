@@ -94,4 +94,17 @@ public class RenderMathsTests extends FunctionalTests {
                 environment.render("maths.twig")
         );
     }
+
+    @Test
+    public void canDoFloor() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("floor.twig", "{{ 3 // 2 }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals(
+                "(3 // 2) should be 1",
+                "1",
+                environment.render("floor.twig")
+        );
+    }
 }
