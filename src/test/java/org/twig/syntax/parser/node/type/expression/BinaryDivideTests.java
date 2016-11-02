@@ -22,7 +22,7 @@ public class BinaryDivideTests {
 
         Assert.assertEquals(
                 "Compiled source should be an expression that handles doubles/ints",
-                "((((double)5) / 2) == (5 / 2) ? (5 / 2) : (((double)5) / 2))",
+                "(((double)5) / 2)",
                 compiler.getSourceCode()
         );
     }

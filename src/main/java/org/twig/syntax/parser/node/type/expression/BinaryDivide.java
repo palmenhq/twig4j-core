@@ -13,13 +13,11 @@ public class BinaryDivide extends Binary {
     @Override
     public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
         compiler
-            .write("((((double)").subCompile(getLeftNode()).writeRaw(") / ").subCompile(getRightNode()).writeRaw(")")
-            .writeRaw(" == ")
-            .writeRaw("(").subCompile(getLeftNode()).writeRaw(" / ").subCompile(getRightNode()).writeRaw(")")
-            .writeRaw(" ? ")
-            .writeRaw("(").subCompile(getLeftNode()).writeRaw(" / ").subCompile(getRightNode()).writeRaw(")")
-            .writeRaw(" : ")
-            .writeRaw("(((double)").subCompile(getLeftNode()).writeRaw(") / ").subCompile(getRightNode()).writeRaw("))");
+            .write("(((double)")
+            .subCompile(getLeftNode())
+            .writeRaw(") / ")
+            .subCompile(getRightNode())
+            .writeRaw(")");
     }
 
     @Override
