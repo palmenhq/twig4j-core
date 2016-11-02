@@ -19,7 +19,6 @@ If you want to contribute or have feedback of any kind feel free to drop an emai
 
 ### To do/upcoming
 Not everything is listed here but this is what's prioritized currently:
- - Method calls on objects provided in context (`{{ foo.bar(baz) }}`)
  - All binary operators (i.e. subtraction, string concatenation etc)
  - Unary operators
  - Filters
