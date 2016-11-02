@@ -60,4 +60,20 @@ public class RenderTextTests extends FunctionalTests {
                 environment.render("bar.twig")
         );
     }
+
+    @Test
+    public void canRenderConcat() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("concatStrings.twig", "{{ 'foo' ~ 'bar' }}");
+        templates.put("concatNumbers.twig", "{{ 1 ~ 2 }}");
+        templates.put("concatVariables.twig", "{{ 'foo' ~ var }}");
+        setupEnvironment(templates);
+
+        HashMap<String, String> ctx = new HashMap<>();
+        ctx.put("var", "baz");
+
+        Assert.assertEquals("Concatenated strings should be concatenated", "foobar", environment.render("concatStrings.twig"));
+        Assert.assertEquals("Concatenated numbers should be concatenated and not added", "12", environment.render("concatNumbers.twig"));
+        Assert.assertEquals("Concatenated strings+variables should be concatenated", "foobaz", environment.render("concatVariables.twig", ctx));
+    }
 }

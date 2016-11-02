@@ -18,6 +18,7 @@ public class Core implements Extension {
 
         operators.put("+", new BinaryAdd());
         operators.put("-", new BinarySubtract());
+        operators.put("~", new BinaryConcat());
         operators.put("*", new BinaryMultiply());
         operators.put("/", new BinaryDivide());
 

@@ -1,6 +1,8 @@
 package org.twig.syntax.parser.node.type.expression;
 
+import org.junit.Assert;
 import org.junit.Test;
+import org.twig.Environment;
 import org.twig.compiler.ClassCompiler;
 import org.twig.exception.LoaderException;
 import org.twig.exception.TwigRuntimeException;
@@ -12,18 +14,17 @@ import static org.mockito.Mockito.*;
 public class BinaryConcatTests {
     @Test
     public void testCompile() throws LoaderException, TwigRuntimeException {
-        ClassCompiler compilerStub = mock(ClassCompiler.class);
-        Node left = new Node(1);
-        Node right = new Node(2);
+        ClassCompiler compiler = new ClassCompiler(new Environment());
+        Node left = new Constant("1", 1);
+        Node right = new Constant("2", 2);
         BinaryConcat concatNode = new BinaryConcat(left, right, 1);
 
-        when(compilerStub.writeRaw(anyString())).thenReturn(compilerStub);
-        when(compilerStub.subCompile(anyObject())).thenReturn(compilerStub);
+        concatNode.compile(compiler);
 
-        concatNode.compile(compilerStub);
-
-        verify(compilerStub).subCompile(left);
-        verify(compilerStub).writeRaw(" + ");
-        verify(compilerStub).subCompile(right);
+        Assert.assertEquals(
+                "Code should be compiled correctly",
+                "(String.valueOf(1).concat(String.valueOf(2)))",
+                compiler.getSourceCode()
+        );
     }
 }
