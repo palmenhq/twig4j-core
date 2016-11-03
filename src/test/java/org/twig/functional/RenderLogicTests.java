@@ -15,4 +15,13 @@ public class RenderLogicTests extends FunctionalTests {
 
         Assert.assertEquals("Bool should render text bool", "true", environment.render("foo.twig"));
     }
+
+    @Test
+    public void canRenderComparedBoolean() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("foo.twig", "{{ true == false }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals("Bool should render text bool", "false", environment.render("foo.twig"));
+    }
 }
