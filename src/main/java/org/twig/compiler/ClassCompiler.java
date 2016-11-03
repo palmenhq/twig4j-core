@@ -120,6 +120,12 @@ public class ClassCompiler {
             return this;
         }
 
+        if (value.equals("true") || value.equals("false") || value.equals("null")) {
+            writeRaw(value);
+
+            return this;
+        }
+
         // If nothing else matches this value it's a string
         this.writeString(value);
 
