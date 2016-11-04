@@ -52,6 +52,50 @@ public class TemplateTests {
         );
     }
 
+    @Test
+    public void canCompareDifferentConstants() throws TwigException {
+        Template template = new TestCompareDifferentConstantsTemplate(new Environment());
+
+        Assert.assertEquals(
+                "Method compare should return false when comparing 2 different constants",
+                "false",
+                template.render()
+        );
+    }
+
+    @Test
+    public void canCompareEqualConstants() throws TwigException {
+        Template template = new TestCompareSameConstantsTemplate(new Environment());
+
+        Assert.assertEquals(
+                "Method compare should return true when comparing 2 equal constants",
+                "true",
+                template.render()
+        );
+    }
+
+    @Test(expected = TwigRuntimeException.class)
+    public void throwsExceptionWhenComparingDifferentTypes() throws TwigException {
+        Environment environment = new Environment();
+        environment.enableStrictTypes();
+        Template template = new TestCompareDifferentTypesConstantsTemplate(environment);
+
+        template.render();
+    }
+
+    @Test
+    public void failsSilentlyWhenComparingDifferentTypesWithStrictTypesDisabled() throws TwigException {
+        Environment environment = new Environment();
+        environment.disableStrictTypes();
+        Template template = new TestCompareDifferentTypesConstantsTemplate(environment);
+
+        Assert.assertEquals(
+                "Method compare should return false when comparing constants of different types",
+                "false",
+                template.render()
+        );
+    }
+
     protected class TestStringTemplate extends Template {
         @Override
         protected String doRender(HashMap<String, ?> context) throws TwigRuntimeException {
@@ -91,6 +135,54 @@ public class TemplateTests {
     protected class ClassWithBarMethod {
         public String bar(String anArgument, String anotherArgument) {
             return anArgument + anotherArgument;
+        }
+    }
+
+    protected class TestCompareDifferentConstantsTemplate extends Template {
+        public TestCompareDifferentConstantsTemplate(Environment environment) {
+            super(environment);
+        }
+
+        @Override
+        protected String doRender(HashMap<String, ?> context) throws TwigRuntimeException {
+            return String.valueOf(compare("foo", "bar"));
+        }
+
+        @Override
+        public String getTemplateName() {
+            return "foo";
+        }
+    }
+
+    protected class TestCompareSameConstantsTemplate extends Template {
+        public TestCompareSameConstantsTemplate(Environment environment) {
+            super(environment);
+        }
+
+        @Override
+        protected String doRender(HashMap<String, ?> context) throws TwigRuntimeException {
+            return String.valueOf(compare("foo", "foo"));
+        }
+
+        @Override
+        public String getTemplateName() {
+            return "foo";
+        }
+    }
+
+    protected class TestCompareDifferentTypesConstantsTemplate extends Template {
+        public TestCompareDifferentTypesConstantsTemplate(Environment environment) {
+            super(environment);
+        }
+
+        @Override
+        protected String doRender(HashMap<String, ?> context) throws TwigRuntimeException {
+            return String.valueOf(compare("true", true));
+        }
+
+        @Override
+        public String getTemplateName() {
+            return "foo";
         }
     }
 }

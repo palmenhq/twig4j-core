@@ -13,9 +13,9 @@ public class BinaryNotEquals extends Binary {
     @Override
     public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
         compiler
-            .write("(!((Object)")
+            .write("(!compare(")
             .subCompile(getLeftNode())
-            .writeRaw(").equals(")
+            .writeRaw(", ")
             .subCompile(getRightNode())
             .writeRaw("))");
     }

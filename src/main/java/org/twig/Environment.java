@@ -28,6 +28,7 @@ public class Environment {
     private String templateClassPrefix = "Template_";
     private String templateBaseClass = "org.twig.template.Template";
     private boolean strictVariables = false;
+    private boolean strictTypes = true;
     private boolean debug = false;
 
     private HashMap<String, Operator> binaryOperators = new HashMap<>();
@@ -275,6 +276,22 @@ public class Environment {
 
     public Environment disableStrictVariables() {
         strictVariables = false;
+
+        return this;
+    }
+
+    public boolean isStrictTypes() {
+        return strictTypes;
+    }
+
+    public Environment enableStrictTypes() {
+        strictTypes = true;
+
+        return this;
+    }
+
+    public Environment disableStrictTypes() {
+        strictTypes = false;
 
         return this;
     }

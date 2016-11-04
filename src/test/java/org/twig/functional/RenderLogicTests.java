@@ -3,6 +3,7 @@ package org.twig.functional;
 import org.junit.Assert;
 import org.junit.Test;
 import org.twig.exception.TwigException;
+import org.twig.exception.TwigRuntimeException;
 
 import java.util.HashMap;
 
@@ -26,7 +27,7 @@ public class RenderLogicTests extends FunctionalTests {
     }
 
     @Test
-    public void canRenderComparedBoolVars() throws TwigException {
+    public void canCompareBoolVars() throws TwigException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig", "{{ foo == false }}");
         setupEnvironment(templates);
@@ -38,7 +39,7 @@ public class RenderLogicTests extends FunctionalTests {
     }
 
     @Test
-    public void canRenderComparedStringVars() throws TwigException {
+    public void canCompareStringVars() throws TwigException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig", "{{ foo == \"bar\" }}");
         setupEnvironment(templates);
@@ -47,6 +48,19 @@ public class RenderLogicTests extends FunctionalTests {
         ctx.put("foo", "bar");
 
         Assert.assertEquals("Bool should render text bool", "true", environment.render("foo.twig", ctx));
+    }
+
+    @Test(expected = TwigRuntimeException.class)
+    public void cantCompareDifferentTypesWithStrictTypesEnabled() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("foo.twig", "{{ foo == 1 }}");
+        setupEnvironment(templates);
+        environment.enableStrictTypes();
+
+        HashMap<String, Object> ctx = new HashMap<>();
+        ctx.put("foo", "1");
+
+        environment.render("foo.twig", ctx);
     }
 
     @Test

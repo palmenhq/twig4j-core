@@ -12,6 +12,13 @@ import java.util.List;
 abstract public class Template {
     protected Environment environment;
 
+    public Template() {
+    }
+
+    public Template(Environment environment) {
+        this.environment = environment;
+    }
+
     public String render() throws TwigRuntimeException {
         return render(new HashMap<>());
     }
@@ -101,6 +108,23 @@ abstract public class Template {
                     e.getCause()
             );
         }
+    }
+
+    protected boolean compare(Object a, Object b) throws TwigRuntimeException {
+        if (!a.getClass().equals(b.getClass())) {
+            if (environment.isStrictTypes()) {
+                throw new TwigRuntimeException(
+                        String.format("Cannot compare different types (tried to compare \"%s\" with \"%s\")", a.getClass().getName(), b.getClass().getName()),
+                        getTemplateName(),
+                        -1
+                );
+            } else {
+                return false;
+            }
+
+        }
+
+        return a.equals(b);
     }
 
     /**
