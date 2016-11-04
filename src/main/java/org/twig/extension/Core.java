@@ -16,6 +16,8 @@ public class Core implements Extension {
     public HashMap<String, Operator> getBinaryOperators() {
         HashMap<String, Operator> operators = new HashMap<>();
 
+        operators.put("or", new BinaryOr());
+        operators.put("and", new BinaryAnd());
         operators.put("==", new BinaryEquals());
         operators.put("!=", new BinaryNotEquals());
         operators.put("+", new BinaryAdd());

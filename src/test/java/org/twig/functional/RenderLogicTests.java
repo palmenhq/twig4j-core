@@ -71,4 +71,22 @@ public class RenderLogicTests extends FunctionalTests {
 
         Assert.assertEquals("Bool should render text bool", "true", environment.render("foo.twig"));
     }
+
+    @Test
+    public void canDoOr() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("foo.twig", "{{ false or true }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals("\"false or true\" should be true", "true", environment.render("foo.twig"));
+    }
+
+    @Test
+    public void canDoAnd() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("foo.twig", "{{ false and true }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals("\"false and true\" should be false", "false", environment.render("foo.twig"));
+    }
 }
