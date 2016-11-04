@@ -21,6 +21,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class Environment {
@@ -31,8 +32,8 @@ public class Environment {
     private boolean strictTypes = true;
     private boolean debug = false;
 
-    private HashMap<String, Operator> binaryOperators = new HashMap<>();
-    private HashMap<String, Operator> unaryOperators = new HashMap<>();
+    private LinkedHashMap<String, Operator> binaryOperators = new LinkedHashMap<>();
+    private LinkedHashMap<String, Operator> unaryOperators = new LinkedHashMap<>();
     private boolean hasInitedExtensions = false;
 
     private Loader loader;
@@ -312,7 +313,7 @@ public class Environment {
         return this;
     }
 
-    public HashMap<String, Operator> getBinaryOperators() {
+    public LinkedHashMap<String, Operator> getBinaryOperators() {
         if (!hasInitedExtensions) {
             initExtensions();
         }
@@ -326,7 +327,7 @@ public class Environment {
         return this;
     }
 
-    public HashMap<String, Operator> getUnaryOperators() {
+    public LinkedHashMap<String, Operator> getUnaryOperators() {
         if (!hasInitedExtensions) {
             initExtensions();
         }

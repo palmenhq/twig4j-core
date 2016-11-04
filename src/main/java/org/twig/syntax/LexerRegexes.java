@@ -2,10 +2,7 @@ package org.twig.syntax;
 
 import org.twig.syntax.operator.Operator;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class LexerRegexes {
@@ -129,7 +126,7 @@ public class LexerRegexes {
         StringBuilder pattern = new StringBuilder();
         pattern.append("^(");
 
-        HashMap<String, Operator> allOperators = new HashMap<>();
+        LinkedHashMap<String, Operator> allOperators = new LinkedHashMap<>();
         allOperators.putAll(unaryOperators);
         allOperators.putAll(binaryOperators);
 

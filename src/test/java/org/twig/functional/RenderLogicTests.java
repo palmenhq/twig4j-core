@@ -89,4 +89,48 @@ public class RenderLogicTests extends FunctionalTests {
 
         Assert.assertEquals("\"false and true\" should be false", "false", environment.render("foo.twig"));
     }
+
+    @Test
+    public void canDoLessThan() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("true.twig", "{{ 1 < 2 }}");
+        templates.put("false.twig", "{{ 2 < 1 }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals("2 < 1 should be false", "false", environment.render("false.twig"));
+        Assert.assertEquals("1 < 2 should be true", "true", environment.render("true.twig"));
+    }
+
+    @Test
+    public void canDoGreaterThan() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("true.twig", "{{ 2 > 1 }}");
+        templates.put("false.twig", "{{ 1 > 2 }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals("2 > 1 should be true", "true", environment.render("true.twig"));
+        Assert.assertEquals("1 > 2 should be false", "false", environment.render("false.twig"));
+    }
+
+    @Test
+    public void canDoGreaterThanOrEqual() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("true.twig", "{{ 1 >= 1 }}");
+        templates.put("false.twig", "{{ 1 >= 2 }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals("1 >= 1 should be true", "true", environment.render("true.twig"));
+        Assert.assertEquals("1 >= 2 should be false", "false", environment.render("false.twig"));
+    }
+
+    @Test
+    public void canDoLessThanOrEqual() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("true.twig", "{{ 1 <= 1 }}");
+        templates.put("false.twig", "{{ 2 <= 1 }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals("1 <= 1 should be true", "true", environment.render("true.twig"));
+        Assert.assertEquals("2 <= 1 should be false", "false", environment.render("false.twig"));
+    }
 }

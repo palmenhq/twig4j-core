@@ -2,32 +2,36 @@ package org.twig.extension;
 
 import org.twig.syntax.operator.*;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class Core implements Extension {
     @Override
-    public HashMap<String, Operator> getUnaryOperators() {
-        HashMap<String, Operator> operators = new HashMap<>();
+    public LinkedHashMap<String, Operator> getUnaryOperators() {
+        LinkedHashMap<String, Operator> operators = new LinkedHashMap<>();
 
         return operators;
     }
 
     @Override
-    public HashMap<String, Operator> getBinaryOperators() {
-        HashMap<String, Operator> operators = new HashMap<>();
+    public LinkedHashMap<String, Operator> getBinaryOperators() {
+        LinkedHashMap<String, Operator> operators = new LinkedHashMap<>();
 
         operators.put("or", new BinaryOr());
         operators.put("and", new BinaryAnd());
+        operators.put("<=", new BinaryLessThanOrEqual());
+        operators.put(">=", new BinaryGreaterThanOrEqual());
+        operators.put("<", new BinaryLessThan());
+        operators.put(">", new BinaryGreaterThan());
         operators.put("==", new BinaryEquals());
         operators.put("!=", new BinaryNotEquals());
         operators.put("+", new BinaryAdd());
         operators.put("-", new BinarySubtract());
         operators.put("~", new BinaryConcat());
-        operators.put("*", new BinaryMultiply());
-        operators.put("/", new BinaryDivide());
-        operators.put("//", new BinaryFloorDivide());
-        operators.put("%", new BinaryMod());
         operators.put("**", new BinaryPowerOf());
+        operators.put("*", new BinaryMultiply());
+        operators.put("//", new BinaryFloorDivide());
+        operators.put("/", new BinaryDivide());
+        operators.put("%", new BinaryMod());
 
         return operators;
     }
