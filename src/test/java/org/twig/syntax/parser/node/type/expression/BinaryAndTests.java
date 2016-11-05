@@ -19,7 +19,7 @@ public class BinaryAndTests {
         orNode.compile(compiler);
 
         Assert.assertEquals(
-                "Compiled source should ",
+                "Compiled source should be an and expression",
                 "(true && true)",
                 compiler.getSourceCode()
         );

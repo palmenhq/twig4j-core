@@ -10,10 +10,10 @@ public class ConstantTests {
     public void canWriteRepresent() {
         ClassCompiler compiler = mock(ClassCompiler.class);
         Constant constant = new Constant(1);
-        constant.putAttribute("data", "foo");
+        constant.putAttribute("data", "1");
 
         constant.compile(compiler);
 
-        verify(compiler).representValue("foo");
+        verify(compiler).representValue("1");
     }
 }

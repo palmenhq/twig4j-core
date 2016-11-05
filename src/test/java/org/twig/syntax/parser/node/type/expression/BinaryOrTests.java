@@ -19,7 +19,7 @@ public class BinaryOrTests {
         orNode.compile(compiler);
 
         Assert.assertEquals(
-                "Compiled source should ",
+                "Compiled source should be an or expression",
                 "(true || true)",
                 compiler.getSourceCode()
         );

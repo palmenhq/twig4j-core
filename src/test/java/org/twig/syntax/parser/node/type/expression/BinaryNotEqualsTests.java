@@ -19,7 +19,7 @@ public class BinaryNotEqualsTests {
         notEqualsNode.compile(compiler);
 
         Assert.assertEquals(
-                "Compiled source should cast left to Object and compare it to right with not operator",
+                "Compiled source should compare with a not operator",
                 "(!compare(5, 2))",
                 compiler.getSourceCode()
         );

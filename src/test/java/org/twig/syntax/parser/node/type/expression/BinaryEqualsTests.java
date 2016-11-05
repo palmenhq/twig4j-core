@@ -19,7 +19,7 @@ public class BinaryEqualsTests {
         equalsNode.compile(compiler);
 
         Assert.assertEquals(
-                "Compiled source should cast left to Object and compare it to right",
+                "Compiled source should call compare method",
                 "(compare(5, 2))",
                 compiler.getSourceCode()
         );
