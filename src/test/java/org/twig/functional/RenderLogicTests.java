@@ -1,10 +1,12 @@
 package org.twig.functional;
 
+import com.caucho.quercus.script.QuercusScriptEngineFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.twig.exception.TwigException;
 import org.twig.exception.TwigRuntimeException;
 
+import javax.script.ScriptEngine;
 import java.util.HashMap;
 
 public class RenderLogicTests extends FunctionalTests {
@@ -66,6 +68,17 @@ public class RenderLogicTests extends FunctionalTests {
         setupEnvironment(templates);
 
         Assert.assertEquals("Starts with should be true if string ends with bar", "true", environment.render("foo.twig"));
+    }
+
+    @Test
+    public void matches() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("caseSensitive.twig", "{{ 'Foobar' matches '/^[a-z]+/' }}");
+        templates.put("caseInsensitive.twig", "{{ 'Foobar' matches '/^[a-z]+/i' }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals("Case sensitive regex shouldn't match string with wrong case", "false", environment.render("caseSensitive.twig"));
+        Assert.assertEquals("Case sensitive regex should match string with wrong case", "true", environment.render("caseInsensitive.twig"));
     }
 
     @Test(expected = TwigRuntimeException.class)
