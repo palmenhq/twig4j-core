@@ -85,7 +85,7 @@ public class ExpressionParserTests {
 
         Node parsedString = expressionParser.parseStringExpression();
 
-        Node expectedNode = new Constant("foo", 1);
+        Node expectedNode = new StringConstant("foo", 1);
 
         Assert.assertEquals(
                 "Type of returned node should be constant",
@@ -119,7 +119,7 @@ public class ExpressionParserTests {
 
         Node parsedString = expressionParser.parseStringExpression();
 
-        BinaryConcat expectedNode = new BinaryConcat(new Constant("foo", 1), new Constant("bar", 1), 1);
+        BinaryConcat expectedNode = new BinaryConcat(new StringConstant("foo", 1), new StringConstant("bar", 1), 1);
 
         Assert.assertEquals(
                 "Type of returned node should be BinaryConcat",
@@ -162,7 +162,7 @@ public class ExpressionParserTests {
         when(parser.getCurrentToken()).thenReturn(tokens.get(0));
 
         Node parsedString = expressionParser.parsePrimaryExpression();
-        Node expectedNode = new Constant("foo", 1);
+        Node expectedNode = new StringConstant("foo", 1);
 
         Assert.assertEquals(
                 "Type of returned node should be Constant",

@@ -156,7 +156,7 @@ public class ExpressionParser {
         while (true) {
             if (nextCanBeString && stream.getCurrent().is(Token.Type.STRING)) {
                 Token token = stream.next();
-                nodes.add(new Constant(token.getValue(), token.getLine()));
+                nodes.add(new StringConstant(token.getValue(), token.getLine()));
                 nextCanBeString = false;
             } else if (stream.getCurrent().is(Token.Type.INTERPLATION_START)) {
                 stream.next();
