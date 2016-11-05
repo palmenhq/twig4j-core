@@ -50,6 +50,24 @@ public class RenderLogicTests extends FunctionalTests {
         Assert.assertEquals("Bool should render text bool", "true", environment.render("foo.twig", ctx));
     }
 
+    @Test
+    public void canDoStartsWith() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("foo.twig", "{{ 'foobar' starts with 'foo' }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals("Starts with should be true if string starts with foo", "true", environment.render("foo.twig"));
+    }
+
+    @Test
+    public void canDoEndsWith() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("foo.twig", "{{ 'foobar' ends with 'bar' }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals("Starts with should be true if string ends with bar", "true", environment.render("foo.twig"));
+    }
+
     @Test(expected = TwigRuntimeException.class)
     public void cantCompareDifferentTypesWithStrictTypesEnabled() throws TwigException {
         HashMap<String, String> templates = new HashMap<>();
