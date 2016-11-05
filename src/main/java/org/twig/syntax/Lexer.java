@@ -3,7 +3,7 @@ package org.twig.syntax;
 import org.twig.Environment;
 import org.twig.exception.SyntaxErrorException;
 import org.twig.exception.TwigRuntimeException;
-import org.twig.utils.StringModule;
+import com.caucho.quercus.lib.string.StringModule;
 
 import java.util.ArrayList;
 import java.util.List;
