@@ -38,7 +38,7 @@ public class FilesystemLoader implements Loader {
 
     @Override
     public String getCacheKey(String name) throws LoaderException {
-        return findTemplate(name);
+        return getSource(name);
     }
 
     /**
