@@ -19,10 +19,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 public class Environment {
     private String templatePackage = "org.twig.template";
@@ -67,7 +64,7 @@ public class Environment {
         return loadTemplate(name).render();
     }
 
-    public String render(String name, HashMap<String, ?> context) throws LoaderException, TwigRuntimeException, TwigException {
+    public String render(String name, Map<String, ?> context) throws LoaderException, TwigRuntimeException, TwigException {
         return loadTemplate(name).render(context);
     }
 
@@ -86,6 +83,7 @@ public class Environment {
 
         try {
             Template template = (Template) Class.forName(fullTemplateClassName).newInstance();
+            template.setEnvironment(this);
 
             return template;
         } catch (ClassNotFoundException e) {

@@ -58,7 +58,7 @@ public class Module implements Compilable {
 
     protected void compileRender(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
         compiler
-                .writeLine("protected String doRender(java.util.HashMap<String, ?> context) throws TwigRuntimeException {")
+                .writeLine("protected String doRender(java.util.Map<String, ?> context) throws TwigRuntimeException {")
                     .indent()
                     .writeLine("String output = \"\";")
                     .subCompile(this.getBodyNode())

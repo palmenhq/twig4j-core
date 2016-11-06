@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 abstract public class Template {
     protected Environment environment;
@@ -23,11 +24,11 @@ abstract public class Template {
         return render(new HashMap<>());
     }
 
-    public String render(HashMap<String, ?> context) throws TwigRuntimeException {
+    public String render(Map<String, ?> context) throws TwigRuntimeException {
         return doRender(context);
     }
 
-    abstract protected String doRender(HashMap<String, ?> context) throws TwigRuntimeException;
+    abstract protected String doRender(Map<String, ?> context) throws TwigRuntimeException;
 
     /**
      * Get the template file name
