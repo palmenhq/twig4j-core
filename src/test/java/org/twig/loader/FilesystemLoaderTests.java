@@ -38,7 +38,7 @@ public class FilesystemLoaderTests {
         String templatesDirectory = getClass().getClassLoader().getResource("test-templates").getPath();
         loader.addPath(templatesDirectory);
 
-        Assert.assertEquals("Cache key should be absolute path to template", templatesDirectory + "/templateA.twig", loader.getCacheKey("templateA.twig"));
+        Assert.assertEquals("Cache key should be absolute path to template","template A\n", loader.getCacheKey("templateA.twig"));
     }
 
     @Test

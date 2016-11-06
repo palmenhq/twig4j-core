@@ -10,6 +10,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 public class TemplateTests {
     @Test
@@ -98,7 +99,7 @@ public class TemplateTests {
 
     protected class TestStringTemplate extends Template {
         @Override
-        protected String doRender(HashMap<String, ?> context) throws TwigRuntimeException {
+        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
             return "foo";
         }
 
@@ -110,7 +111,7 @@ public class TemplateTests {
 
     protected class TestVariableTemplate extends Template {
         @Override
-        protected String doRender(HashMap<String, ?> context) throws TwigRuntimeException {
+        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
             return getContext(context, "foo", false, 1).toString();
         }
 
@@ -122,7 +123,7 @@ public class TemplateTests {
 
     protected class TestMethodCallTemplate extends Template {
         @Override
-        protected String doRender(HashMap<String, ?> context) throws TwigRuntimeException {
+        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
             return String.valueOf(getAttribute(context.get("foo"), "bar", Arrays.asList("some ", "argument"), "method"));
         }
 
@@ -144,7 +145,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(HashMap<String, ?> context) throws TwigRuntimeException {
+        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
             return String.valueOf(compare("foo", "bar"));
         }
 
@@ -160,7 +161,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(HashMap<String, ?> context) throws TwigRuntimeException {
+        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
             return String.valueOf(compare("foo", "foo"));
         }
 
@@ -176,7 +177,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(HashMap<String, ?> context) throws TwigRuntimeException {
+        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
             return String.valueOf(compare("true", true));
         }
 

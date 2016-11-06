@@ -52,7 +52,7 @@ public class ModuleTests {
         module.compile(classCompilerStub);
 
         verify(classCompilerStub).subCompile(bodyNodeStub);
-        verify(classCompilerStub).writeLine("protected String doRender(java.util.HashMap<String, ?> context) throws TwigRuntimeException {");
+        verify(classCompilerStub).writeLine("protected String doRender(java.util.Map<String, ?> context) throws TwigRuntimeException {");
         verify(classCompilerStub, times(3)).writeLine("}");
     }
 

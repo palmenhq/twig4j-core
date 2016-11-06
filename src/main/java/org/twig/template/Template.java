@@ -45,7 +45,7 @@ abstract public class Template {
      * @param ignoreStrictChecks Whether to throw an error or just fail silently and return empty string
      * @return
      */
-    protected Object getContext(HashMap<String, ?> context, String item, boolean ignoreStrictChecks, Integer line) throws TwigRuntimeException {
+    protected Object getContext(Map<String, ?> context, String item, boolean ignoreStrictChecks, Integer line) throws TwigRuntimeException {
         if (!context.containsKey(item)) {
             if (ignoreStrictChecks || !environment.isStrictVariables()) {
                 return "";
