@@ -13,6 +13,6 @@ public class BinaryPowerOf implements Operator {
 
     @Override
     public Associativity getAssociativity() {
-        return Associativity.LEFT;
+        return Associativity.RIGHT;
     }
 }
