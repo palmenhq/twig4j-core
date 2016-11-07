@@ -54,6 +54,11 @@ public class TemplateTests {
     }
 
     @Test
+    public void canGetObjectProperty() throws TwigException {
+
+    }
+
+    @Test
     public void canCompareDifferentConstants() throws TwigException {
         Template template = new TestCompareDifferentConstantsTemplate(new Environment());
 
@@ -95,6 +100,30 @@ public class TemplateTests {
                 "false",
                 template.render()
         );
+    }
+
+    @Test
+    public void canGetPropertyGetterIserHaser() throws TwigException {
+        Map<String, TestClassWithGettersAndProperty> ctx = new HashMap<>();
+        ctx.put("foo", new TestClassWithGettersAndProperty());
+        Environment env = new Environment();
+
+        env.enableStrictVariables();
+
+        Template fooProperty = new TestGetFooPropertyTemplate(env);
+        Assert.assertEquals("foo property should be fetched", "foo contents", fooProperty.render(ctx));
+
+        Template barGetter = new TestGetBarGetterTemplate(env);
+        Assert.assertEquals("bar getter should be called", "bar contents", barGetter.render(ctx));
+
+        Template bazIser = new TestGetBazIserTemplate(env);
+        Assert.assertEquals("baz iser should be called", "true", bazIser.render(ctx));
+
+        Template quxHaser = new TestGetQuxHaserTemplate(env);
+        Assert.assertEquals("qux haser should be called", "false", quxHaser.render(ctx));
+
+        Template quuxMethod = new TestGetQuuxMethodTemplate(env);
+        Assert.assertEquals("quux should be called", "quux contents", quuxMethod.render(ctx));
     }
 
     protected class TestStringTemplate extends Template {
@@ -184,6 +213,106 @@ public class TemplateTests {
         @Override
         public String getTemplateName() {
             return "foo";
+        }
+    }
+
+    protected class TestGetFooPropertyTemplate extends Template {
+        public TestGetFooPropertyTemplate(Environment environment) {
+            super(environment);
+        }
+
+        @Override
+        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
+            return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "foo", Arrays.asList(), "any"));
+        }
+
+        @Override
+        public String getTemplateName() {
+            return "foo";
+        }
+    }
+
+    protected class TestGetBarGetterTemplate extends Template {
+        public TestGetBarGetterTemplate(Environment environment) {
+            super(environment);
+        }
+
+        @Override
+        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
+            return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "bar", Arrays.asList(), "any"));
+        }
+
+        @Override
+        public String getTemplateName() {
+            return "foo";
+        }
+    }
+
+    protected class TestGetBazIserTemplate extends Template {
+        public TestGetBazIserTemplate(Environment environment) {
+            super(environment);
+        }
+
+        @Override
+        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
+            return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "baz", Arrays.asList(), "any"));
+        }
+
+        @Override
+        public String getTemplateName() {
+            return "foo";
+        }
+    }
+
+    protected class TestGetQuxHaserTemplate extends Template {
+        public TestGetQuxHaserTemplate(Environment environment) {
+            super(environment);
+        }
+
+        @Override
+        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
+            return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "qux", Arrays.asList(), "any"));
+        }
+
+        @Override
+        public String getTemplateName() {
+            return "foo";
+        }
+    }
+
+    protected class TestGetQuuxMethodTemplate extends Template {
+        public TestGetQuuxMethodTemplate(Environment environment) {
+            super(environment);
+        }
+
+        @Override
+        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
+            return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "quux", Arrays.asList(), "any"));
+        }
+
+        @Override
+        public String getTemplateName() {
+            return "foo";
+        }
+    }
+
+    protected class TestClassWithGettersAndProperty {
+        public String foo = "foo contents";
+
+        public String getBar() {
+            return "bar contents";
+        }
+
+        public boolean isBaz() {
+            return true;
+        }
+
+        public boolean hasQux() {
+            return false;
+        }
+
+        public String quux() {
+            return "quux contents";
         }
     }
 }

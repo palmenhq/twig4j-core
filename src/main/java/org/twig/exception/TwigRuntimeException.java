@@ -93,4 +93,40 @@ public class TwigRuntimeException extends TwigException {
     public static TwigRuntimeException popStateWithoutState(String templateName, Integer lineNumber) {
         return new TwigRuntimeException("Cannot pop state without a previous state", templateName, lineNumber);
     }
+
+    /**
+     * When trying to call an inaccessible method
+     *
+     * @param method The method name
+     * @param className The class on which the method is called
+     * @param templateName The template
+     * @param e Previous excpetion
+     * @return
+     */
+    public static TwigRuntimeException illegalAccessToMethod(String method, String className, String templateName, Throwable e) {
+        return new TwigRuntimeException(
+                "Call to inaccessible method \"" + method + "\" on object of type \"" + className + "\"",
+                templateName,
+                -1,
+                e
+        );
+    }
+
+    /**
+     * When an exception is thrown during the invocation of a method
+     *
+     * @param method The method that threw an exception
+     * @param className The class the method belongs to
+     * @param templateName The template
+     * @param e Previous exception
+     * @return
+     */
+    public static TwigRuntimeException invocationTargetException(String method, String className, String templateName, Throwable e) {
+        return new TwigRuntimeException(
+                "Method \"" + className + "#" + method + "()\" threw exception " + e.getCause().getClass().getName() + " \"" + e.getCause().getMessage() + "\"",
+                templateName,
+                -1,
+                e.getCause()
+        );
+    }
 }

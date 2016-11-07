@@ -19,7 +19,45 @@ public class RenderFunctionsTests extends FunctionalTests {
         HashMap<String, Object> ctx = new HashMap<>();
         ctx.put("foo", new TestClass());
 
-        Assert.assertEquals("Method return vale should be rendered", "foo", environment.render("foo.twig", ctx));
+        Assert.assertEquals("Method return value should be rendered", "foo", environment.render("foo.twig", ctx));
+    }
+
+    @Test
+    public void canRenderMethodWithoutParenthesises() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("foo.twig", "{{ foo.getSomething }}");
+        setupEnvironment(templates);
+
+        HashMap<String, Object> ctx = new HashMap<>();
+        ctx.put("foo", new TestClass());
+
+        Assert.assertEquals("Method return value should be rendered", "foo", environment.render("foo.twig", ctx));
+    }
+
+    @Test
+    public void canRenderGetterFromPropertyName() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("foo.twig", "{{ foo.something }}");
+        setupEnvironment(templates);
+
+        HashMap<String, Object> ctx = new HashMap<>();
+        ctx.put("foo", new TestClass());
+
+        Assert.assertEquals("Method return value should be rendered", "foo", environment.render("foo.twig", ctx));
+    }
+
+    @Test
+    public void canGetHashMapContents() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("foo.twig", "{{ foo.something }}");
+        setupEnvironment(templates);
+
+        HashMap<String, Object> ctx = new HashMap<>();
+        HashMap<String, Object> object = new HashMap<>();
+        object.put("something", "foo");
+        ctx.put("foo", object);
+
+        Assert.assertEquals("Hashmap's contents should be rendered", "foo", environment.render("foo.twig", ctx));
     }
 
     @Test(expected = TwigRuntimeException.class)
