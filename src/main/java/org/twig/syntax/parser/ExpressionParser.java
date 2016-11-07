@@ -135,7 +135,14 @@ public class ExpressionParser {
                 break;
 
             default:
-                throw SyntaxErrorException.unexpectedToken(token, parser.getFilename(), token.getLine());
+                if (token.is(Token.Type.PUNCTUATION, "[")) {
+                    node = parseArrayExpression();
+                } else if (token.is(Token.Type.PUNCTUATION, "{")) {
+                    // TODO hash
+                    throw SyntaxErrorException.unexpectedToken(token, parser.getFilename(), token.getLine());
+                } else {
+                    throw SyntaxErrorException.unexpectedToken(token, parser.getFilename(), token.getLine());
+                }
         }
 
         return node;
@@ -178,6 +185,39 @@ public class ExpressionParser {
     }
 
     /**
+     * Parse an array
+     *
+     * @return The array expression
+     * @throws SyntaxErrorException If not followed by comma or if not closed
+     * @throws TwigRuntimeException
+     */
+    public Expression parseArrayExpression() throws SyntaxErrorException, TwigRuntimeException {
+        TokenStream tokenStream = parser.getTokenStream();
+        tokenStream.expect(Token.Type.PUNCTUATION, "[", "An array element was expected");
+
+        Expression array = new Array(tokenStream.getCurrent().getLine());
+        boolean first = true;
+        while (!tokenStream.getCurrent().is(Token.Type.PUNCTUATION, "]")) {
+            if (!first) {
+                tokenStream.expect(Token.Type.PUNCTUATION, ",", "An array element must be followed by a comma");
+
+                // trailing ,?
+                if (tokenStream.getCurrent().is(Token.Type.PUNCTUATION, ",")) {
+                    break;
+                }
+
+            }
+            first = false;
+
+            array.addNode(parseExpression());
+        }
+
+        tokenStream.expect(Token.Type.PUNCTUATION, "]", "An opened array is not properly closed");
+
+        return array;
+    }
+
+    /**
      * Parse something that comes after a NAME
      *
      * @param node The node that's has something post it
@@ -193,7 +233,7 @@ public class ExpressionParser {
             }
 
             if (token.getValue().equals(".") || token.getValue().equals("[")) {
-                node = parseSubscripExpression(node);
+                node = parseSubscriptExpression(node);
             } else if (false) {
                 // TODO filters
             } else {
@@ -205,12 +245,13 @@ public class ExpressionParser {
     }
 
     /**
+     * Parse if this is a method/function call or fetching something from an array
      *
      * @param node
      * @return
      * @throws SyntaxErrorException
      */
-    public Expression parseSubscripExpression(Expression node) throws SyntaxErrorException, TwigRuntimeException {
+    public Expression parseSubscriptExpression(Expression node) throws SyntaxErrorException, TwigRuntimeException {
         TokenStream tokenStream = parser.getTokenStream();
         Token token = tokenStream.next();
         Array arguments = new Array(token.getLine());
@@ -238,6 +279,12 @@ public class ExpressionParser {
             }
 
             // TODO check if this is a macro
+        } else {
+            type = "array";
+            // TODO slice (when we have the filter)
+            arg = parseExpression();
+
+            tokenStream.expect(Token.Type.PUNCTUATION, "]");
         }
 
         return new GetAttr(node, arg, arguments, type, token.getLine());

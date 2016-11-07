@@ -376,4 +376,38 @@ public class ExpressionParserTests {
                 parsedExpression.getNode(2).getNodes().size()
         );
     }
+
+    @Test
+    public void canParseArray() throws TwigException {
+        TokenStream tokenStream = new TokenStream("aFile");
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, "[", 1));
+        tokenStream.add(new Token(Token.Type.STRING, "foo", 1));
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, ",", 1));
+        tokenStream.add(new Token(Token.Type.STRING, "bar", 1));
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, "]", 1));
+        tokenStream.add(new Token(Token.Type.VAR_END, null, 1));
+        tokenStream.add(new Token(Token.Type.EOF, null, 1));
+        Parser parser = new Parser(new Environment());
+        parser.setTokenStream(tokenStream);
+
+        ExpressionParser expressionParser = new ExpressionParser(parser);
+
+        Expression expression = expressionParser.parseExpression();
+
+        Assert.assertEquals(
+                "Returned type should be of type array",
+                Array.class,
+                expression.getClass()
+        );
+        Assert.assertEquals(
+                "First element of array should be foo",
+                "foo",
+                expression.getNode(0).getAttribute("data")
+        );
+        Assert.assertEquals(
+                "2nd element of array should be bar",
+                "bar",
+                expression.getNode(1).getAttribute("data")
+        );
+    }
 }
