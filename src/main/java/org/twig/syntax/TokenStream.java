@@ -111,12 +111,28 @@ public class TokenStream {
 
     /**
      * Check whether the next token type is of the provided type
+     *
      * @param type The type to check
      * @return Whether the next token type is the same as the provided one
      */
     public boolean nextIs(Token.Type type) {
         try {
             return tokens.get(current + 1).is(type);
+        } catch (IndexOutOfBoundsException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Check whether the next token type is of the provided type and value
+     *
+     * @param type The type to check
+     * @param value The contents to check
+     * @return Whether the next token type is the same as the provided one
+     */
+    public boolean nextIs(Token.Type type, String value) {
+        try {
+            return tokens.get(current + 1).is(type, value);
         } catch (IndexOutOfBoundsException e) {
             return false;
         }

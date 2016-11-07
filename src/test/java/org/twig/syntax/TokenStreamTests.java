@@ -73,6 +73,8 @@ public class TokenStreamTests {
 
         Assert.assertFalse("Next should not be type string", tokenStream.nextIs(Token.Type.STRING));
         Assert.assertTrue("Next should be type text", tokenStream.nextIs(Token.Type.TEXT));
+        Assert.assertFalse("Next with wrong value should not be foo", tokenStream.nextIs(Token.Type.TEXT, "foo"));
+        Assert.assertTrue("Next with value should be true", tokenStream.nextIs(Token.Type.TEXT, "bar"));
     }
 
     @Test(expected = SyntaxErrorException.class)
