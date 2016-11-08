@@ -14,6 +14,6 @@ public class Constant extends Expression {
     }
 
     public void compile(ClassCompiler compiler) {
-        compiler.representValue(attributes.get("data"));
+        compiler.representValue(String.valueOf(attributes.get("data")));
     }
 }

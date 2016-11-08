@@ -148,7 +148,7 @@ public class ClassCompilerTests {
     public void canAddDebugInfo() {
         ClassCompiler classCompiler = new ClassCompiler(new Environment());
 
-        classCompiler.indent().addDebugInfo(new Node(new ArrayList<Node>(), new HashMap<String, String>(), 1337, "Idk"));
+        classCompiler.indent().addDebugInfo(new Node(new ArrayList<Node>(), new HashMap<String, Object>(), 1337, "Idk"));
 
         Assert.assertEquals(
                 "Add debug info should write an indented line comment with the line number",

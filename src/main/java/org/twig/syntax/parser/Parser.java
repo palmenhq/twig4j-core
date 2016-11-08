@@ -74,7 +74,7 @@ public class Parser {
                     Token textToken = tokenStream.next();
 
                     // Create attribute
-                    HashMap<String, String> attributes = new HashMap<>();
+                    HashMap<String, Object> attributes = new HashMap<>();
                     attributes.put("data", textToken.getValue());
 
                     rv.add(new Text(new ArrayList<Node>(), attributes, textToken.getLine(), null));

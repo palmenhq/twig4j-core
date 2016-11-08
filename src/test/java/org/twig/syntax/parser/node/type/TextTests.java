@@ -12,7 +12,7 @@ public class TextTests {
     @Test
     public void canCompile() {
         ClassCompiler compilerStub = mock(ClassCompiler.class);
-        HashMap<String, String> data = new HashMap<String, String>();
+        HashMap<String, Object> data = new HashMap<>();
         data.put("data", "foo");
         Text text = new Text(new ArrayList<>(), data, 1, "");
         text.compile(compilerStub);

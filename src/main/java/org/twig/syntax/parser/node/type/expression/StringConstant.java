@@ -14,6 +14,6 @@ public class StringConstant extends Constant {
     }
 
     public void compile(ClassCompiler compiler) {
-        compiler.writeString(attributes.get("data"));
+        compiler.writeString(String.valueOf(attributes.get("data")));
     }
 }

@@ -16,13 +16,13 @@ public class Node implements Compilable, LineAware {
     // The nodes belonging to this node
     protected ArrayList<Node> nodes;
     // The attributes belonging to this node
-    protected HashMap<String, String> attributes;
+    protected HashMap<String, Object> attributes;
     // The line the node begins on
     protected Integer line;
     // TODO Find out what this thing does
     private String tag;
 
-    public Node(ArrayList<Node> nodes, HashMap<String, String> attributes, Integer line, String tag) {
+    public Node(ArrayList<Node> nodes, HashMap<String, Object> attributes, Integer line, String tag) {
         this.nodes = nodes;
         this.attributes = attributes;
         this.line = line;
@@ -52,7 +52,7 @@ public class Node implements Compilable, LineAware {
      * @param name The name of the attribute
      * @param attribute The attribute
      */
-    public void putAttribute(String name, String attribute) {
+    public void putAttribute(String name, Object attribute) {
         attributes.put(name, attribute);
     }
 
@@ -72,7 +72,7 @@ public class Node implements Compilable, LineAware {
      * @param name The name of the attribute
      * @return The attribute
      */
-    public String getAttribute(String name) throws TwigRuntimeException {
+    public Object getAttribute(String name) throws TwigRuntimeException {
         if (!attributes.containsKey(name)) {
             throw TwigRuntimeException.nodeAttributeDoesNotExist(name, this, getLine());
         }

@@ -28,7 +28,7 @@ public class GetAttr extends Expression {
                 .writeRaw(", ")
                 .subCompile(getNode(2)) // The arguments
                 .writeRaw(", ")
-                .representValue(getAttribute("type")) // ie "method"
+                .representValue(String.valueOf(getAttribute("type"))) // ie "method"
                 .writeRaw(")");
     }
 }

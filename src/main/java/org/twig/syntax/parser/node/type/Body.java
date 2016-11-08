@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Body extends Node {
-    public Body(ArrayList<Node> nodes, HashMap<String, String> attributes, Integer line, String tag) {
+    public Body(ArrayList<Node> nodes, HashMap<String, Object> attributes, Integer line, String tag) {
         super(nodes, attributes, line, tag);
     }
 

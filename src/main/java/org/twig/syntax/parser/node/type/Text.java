@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Text extends Node {
-    public Text(ArrayList<Node> nodes, HashMap<String, String> attributes, Integer line, String tag) {
+    public Text(ArrayList<Node> nodes, HashMap<String, Object> attributes, Integer line, String tag) {
         super(nodes, attributes, line, tag);
     }
 
@@ -17,7 +17,7 @@ public class Text extends Node {
 
     @Override
     public void compile(ClassCompiler compiler) {
-        String text = attributes.get("data");
+        String text = String.valueOf(attributes.get("data"));
         compiler.write("output = output.concat(");
         compiler.writeString(text);
         compiler.writeLine(");");
