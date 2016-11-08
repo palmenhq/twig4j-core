@@ -136,7 +136,7 @@ public class ClassCompilerTests {
     public void canRepresentInteger() throws LoaderException {
         ClassCompiler classCompiler = new ClassCompiler(new Environment());
 
-        classCompiler.representValue("1");
+        classCompiler.representValue(1);
         Assert.assertEquals(
                 "Represent value should have compiled an integer",
                 "1",

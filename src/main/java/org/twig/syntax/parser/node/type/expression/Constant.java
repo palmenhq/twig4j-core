@@ -7,13 +7,13 @@ public class Constant extends Expression {
         super(line);
     }
 
-    public Constant(String value, Integer line) {
+    public Constant(Object value, Integer line) {
         super(line);
 
         putAttribute("data", value);
     }
 
     public void compile(ClassCompiler compiler) {
-        compiler.representValue(String.valueOf(attributes.get("data")));
+        compiler.representValue(attributes.get("data"));
     }
 }

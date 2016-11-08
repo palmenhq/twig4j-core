@@ -15,8 +15,8 @@ public class BinaryConcatTests {
     @Test
     public void testCompile() throws LoaderException, TwigRuntimeException {
         ClassCompiler compiler = new ClassCompiler(new Environment());
-        Node left = new Constant("1", 1);
-        Node right = new Constant("2", 2);
+        Node left = new Constant(1, 1);
+        Node right = new Constant(2, 2);
         BinaryConcat concatNode = new BinaryConcat(left, right, 1);
 
         concatNode.compile(compiler);

@@ -105,7 +105,63 @@ public class ParserTests {
         );
         Assert.assertEquals(
                 "Integer value should be correct",
-                "1",
+                1,
+                module.getBodyNode().getNode(0).getAttribute("data")
+        );
+    }
+
+    @Test
+    public void canParseBoolean() throws SyntaxErrorException, TwigRuntimeException {
+        TokenStream tokenStream = new TokenStream("aFile");
+        tokenStream.add(new Token(Token.Type.VAR_START, null, 1));
+        tokenStream.add(new Token(Token.Type.NAME, "true", 1));
+        tokenStream.add(new Token(Token.Type.VAR_END, null, 1));
+        tokenStream.add(new Token(Token.Type.EOF, null, 1));
+
+        Parser parser = new Parser(new Environment());
+        Module module = parser.parse(tokenStream);
+
+        Assert.assertEquals(
+                "Body should be af type PrintExpression",
+                PrintExpression.class,
+                module.getBodyNode().getClass()
+        );
+        Assert.assertEquals(
+                "Printed expression should be of type Constant",
+                Constant.class,
+                module.getBodyNode().getNode(0).getClass()
+        );
+        Assert.assertEquals(
+                "Boolean value should be correct",
+                true,
+                module.getBodyNode().getNode(0).getAttribute("data")
+        );
+    }
+
+    @Test
+    public void canParseNull() throws SyntaxErrorException, TwigRuntimeException {
+        TokenStream tokenStream = new TokenStream("aFile");
+        tokenStream.add(new Token(Token.Type.VAR_START, null, 1));
+        tokenStream.add(new Token(Token.Type.NAME, "null", 1));
+        tokenStream.add(new Token(Token.Type.VAR_END, null, 1));
+        tokenStream.add(new Token(Token.Type.EOF, null, 1));
+
+        Parser parser = new Parser(new Environment());
+        Module module = parser.parse(tokenStream);
+
+        Assert.assertEquals(
+                "Body should be af type PrintExpression",
+                PrintExpression.class,
+                module.getBodyNode().getClass()
+        );
+        Assert.assertEquals(
+                "Printed expression should be of type Constant",
+                Constant.class,
+                module.getBodyNode().getNode(0).getClass()
+        );
+        Assert.assertEquals(
+                "null value should be correct",
+                null,
                 module.getBodyNode().getNode(0).getAttribute("data")
         );
     }

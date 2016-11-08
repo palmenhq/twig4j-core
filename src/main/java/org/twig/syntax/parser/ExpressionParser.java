@@ -102,31 +102,23 @@ public class ExpressionParser {
         switch(token.getType()) {
             case NAME:
                 parser.getTokenStream().next();
-                switch (token.getValue()) {
-                    case "true":
-                    case "TRUE":
-                        node = new Constant("true", token.getLine());
-                        break;
-                    case "false":
-                    case "FALSE":
-                        node = new Constant("false", token.getLine());
-                        break;
-                    case "null":
-                    case "NULL":
-                    case "none":
-                    case "NONE":
-                        node = new Constant("null", token.getLine());
-                        break;
-                    default:
-                        // TODO check for function
 
-                        node = new Name(token.getValue(), token.getLine());
+                if (getScalarValue(token) == null || !getScalarValue(token).getClass().equals(String.class)) {
+                    node = new Constant(getScalarValue(token), token.getLine());
+                } else {
+                    node = new Name(token.getValue(), token.getLine());
                 }
+
                 break;
 
             case NUMBER:
                 parser.getTokenStream().next();
-                node = new Constant(token.getValue(), token.getLine());
+                Object scalarValue = getScalarValue(token);
+                if (scalarValue.getClass().equals(Integer.class) || scalarValue.getClass().equals(Double.class)) {
+                    node = new Constant(scalarValue, token.getLine());
+                } else {
+                    throw new TwigRuntimeException("Error parsing number of value \"" + token.getValue() + "\"", parser.getFilename(), token.getLine());
+                }
                 break;
 
             case STRING:
@@ -265,7 +257,7 @@ public class ExpressionParser {
                     || token.getType() == Token.Type.NUMBER
                     || token.getType() == Token.Type.OPERATOR // TODO get if matches name operator
             ) {
-                arg = new Constant(token.getValue(), token.getLine());
+                arg = new Constant(getScalarValue(token), token.getLine());
 
                 // If this is a method
                 if (parser.getCurrentToken().is(Token.Type.PUNCTUATION, "(")) {
@@ -362,5 +354,37 @@ public class ExpressionParser {
      */
     public Operator getBinaryOperator(String operator) {
         return this.parser.getEnvironment().getBinaryOperators().get(operator);
+    }
+
+    /**
+     * Get a scalar value, i.e. true, 1 or "foo"
+     *
+     * @param token The token to get the value from
+     * @return
+     */
+    protected Object getScalarValue(Token token) {
+        switch (token.getValue()) {
+            case "true":
+            case "TRUE":
+                return true;
+            case "false":
+            case "FALSE":
+                return false;
+            case "null":
+            case "NULL":
+            case "none":
+            case "NONE":
+                return null;
+            default:
+                // TODO check for function
+
+                if (token.getValue().matches("^(\\d+)$")) {
+                    return (Integer)Integer.parseInt(token.getValue());
+                } else if (token.getValue().matches("^[\\d\\.]+$")) {
+                    return (Double)Double.parseDouble(token.getValue());
+                }
+
+                return token.getValue();
+        }
     }
 }

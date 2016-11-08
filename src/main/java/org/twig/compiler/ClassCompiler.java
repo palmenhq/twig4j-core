@@ -107,27 +107,27 @@ public class ClassCompiler {
      * @param value The value to write
      * @return this
      */
-    public ClassCompiler representValue(String value) {
-        if (value.matches("^(\\d+)$")) {
-            writeRaw(value);
+    public ClassCompiler representValue(Object value) {
+        if (value instanceof Integer) {
+            writeRaw(String.valueOf(value));
 
             return this;
         }
 
-        if (value.matches("^[\\d\\.]+$")) {
-            writeRaw(value + "d");
+        if (value instanceof Float || value instanceof Double) {
+            writeRaw(String.valueOf(value) + "d");
 
             return this;
         }
 
-        if (value.equals("true") || value.equals("false") || value.equals("null")) {
-            writeRaw(value);
+        if (value.equals(true) || value.equals(false) || value == null) {
+            writeRaw(String.valueOf(value));
 
             return this;
         }
 
         // If nothing else matches this value it's a string
-        this.writeString(value);
+        this.writeString(String.valueOf(value));
 
         return this;
     }

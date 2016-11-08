@@ -39,7 +39,7 @@ public class ExpressionParserTests {
         );
         Assert.assertEquals(
                 "Returned node should have value true",
-                "true",
+                true,
                 boolConstant.getAttribute("data")
         );
     }
@@ -65,7 +65,7 @@ public class ExpressionParserTests {
         );
         Assert.assertEquals(
                 "Returned node should have value null",
-                "null",
+                null,
                 boolConstant.getAttribute("data")
         );
     }
@@ -228,13 +228,13 @@ public class ExpressionParserTests {
                 module.getBodyNode().getNode(0).getClass()
         );
         Assert.assertEquals(
-                "Left item sholud be number 1",
-                "1",
+                "Left item should be number 1",
+                1,
                 module.getBodyNode().getNode(0).getNode(0).getAttribute("data")
         );
         Assert.assertEquals(
-                "Right item sholud be number 2",
-                "2",
+                "Right item should be number 2",
+                2,
                 module.getBodyNode().getNode(0).getNode(1).getAttribute("data")
         );
     }
@@ -318,7 +318,7 @@ public class ExpressionParserTests {
         );
         Assert.assertEquals(
                 "2nd argument should have value 1",
-                "1",
+                1,
                 arguments.getNode(1).getAttribute("data")
         );
     }
@@ -407,6 +407,43 @@ public class ExpressionParserTests {
         Assert.assertEquals(
                 "2nd element of array should be bar",
                 "bar",
+                expression.getNode(1).getAttribute("data")
+        );
+    }
+
+    @Test
+    public void canParseArraySubscript() throws TwigException {
+        TokenStream tokenStream = new TokenStream("aFile");
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, "[", 1));
+        tokenStream.add(new Token(Token.Type.STRING, "foo", 1));
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, ",", 1));
+        tokenStream.add(new Token(Token.Type.STRING, "bar", 1));
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, "]", 1));
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, "[", 1));
+        tokenStream.add(new Token(Token.Type.NUMBER, "0", 1));
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, "]", 1));
+        tokenStream.add(new Token(Token.Type.VAR_END, null, 1));
+        tokenStream.add(new Token(Token.Type.EOF, null, 1));
+        Parser parser = new Parser(new Environment());
+        parser.setTokenStream(tokenStream);
+
+        ExpressionParser expressionParser = new ExpressionParser(parser);
+
+        Expression expression = expressionParser.parseExpression();
+
+        Assert.assertEquals(
+                "Returned type should be of type getAttr",
+                GetAttr.class,
+                expression.getClass()
+        );
+        Assert.assertEquals(
+                "First element of GetAttr should be array",
+                Array.class,
+                expression.getNode(0).getClass()
+        );
+        Assert.assertEquals(
+                "2nd element of GetAttr should be scalar int (=accessed array key)",
+                0,
                 expression.getNode(1).getAttribute("data")
         );
     }

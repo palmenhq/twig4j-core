@@ -12,8 +12,8 @@ public class BinaryOrTests {
     @Test
     public void testCompile() throws LoaderException, TwigRuntimeException {
         ClassCompiler compiler = new ClassCompiler(new Environment());
-        Node left = new Constant("true", 1);
-        Node right = new Constant("true", 1);
+        Node left = new Constant(true, 1);
+        Node right = new Constant(true, 1);
         BinaryOr orNode = new BinaryOr(left, right, 1);
 
         orNode.compile(compiler);
