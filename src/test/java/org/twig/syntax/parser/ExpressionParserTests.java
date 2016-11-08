@@ -447,4 +447,44 @@ public class ExpressionParserTests {
                 expression.getNode(1).getAttribute("data")
         );
     }
+
+
+    @Test
+    public void canParseHash() throws TwigException {
+        TokenStream tokenStream = new TokenStream("aFile");
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, "{", 1));
+        tokenStream.add(new Token(Token.Type.NAME, "foo", 1));
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, ":", 1));
+        tokenStream.add(new Token(Token.Type.STRING, "bar", 1));
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, ",", 1));
+        tokenStream.add(new Token(Token.Type.STRING, "baz", 1));
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, ":", 1));
+        tokenStream.add(new Token(Token.Type.STRING, "qux", 1));
+        tokenStream.add(new Token(Token.Type.PUNCTUATION, "}", 1));
+        tokenStream.add(new Token(Token.Type.VAR_END, null, 1));
+        tokenStream.add(new Token(Token.Type.EOF, null, 1));
+        Parser parser = new Parser(new Environment());
+        parser.setTokenStream(tokenStream);
+
+        ExpressionParser expressionParser = new ExpressionParser(parser);
+
+        Expression expression = expressionParser.parseExpression();
+
+        Assert.assertEquals(
+                "Returned type should be of type Hash",
+                Hash.class,
+                expression.getClass()
+        );
+        Assert.assertEquals(
+                "Attribute foo should be foo contents",
+                "bar",
+                ((Constant) expression.getAttribute("foo")).getAttribute("data")
+        );
+        Assert.assertEquals(
+                "Attribute baz should be baz contents",
+                "qux",
+                ((Constant) expression.getAttribute("baz")).getAttribute("data")
+        );
+    }
+
 }

@@ -130,8 +130,7 @@ public class ExpressionParser {
                 if (token.is(Token.Type.PUNCTUATION, "[")) {
                     node = parseArrayExpression();
                 } else if (token.is(Token.Type.PUNCTUATION, "{")) {
-                    // TODO hash
-                    throw SyntaxErrorException.unexpectedToken(token, parser.getFilename(), token.getLine());
+                    node = parseHashExpression();
                 } else {
                     throw SyntaxErrorException.unexpectedToken(token, parser.getFilename(), token.getLine());
                 }
@@ -207,6 +206,63 @@ public class ExpressionParser {
         tokenStream.expect(Token.Type.PUNCTUATION, "]", "An opened array is not properly closed");
 
         return array;
+    }
+
+    /**
+     * Parse a hash expression (hashmap, ie {foo: bar})
+     * @return The hash expression
+     *
+     * @throws SyntaxErrorException
+     * @throws TwigRuntimeException
+     */
+    public Expression parseHashExpression() throws SyntaxErrorException, TwigRuntimeException {
+        TokenStream tokenStream = parser.getTokenStream();
+        tokenStream.expect(Token.Type.PUNCTUATION, "{", "A hash element was expected");
+
+        Expression hash = new Hash(tokenStream.getCurrent().getLine());
+        boolean first = true;
+        while (!tokenStream.getCurrent().is(Token.Type.PUNCTUATION, "}")) {
+            if (!first) {
+                tokenStream.expect(Token.Type.PUNCTUATION, ",", "A hash value must be followed by a comma");
+
+                // Trailing ,?
+                if (tokenStream.getCurrent().is(Token.Type.PUNCTUATION, "}")) {
+                    break;
+                }
+            }
+            first = false;
+
+            /* a hash key can be:
+             *
+             *  * a number -- 12
+             *  * a string -- 'a'
+             *  * a name, which is equivalent to a string -- a
+             *  * an expression, which must be enclosed in parentheses -- (1 + 2)
+             */
+            String key;
+            if (tokenStream.getCurrent().is(Token.Type.STRING) || tokenStream.getCurrent().is(Token.Type.NUMBER) || tokenStream.getCurrent().is(Token.Type.NAME)) {
+                key = tokenStream.getCurrent().getValue();
+                tokenStream.next();
+                // TODO if "("
+            } else {
+                throw new SyntaxErrorException(
+                        String.format(
+                                "A hash key must be a quoted string, a number, a name, or an expression enclosed in parentheses (unexpected token \"%s\" of value \"%s\"",
+                                Token.typeToEnglish(tokenStream.getCurrent().getType()),
+                                tokenStream.getCurrent().getValue()
+                        ),
+                        parser.getFilename(),
+                        tokenStream.getCurrent().getLine()
+                );
+            }
+
+            tokenStream.expect(Token.Type.PUNCTUATION, ":", "A hash key must be followed by a colon (:)");
+            Expression value = parseExpression();
+            hash.putAttribute(key, value);
+        }
+        tokenStream.expect(Token.Type.PUNCTUATION, "}", "An opened hash is not properly closed");
+
+        return hash;
     }
 
     /**
