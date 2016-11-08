@@ -9,6 +9,7 @@ import org.twig.syntax.parser.node.Module;
 import org.twig.syntax.parser.node.Node;
 import org.twig.syntax.parser.node.type.PrintExpression;
 import org.twig.syntax.parser.node.type.Text;
+import org.twig.syntax.parser.tokenparser.AbstractTokenParser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +21,8 @@ public class Parser {
     private ExpressionParser expressionParser = new ExpressionParser(this);
     // The Twig environment
     private Environment environment;
+    // Map of handlers/token parsers
+    private HashMap<String, AbstractTokenParser> handlers = new HashMap<>();
 
     public Parser(Environment environment) {
         this.environment = environment;
@@ -27,6 +30,7 @@ public class Parser {
 
     /**
      * Parses a template
+     *
      * @param tokenStream The token stream to parse
      * @return The Module node (which represents a twig file)
      * @throws SyntaxErrorException
@@ -61,6 +65,7 @@ public class Parser {
 
     /**
      * Does the hard work parsing
+     *
      * @return The body nodes
      * @throws SyntaxErrorException
      */
@@ -85,6 +90,16 @@ public class Parser {
                     Node expr = expressionParser.parseExpression();
                     tokenStream.expect(Token.Type.VAR_END);
                     rv.add(new PrintExpression(expr, varStartToken.getLine()));
+                    break;
+
+                case BLOCK_START:
+                    tokenStream.next();
+                    Token currentToken = tokenStream.getCurrent();
+
+                    if (!currentToken.is(Token.Type.NAME)) {
+                        throw new SyntaxErrorException("A block must start with a tag name.", tokenStream.getFilename(), currentToken.getLine());
+                    }
+
 
                 case EOF:
                     break;
@@ -116,6 +131,7 @@ public class Parser {
 
     /**
      * Get the file name of the token stream currently being parsed
+     *
      * @return The file/template name
      */
     public String getFilename() {
@@ -148,6 +164,25 @@ public class Parser {
 
     public Parser setEnvironment(Environment environment) {
         this.environment = environment;
+
+        return this;
+    }
+
+    /**
+     * Add a token handler/parser
+     *
+     * @param key The name (ie "if")
+     * @param handler The token parser
+     * @return this
+     */
+    public Parser addHandler(String key, AbstractTokenParser handler) {
+        handlers.put(key, handler);
+
+        return this;
+    }
+
+    public Parser setHandlers(HashMap<String, AbstractTokenParser> handlers) {
+        this.handlers = handlers;
 
         return this;
     }

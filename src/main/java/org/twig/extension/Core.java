@@ -1,19 +1,30 @@
 package org.twig.extension;
 
 import org.twig.syntax.operator.*;
+import org.twig.syntax.parser.tokenparser.AbstractTokenParser;
 
+import java.util.Map;
 import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Core implements Extension {
     @Override
-    public LinkedHashMap<String, Operator> getUnaryOperators() {
+    public List<AbstractTokenParser> getTokenParsers() {
+        List<AbstractTokenParser> tokenParsers = new ArrayList<>();
+
+        return tokenParsers;
+    }
+
+    @Override
+    public Map<String, Operator> getUnaryOperators() {
         LinkedHashMap<String, Operator> operators = new LinkedHashMap<>();
 
         return operators;
     }
 
     @Override
-    public LinkedHashMap<String, Operator> getBinaryOperators() {
+    public Map<String, Operator> getBinaryOperators() {
         LinkedHashMap<String, Operator> operators = new LinkedHashMap<>();
 
         operators.put("or", new BinaryOr());
