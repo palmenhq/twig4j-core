@@ -62,4 +62,17 @@ public class RenderDataStructuresTests extends FunctionalTests {
 
         environment.render("foo.twig", ctx);
     }
+
+    @Test
+    public void canRenderHashmap() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("foo.twig", "{{ ({foo: 'bar': { baz: 'qux' } }).foo.bar }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals(
+                "Contents of key inside hashmap inside hashmap should be rendered",
+                "qux",
+                environment.render("foo.twig")
+        );
+    }
 }
