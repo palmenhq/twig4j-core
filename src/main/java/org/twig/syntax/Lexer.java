@@ -206,7 +206,7 @@ public class Lexer {
         }
 
         // Save everything that's between the current cursor position and the next position
-        String tokenText = code.substring(this.cursor, nextPosition.getOffset() - this.cursor);
+        String tokenText = code.substring(this.cursor, nextPosition.getOffset());
 
         /*
         Not sure why this code snippet was here or what it does, find out and check so it's nothing crucial.
