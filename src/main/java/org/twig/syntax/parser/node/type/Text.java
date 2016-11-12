@@ -20,6 +20,6 @@ public class Text extends Node {
         String text = String.valueOf(attributes.get("data"));
         compiler.write("output = output.concat(");
         compiler.writeString(text);
-        compiler.writeLine(");");
+        compiler.writeRaw(");\n");
     }
 }
