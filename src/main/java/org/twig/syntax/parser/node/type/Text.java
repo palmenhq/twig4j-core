@@ -11,6 +11,11 @@ public class Text extends Node {
         super(nodes, attributes, line, tag);
     }
 
+    public Text(String data, Integer line) {
+        super(line);
+        putAttribute("data", data);
+    }
+
     public Text(Integer line) {
         super(line);
     }
