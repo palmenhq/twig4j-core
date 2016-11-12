@@ -533,10 +533,8 @@ public class Lexer {
         Matcher matcher = Pattern.compile("\n").matcher(text);
 
         Integer lineEndingsInText = 0;
-        Integer matcherPosition = 0;
-        while (matcher.find(matcherPosition)) {
+        while (matcher.find()) {
             lineEndingsInText++;
-            matcherPosition++;
         }
 
         return lineEndingsInText;
