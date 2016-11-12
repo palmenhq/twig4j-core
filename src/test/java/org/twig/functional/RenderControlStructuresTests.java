@@ -27,7 +27,48 @@ public class RenderControlStructuresTests extends FunctionalTests {
 
         Assert.assertEquals(
                 "Only contents of true if statement should be rendered",
-                "foo\n\n",
+                "foo",
+                environment.render("foo.twig", ctx)
+        );
+    }
+
+    @Test
+    public void canRenderElse() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put(
+                "foo.twig",
+                "{% if foo %}foo{% else %}bar{% endif %}\n"
+        );
+        setupEnvironment(templates);
+
+        HashMap<String, Boolean> ctx = new HashMap<>();
+        ctx.put("foo", false);
+
+        Assert.assertEquals(
+                "Contents of else statement should be rendered",
+                "bar",
+                environment.render("foo.twig", ctx)
+        );
+    }
+
+    @Test
+    public void canRenderElseIf() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put(
+                "foo.twig",
+                "{% if foo %}\n" +
+                        "foo\n"
+                + "{% elseif bar %}bar{% endif %}\n"
+        );
+        setupEnvironment(templates);
+
+        HashMap<String, Boolean> ctx = new HashMap<>();
+        ctx.put("foo", false);
+        ctx.put("bar", true);
+
+        Assert.assertEquals(
+                "Contents of elseif statement should be rendered",
+                "bar",
                 environment.render("foo.twig", ctx)
         );
     }

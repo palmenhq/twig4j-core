@@ -1,6 +1,7 @@
 package org.twig.syntax.parser.tokenparser;
 
 import org.twig.exception.SyntaxErrorException;
+import org.twig.exception.TwigRuntimeException;
 import org.twig.syntax.Token;
 import org.twig.syntax.parser.Parser;
 import org.twig.syntax.parser.node.Node;
@@ -14,7 +15,7 @@ abstract public class AbstractTokenParser {
      * @param token The token to parse
      * @return The parsed node
      */
-    abstract public Node parse(Token token) throws SyntaxErrorException;
+    abstract public Node parse(Token token) throws SyntaxErrorException, TwigRuntimeException;
 
     /**
      * Get the tag of the block (ie "if")

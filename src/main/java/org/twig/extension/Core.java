@@ -2,6 +2,7 @@ package org.twig.extension;
 
 import org.twig.syntax.operator.*;
 import org.twig.syntax.parser.tokenparser.AbstractTokenParser;
+import org.twig.syntax.parser.tokenparser.*;
 
 import java.util.Map;
 import java.util.LinkedHashMap;
@@ -12,7 +13,7 @@ public class Core implements Extension {
     @Override
     public List<AbstractTokenParser> getTokenParsers() {
         List<AbstractTokenParser> tokenParsers = new ArrayList<>();
-
+        tokenParsers.add(new If());
         return tokenParsers;
     }
 

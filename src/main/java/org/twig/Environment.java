@@ -13,6 +13,7 @@ import org.twig.syntax.TokenStream;
 import org.twig.syntax.operator.Operator;
 import org.twig.syntax.parser.Parser;
 import org.twig.syntax.parser.node.Module;
+import org.twig.syntax.parser.tokenparser.AbstractTokenParser;
 import org.twig.template.Template;
 
 import javax.xml.bind.DatatypeConverter;
@@ -31,6 +32,7 @@ public class Environment {
 
     private LinkedHashMap<String, Operator> binaryOperators = new LinkedHashMap<>();
     private LinkedHashMap<String, Operator> unaryOperators = new LinkedHashMap<>();
+    private Map<String, AbstractTokenParser> tokenParsers = new HashMap<>();
     private boolean hasInitedExtensions = false;
 
     private Loader loader;
@@ -191,6 +193,11 @@ public class Environment {
         // Operators
         this.unaryOperators.putAll(extension.getUnaryOperators());
         this.binaryOperators.putAll(extension.getBinaryOperators());
+
+        // Token parsers
+        for (AbstractTokenParser tokenParser : extension.getTokenParsers()) {
+            this.tokenParsers.put(tokenParser.getTag(), tokenParser);
+        }
     }
 
     /**
@@ -337,6 +344,15 @@ public class Environment {
         unaryOperators.put(name, operator);
 
         return this;
+    }
+
+    /**
+     * Get all token parsers/handlers
+     *
+     * @return The token parsers
+     */
+    public Map<String, AbstractTokenParser> getTokenParsers() {
+        return tokenParsers;
     }
 
     /**

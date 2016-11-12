@@ -13,6 +13,7 @@ import org.twig.syntax.parser.tokenparser.AbstractTokenParser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Function;
 
 public class Parser {
     // The token stream to parse
@@ -37,6 +38,9 @@ public class Parser {
      */
     public Module parse(TokenStream tokenStream) throws SyntaxErrorException, TwigRuntimeException {
         // TODO: Find out wth line 64-82 does
+
+        this.handlers.putAll(environment.getTokenParsers());
+        this.handlers.forEach((String key, AbstractTokenParser tokenParser) -> tokenParser.setParser(this));
 
         // TODO: Create node visitors
 
@@ -64,12 +68,26 @@ public class Parser {
     }
 
     /**
-     * Does the hard work parsing
-     *
-     * @return The body nodes
-     * @throws SyntaxErrorException
+     * Does the hard work parsing, but defaults test to null and dropNeedle to false
+     * @return The parsed node
+     * @throws SyntaxErrorException On syntax errors
+     * @throws TwigRuntimeException On any other errors
      */
     public Node subparse() throws SyntaxErrorException, TwigRuntimeException {
+        return subparse(null, null, false);
+    }
+
+    /**
+     * Does the hard work parsing
+     *
+     * @param test Function that checks for end tags
+     * @param subparserTag The name of the token parser calling this method
+     * @param dropNeedle Not sure what this does yet
+     * @return The body nodes
+     * @throws SyntaxErrorException On syntax errors
+     * @throws TwigRuntimeException On any other errors
+     */
+    public Node subparse(Function<Token, Boolean> test, String subparserTag, Boolean dropNeedle) throws SyntaxErrorException, TwigRuntimeException {
         Integer lineno = tokenStream.getCurrent().getLine();
         ArrayList<Node> rv = new ArrayList<>();
 
@@ -100,6 +118,41 @@ public class Parser {
                         throw new SyntaxErrorException("A block must start with a tag name.", tokenStream.getFilename(), currentToken.getLine());
                     }
 
+                    if (test != null && test.apply(currentToken)) {
+                        if (dropNeedle) {
+                            tokenStream.next();
+                        }
+
+                        if (rv.size() == 1) {
+                            return rv.get(0);
+                        }
+
+                        return new Node(rv, new HashMap<>(), lineno, null);
+                    }
+
+                    AbstractTokenParser subparser = handlers.get(currentToken.getValue());
+                    // Whether a handler/subparser for this tag is found
+                    if (subparser == null) {
+                        // If we're not testing for end tag
+                        if (test == null) {
+                            String message = String.format("Unexpected tag name \"%s\"", currentToken.getValue());
+                            // If the provided test was part of a calling subparser
+                            if (subparserTag != null) {
+                                message = message + String.format(" (expecting closing tag for the \"%s\" tag defined near line %s)", subparserTag, lineno);
+                            }
+
+                            throw new SyntaxErrorException(message, getFilename(), currentToken.getLine());
+                        }
+                    }
+
+                    tokenStream.next();
+
+                    Node node = subparser.parse(currentToken);
+
+                    if (node != null) {
+                        rv.add(node);
+                    }
+                    break;
 
                 case EOF:
                     break;
