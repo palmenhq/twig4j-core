@@ -20,6 +20,15 @@ public class RenderLogicTests extends FunctionalTests {
     }
 
     @Test
+    public void canRenderPlainInverseBoolean() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("foo.twig", "{{ not true }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals("Bool should render inversed text bool", "false", environment.render("foo.twig"));
+    }
+
+    @Test
     public void canRenderComparedBoolean() throws TwigException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig", "{{ true == false }}");

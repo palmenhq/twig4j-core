@@ -9,6 +9,8 @@ public class Core implements Extension {
     public LinkedHashMap<String, Operator> getUnaryOperators() {
         LinkedHashMap<String, Operator> operators = new LinkedHashMap<>();
 
+        operators.put("not", new UnaryNot());
+
         return operators;
     }
 

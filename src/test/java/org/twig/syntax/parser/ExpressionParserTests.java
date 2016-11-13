@@ -8,10 +8,15 @@ import org.twig.exception.TwigException;
 import org.twig.exception.TwigRuntimeException;
 import org.twig.syntax.Token;
 import org.twig.syntax.TokenStream;
+import org.twig.syntax.operator.*;
+import org.twig.syntax.operator.UnaryNot;
 import org.twig.syntax.parser.node.Module;
 import org.twig.syntax.parser.node.Node;
 import org.twig.syntax.parser.node.type.PrintExpression;
 import org.twig.syntax.parser.node.type.expression.*;
+import org.twig.syntax.parser.node.type.expression.BinaryAdd;
+import org.twig.syntax.parser.node.type.expression.BinaryConcat;
+import org.twig.syntax.parser.node.type.expression.BinaryMultiply;
 
 import java.util.ArrayList;
 
@@ -201,6 +206,35 @@ public class ExpressionParserTests {
                 "Value should be \"foo\"",
                 expectedNode.getAttribute("name"),
                 parsedString.getAttribute("name")
+        );
+    }
+
+    @Test
+    public void testParsePrimaryExpressionInverseBool() throws SyntaxErrorException, TwigRuntimeException {
+        ArrayList<Token> tokens = new ArrayList<>();
+        tokens.add(new Token(Token.Type.NAME, "not", 1));
+        tokens.add(new Token(Token.Type.NAME, "true", 1));
+        tokens.add(new Token(Token.Type.EOF, null, 1));
+        TokenStream tokenStream = new TokenStream(tokens);
+        Environment env = new Environment();
+        Parser parser = new Parser(env);
+        env.addUnaryOperator("not", new UnaryNot());
+        parser.setTokenStream(tokenStream);
+
+        ExpressionParser expressionParser = new ExpressionParser(parser);
+
+        Node parsedUnaryExpression = expressionParser.parseExpression();
+        Node expectedNode = new org.twig.syntax.parser.node.type.expression.UnaryNot(new Constant(true, 1), 1);
+
+        Assert.assertEquals(
+                "Type of returned node should be UnaryNot",
+                expectedNode.getClass(),
+                parsedUnaryExpression.getClass()
+        );
+        Assert.assertEquals(
+                "Contents should be the constant",
+                expectedNode.getNode(0).getClass(),
+                parsedUnaryExpression.getNode(0).getClass()
         );
     }
 

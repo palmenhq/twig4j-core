@@ -340,6 +340,15 @@ public class Environment {
     }
 
     /**
+     * Get the environment's lexer
+     *
+     * @return The lexer
+     */
+    public Lexer getLexer() {
+        return lexer;
+    }
+
+    /**
      * Set the lexer
      * @param lexer The lexer
      */

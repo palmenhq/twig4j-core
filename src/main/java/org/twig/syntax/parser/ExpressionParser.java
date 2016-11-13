@@ -8,8 +8,10 @@ import org.twig.syntax.operator.Operator;
 import org.twig.syntax.parser.node.Node;
 import org.twig.syntax.parser.node.type.expression.*;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Matcher;
 
 /**
  * Parses expressions.
@@ -77,7 +79,24 @@ public class ExpressionParser {
      */
     protected Expression getPrimary() throws SyntaxErrorException, TwigRuntimeException {
         Token token = parser.getCurrentToken();
-        // TODO check if unary
+
+        if (isUnary(token.getValue())) {
+            Operator operator = getUnaryOperator(token.getValue());
+            parser.getTokenStream().next();
+            Expression expression = parseExpression(operator.getPrecedence());
+
+            try {
+                Constructor operatorConstructor = operator.getNodeClass().getConstructor(Node.class, Integer.class);
+                return parsePostfixExpression((Expression)operatorConstructor.newInstance(expression, token.getLine()));
+            } catch (Exception e) {
+                throw new TwigRuntimeException(
+                        "Missing or misconfigured constructor or class for operator \"" + operator.getNodeClass().getName() + "\"",
+                        parser.getFilename(),
+                        token.getLine(),
+                        e
+                );
+            }
+        }
 
         if (token.is(Token.Type.PUNCTUATION, "(")) {
             parser.getTokenStream().next();
@@ -124,6 +143,22 @@ public class ExpressionParser {
             case STRING:
             case INTERPLATION_START:
                 node = parseStringExpression();
+                break;
+
+            case OPERATOR:
+                // TODO find out what this does and if it's correctly implemented here - not covered by tests right now
+                Matcher nameMatcher = parser.getEnvironment().getLexer().getRegexes().getExpressionName().matcher(token.getValue());
+                if (nameMatcher.find() && nameMatcher.group(0).equals(token.getValue())) {
+                    // in this context, string operators are variable names
+                    parser.getTokenStream().next();
+                    node = new Name(token.getValue(), token.getLine());
+                } else if (isUnary(token.getValue())) {
+                    Class operatorClass = getUnaryOperator(token.getValue()).getNodeClass();
+                    // TODO neg/pos unary operators check thing
+                    throw new TwigRuntimeException("Pos and neg operators are not yet implemented in this version of twig", parser.getFilename(), token.getLine());
+                } else {
+                    throw new TwigRuntimeException("An unknown operator was passed to the expression parser", parser.getFilename(), token.getLine());
+                }
                 break;
 
             default:
@@ -410,6 +445,24 @@ public class ExpressionParser {
      */
     public Operator getBinaryOperator(String operator) {
         return this.parser.getEnvironment().getBinaryOperators().get(operator);
+    }
+
+    /**
+     * Check whether the operator is in the unary operators map in the env
+     * @param operator The operator to check for
+     * @return
+     */
+    public boolean isUnary(String operator) {
+        return this.parser.getEnvironment().getUnaryOperators().containsKey(operator);
+    }
+
+    /**
+     * Get an operator from the twig environment by the name
+     * @param operator The operator name
+     * @return
+     */
+    public Operator getUnaryOperator(String operator) {
+        return this.parser.getEnvironment().getUnaryOperators().get(operator);
     }
 
     /**

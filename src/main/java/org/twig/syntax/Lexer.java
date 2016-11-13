@@ -577,4 +577,13 @@ public class Lexer {
 
         return this;
     }
+
+    /**
+     * Get the regexes
+     *
+     * @return
+     */
+    public LexerRegexes getRegexes() {
+        return regexes;
+    }
 }
