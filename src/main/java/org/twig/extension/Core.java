@@ -39,6 +39,7 @@ public class Core implements Extension {
         operators.put("starts with", new BinaryStartsWith());
         operators.put("ends with", new BinaryEndsWith());
         operators.put("matches", new BinaryMatches());
+        operators.put("..", new BinaryRange());
         operators.put("+", new BinaryAdd());
         operators.put("-", new BinarySubtract());
         operators.put("~", new BinaryConcat());
