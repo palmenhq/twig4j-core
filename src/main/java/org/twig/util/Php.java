@@ -50,8 +50,8 @@ public class Php {
     }
 
     public static List<String> range(String from, String to) {
-        String lowerCaseLetters = "abcdefghijklmnopqrstuvxyz";
-        String uppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVXYZ";
+        String lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
+        String uppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String stringToWorkWith;
         Integer fromPosition;
         Integer toPosition;
