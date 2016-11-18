@@ -488,6 +488,26 @@ public class ExpressionParserTests {
         );
     }
 
+    @Test
+    public void testParseAssignments() throws SyntaxErrorException, TwigRuntimeException {
+        ArrayList<Token> tokens = new ArrayList<>();
+        tokens.add(new Token(Token.Type.NAME, "foo", 1));
+        tokens.add(new Token(Token.Type.PUNCTUATION, ",", 1));
+        tokens.add(new Token(Token.Type.NAME, "bar", 1));
+        tokens.add(new Token(Token.Type.EOF, null, 1));
+        TokenStream tokenStream = new TokenStream(tokens);
+
+        Parser parser = new Parser(new Environment());
+        parser.setTokenStream(tokenStream);
+        ExpressionParser expressionParser = new ExpressionParser(parser);
+
+        List<String> names = expressionParser.parseAssignmentExpression();
+
+        Assert.assertEquals("Number of items in list should be correct", 2, names.size());
+
+        Assert.assertEquals("First item should be of correct value", "foo", names.get(0));
+        Assert.assertEquals("Second item should be of correct value", "bar", names.get(1));
+    }
 
     @Test
     public void testParseMultitargetStrings() throws SyntaxErrorException, TwigRuntimeException {
