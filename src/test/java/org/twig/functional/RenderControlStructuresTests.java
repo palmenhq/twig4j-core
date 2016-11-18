@@ -85,4 +85,20 @@ public class RenderControlStructuresTests extends FunctionalTests {
 
         environment.render("foo.twig");
     }
+
+    @Test
+    public void canRenderForInRange() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put(
+                "foo.twig",
+                "{% for foo in 'a'..'c' %}{{ foo }}{% endfor %}"
+        );
+        setupEnvironment(templates);
+
+        Assert.assertEquals(
+                "Contents of range should be rendered",
+                "abc",
+                environment.render("foo.twig")
+        );
+    }
 }
