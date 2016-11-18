@@ -8,13 +8,14 @@ import org.twig.exception.TwigRuntimeException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Represents something in the AST.
  */
 public class Node implements Compilable, LineAware {
     // The nodes belonging to this node
-    protected ArrayList<Node> nodes;
+    protected List<Node> nodes;
     // The attributes belonging to this node
     protected HashMap<String, Object> attributes;
     // The line the node begins on
@@ -22,7 +23,7 @@ public class Node implements Compilable, LineAware {
     // TODO Find out what this thing does
     private String tag;
 
-    public Node(ArrayList<Node> nodes, HashMap<String, Object> attributes, Integer line, String tag) {
+    public Node(List<Node> nodes, HashMap<String, Object> attributes, Integer line, String tag) {
         this.nodes = nodes;
         this.attributes = attributes;
         this.line = line;
@@ -136,7 +137,7 @@ public class Node implements Compilable, LineAware {
      * Get all child nodes
      * @return All child nodes
      */
-    public ArrayList<Node> getNodes() {
+    public List<Node> getNodes() {
         return nodes;
     }
 
