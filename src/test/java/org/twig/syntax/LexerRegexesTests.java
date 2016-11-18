@@ -15,6 +15,6 @@ public class LexerRegexesTests {
 
         LexerRegexes regexes = new LexerRegexes(new LexerOptions(), new HashMap<>(), binaryOperators);
 
-        Assert.assertEquals("Correct regex should be returned", "^(\\Q+\\E)", regexes.getOperators().toString());
+        Assert.assertEquals("Correct regex should be returned", "^(\\Q+\\E|=)", regexes.getOperators().toString());
     }
 }

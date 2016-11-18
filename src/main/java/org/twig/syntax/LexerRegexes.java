@@ -126,6 +126,7 @@ public class LexerRegexes {
         StringBuilder pattern = new StringBuilder();
         pattern.append("^(");
 
+
         LinkedHashMap<String, Operator> allOperators = new LinkedHashMap<>();
         allOperators.putAll(unaryOperators);
         allOperators.putAll(binaryOperators);
@@ -135,10 +136,12 @@ public class LexerRegexes {
             Map.Entry<String, Operator> operator = it.next();
             pattern.append(Pattern.quote(operator.getKey()));
 
-            if (it.hasNext()) {
-                pattern.append("|");
-            }
+            pattern.append("|");
+
         }
+
+        // Add equals sign
+        pattern.append("=");
 
         pattern.append(")");
 
