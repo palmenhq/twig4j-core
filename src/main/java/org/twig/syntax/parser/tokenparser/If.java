@@ -28,6 +28,15 @@ public class If extends AbstractTokenParser {
 
         boolean end = false;
         while (!end) {
+            if (tokenStream.isEOF()) {
+                String message = String.format(
+                        "Unexpected end of template. Twig was looking for the following tags \"else\"," +
+                                " \"elseif\", or \"endif\" to close the \"if\" block started at line %d)",
+                        line
+                );
+                throw new SyntaxErrorException(message, parser.getFilename(), line);
+            }
+
             switch (tokenStream.next().getValue()) {
                 case "else":
                     Integer elseLine = tokenStream.getCurrent().getLine();

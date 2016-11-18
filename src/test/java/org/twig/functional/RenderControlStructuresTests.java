@@ -2,6 +2,7 @@ package org.twig.functional;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.twig.exception.SyntaxErrorException;
 import org.twig.exception.TwigException;
 import org.twig.exception.TwigRuntimeException;
 
@@ -71,5 +72,17 @@ public class RenderControlStructuresTests extends FunctionalTests {
                 "bar",
                 environment.render("foo.twig", ctx)
         );
+    }
+
+    @Test(expected = SyntaxErrorException.class)
+    public void cantRenderUnclosedIf() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put(
+                "foo.twig",
+                "{% if true %}"
+        );
+        setupEnvironment(templates);
+
+        environment.render("foo.twig");
     }
 }
