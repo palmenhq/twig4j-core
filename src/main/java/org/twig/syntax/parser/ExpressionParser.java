@@ -10,6 +10,7 @@ import org.twig.syntax.parser.node.type.expression.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Parses expressions.
@@ -392,6 +393,29 @@ public class ExpressionParser {
         stream.expect(Token.Type.PUNCTUATION, ")", "A list of arguments must be closed by a parenthesis");
 
         return new Node(arguments, new HashMap<>(), -1, stream.getFilename());
+    }
+
+    /**
+     * Parse multiple expressions separated by comma
+     *
+     * @return A node with the expressions
+     * @throws SyntaxErrorException
+     * @throws TwigRuntimeException
+     */
+    public Node parseMultitargetExpression() throws SyntaxErrorException, TwigRuntimeException {
+        List<Node> expressions = new ArrayList<>();
+
+        while (true) {
+            expressions.add(parseExpression());
+
+            if (parser.getTokenStream().getCurrent().is(Token.Type.PUNCTUATION, ",")) {
+                parser.getTokenStream().next();
+            } else {
+                break;
+            }
+        }
+
+        return new Node(expressions, new HashMap<>(), -1, "");
     }
 
     /**
