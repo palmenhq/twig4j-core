@@ -98,7 +98,7 @@ public class ExpressionParser {
      */
     public Expression parsePrimaryExpression() throws SyntaxErrorException, TwigRuntimeException {
         Token token = parser.getCurrentToken();
-        Expression node;
+        Expression node = null;
 
         switch(token.getType()) {
             case NAME:
@@ -127,6 +127,10 @@ public class ExpressionParser {
                 node = parseStringExpression();
                 break;
 
+            case OPERATOR:
+                // Noop
+                break;
+
             default:
                 if (token.is(Token.Type.PUNCTUATION, "[")) {
                     node = parseArrayExpression();
@@ -137,7 +141,7 @@ public class ExpressionParser {
                 }
         }
 
-        return node;
+        return parsePostfixExpression(node);
     }
 
     /**

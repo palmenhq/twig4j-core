@@ -526,7 +526,25 @@ public class ExpressionParserTests {
 
         Assert.assertEquals("Number of items in list should be correct", 2, parsedExpressions.getNodes().size());
 
-        Assert.assertEquals("First item should be of correct type", Constant.class, parsedExpressions.getNode(0).getClass());
-        Assert.assertEquals("Second item should be of correct type", Constant.class, parsedExpressions.getNode(1).getClass());
+        Assert.assertEquals("First item should be of correct type", StringConstant.class, parsedExpressions.getNode(0).getClass());
+        Assert.assertEquals("Second item should be of correct type", StringConstant.class, parsedExpressions.getNode(1).getClass());
+    }
+
+    @Test
+    public void testParseMultitargetString() throws SyntaxErrorException, TwigRuntimeException {
+        ArrayList<Token> tokens = new ArrayList<>();
+        tokens.add(new Token(Token.Type.STRING, "foo", 1));
+        tokens.add(new Token(Token.Type.EOF, null, 1));
+        TokenStream tokenStream = new TokenStream(tokens);
+
+        Parser parser = new Parser(new Environment());
+        parser.setTokenStream(tokenStream);
+        ExpressionParser expressionParser = new ExpressionParser(parser);
+
+        Node parsedExpressions = expressionParser.parseMultitargetExpression();
+
+        Assert.assertEquals("Number of items in list should be correct", 1, parsedExpressions.getNodes().size());
+
+        Assert.assertEquals("First item should be of correct type", StringConstant.class, parsedExpressions.getNode(0).getClass());
     }
 }

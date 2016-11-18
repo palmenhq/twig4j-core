@@ -8,9 +8,10 @@ import org.twig.syntax.parser.node.Node;
 import java.util.List;
 
 public class Set extends Node {
-    public Set(List<String> names, List<Node> values, Boolean capture, Integer line) {
+    public Set(List<String> names, Node values, Boolean capture, Integer line, String tag) {
         super(line);
-        nodes = values;
+        setTag(tag);
+        nodes = values.getNodes();
         putAttribute("names", names);
         putAttribute("capture", capture);
     }
@@ -23,7 +24,7 @@ public class Set extends Node {
 
         for (Integer variableIndex = 0; variableIndex < names.size(); variableIndex ++) {
             compiler
-                .write("context.put(")
+                .write("((java.util.Map<String, Object>)context).put(")
                 .writeString(names.get(variableIndex))
                 .writeRaw(", ")
                 .subCompile(nodes.get(variableIndex))

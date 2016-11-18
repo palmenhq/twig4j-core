@@ -1,7 +1,6 @@
 package org.twig.extension;
 
 import org.twig.syntax.operator.*;
-import org.twig.syntax.parser.tokenparser.AbstractTokenParser;
 import org.twig.syntax.parser.tokenparser.*;
 
 import java.util.Map;
@@ -14,6 +13,8 @@ public class Core implements Extension {
     public List<AbstractTokenParser> getTokenParsers() {
         List<AbstractTokenParser> tokenParsers = new ArrayList<>();
         tokenParsers.add(new If());
+        tokenParsers.add(new Set());
+
         return tokenParsers;
     }
 
