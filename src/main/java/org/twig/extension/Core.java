@@ -57,4 +57,18 @@ public class Core implements Extension {
     public String getName() {
         return "Twig Core";
     }
+
+    /**
+     * Make sure it's possible to iterate over the passed object, otherwise return an empty list
+     *
+     * @param object The object to ensure iterable
+     * @return
+     */
+    public static Iterable<?> ensureIterable(Object object) {
+        if (object instanceof Iterable) {
+            return (Iterable)object;
+        }
+
+        return new ArrayList<>();
+    }
 }
