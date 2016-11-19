@@ -8,19 +8,19 @@ import org.twig.exception.LoaderException;
 import org.twig.exception.TwigRuntimeException;
 import org.twig.syntax.parser.node.Node;
 
-public class BinaryInTests {
+public class BinaryNotInTests {
     @Test
     public void testCompile() throws LoaderException, TwigRuntimeException {
         ClassCompiler compiler = new ClassCompiler(new Environment());
         Node left = new Constant("foo", 1);
         Node right = new Constant("foobar", 2);
-        BinaryIn inNode = new BinaryIn(left, right, 1);
+        BinaryNotIn notInNode = new BinaryNotIn(left, right, 1);
 
-        inNode.compile(compiler);
+        notInNode.compile(compiler);
 
         Assert.assertEquals(
                 "Code should be compiled correctly",
-                "(org.twig.extension.Core.inFilter(\"foo\", \"foobar\"))",
+                "(! (org.twig.extension.Core.inFilter(\"foo\", \"foobar\")) )",
                 compiler.getSourceCode()
         );
     }

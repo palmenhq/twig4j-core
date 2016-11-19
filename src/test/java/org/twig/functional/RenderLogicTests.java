@@ -88,12 +88,16 @@ public class RenderLogicTests extends FunctionalTests {
         templates.put("trueArray.twig", "{{ 'foo' in ['foo', 'bar'] }}");
         templates.put("falseString.twig", "{{ 'nope' in 'foobar' }}");
         templates.put("falseArray.twig", "{{ 'nope' in ['foo', 'bar'] }}");
+        templates.put("falseInverseString.twig", "{{ 'foo' not in 'foobar' }}");
+        templates.put("trueInverseArray.twig", "{{ 'nope' not in ['foo', 'bar'] }}");
         setupEnvironment(templates);
 
         Assert.assertEquals("Can find if string is present in string", "true", environment.render("trueString.twig"));
         Assert.assertEquals("Can find if string is present in array", "true", environment.render("trueArray.twig"));
         Assert.assertEquals("Can't find if string is not present in string", "false", environment.render("falseString.twig"));
         Assert.assertEquals("Can't find if string is not present in array", "false", environment.render("falseArray.twig"));
+        Assert.assertEquals("Can find if string is not present in string when actually is", "false", environment.render("falseInverseString.twig"));
+        Assert.assertEquals("Can find if string is not present in array when is not", "true", environment.render("trueInverseArray.twig"));
     }
 
     @Test(expected = TwigRuntimeException.class)

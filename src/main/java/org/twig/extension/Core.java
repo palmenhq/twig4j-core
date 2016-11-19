@@ -38,6 +38,7 @@ public class Core implements Extension {
         operators.put("==", new BinaryEquals());
         operators.put("!=", new BinaryNotEquals());
         operators.put("in", new BinaryIn());
+        operators.put("not in", new BinaryNotIn());
         operators.put("starts with", new BinaryStartsWith());
         operators.put("ends with", new BinaryEndsWith());
         operators.put("matches", new BinaryMatches());
