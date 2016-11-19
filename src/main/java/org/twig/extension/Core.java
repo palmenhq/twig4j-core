@@ -37,6 +37,7 @@ public class Core implements Extension {
         operators.put(">", new BinaryGreaterThan());
         operators.put("==", new BinaryEquals());
         operators.put("!=", new BinaryNotEquals());
+        operators.put("in", new BinaryIn());
         operators.put("starts with", new BinaryStartsWith());
         operators.put("ends with", new BinaryEndsWith());
         operators.put("matches", new BinaryMatches());
@@ -70,5 +71,13 @@ public class Core implements Extension {
         }
 
         return new ArrayList<>();
+    }
+
+    public static Boolean inFilter(String needle, String haystack) {
+        return haystack.contains(needle);
+    }
+
+    public static Boolean inFilter(Object needle, List<?> haystack) {
+        return haystack.contains(needle);
     }
 }

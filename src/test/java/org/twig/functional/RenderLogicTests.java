@@ -81,6 +81,21 @@ public class RenderLogicTests extends FunctionalTests {
         Assert.assertEquals("Case sensitive regex should match string with wrong case", "true", environment.render("caseInsensitive.twig"));
     }
 
+    @Test
+    public void canDoIn() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("trueString.twig", "{{ 'foo' in 'foobar' }}");
+        templates.put("trueArray.twig", "{{ 'foo' in ['foo', 'bar'] }}");
+        templates.put("falseString.twig", "{{ 'nope' in 'foobar' }}");
+        templates.put("falseArray.twig", "{{ 'nope' in ['foo', 'bar'] }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals("Can find if string is present in string", "true", environment.render("trueString.twig"));
+        Assert.assertEquals("Can find if string is present in array", "true", environment.render("trueArray.twig"));
+        Assert.assertEquals("Can't find if string is not present in string", "false", environment.render("falseString.twig"));
+        Assert.assertEquals("Can't find if string is not present in array", "false", environment.render("falseArray.twig"));
+    }
+
     @Test(expected = TwigRuntimeException.class)
     public void cantCompareDifferentTypesWithStrictTypesEnabled() throws TwigException {
         HashMap<String, String> templates = new HashMap<>();
