@@ -1,24 +1,21 @@
-package org.twig.functional;
+package org.twig.functional.controlstructures;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.twig.exception.SyntaxErrorException;
 import org.twig.exception.TwigException;
-import org.twig.exception.TwigRuntimeException;
+import org.twig.functional.FunctionalTests;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-public class RenderControlStructuresTests extends FunctionalTests {
+public class IfTests extends FunctionalTests {
     @Test
     public void canRenderIf() throws TwigException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig",
                 "{% if foo %}foo{% endif %}\n"
-                + "{% if bar %}bar{% endif %}\n"
+                        + "{% if bar %}bar{% endif %}\n"
         );
         setupEnvironment(templates);
 
@@ -59,7 +56,7 @@ public class RenderControlStructuresTests extends FunctionalTests {
                 "foo.twig",
                 "{% if foo %}\n" +
                         "foo\n"
-                + "{% elseif bar %}bar{% endif %}\n"
+                        + "{% elseif bar %}bar{% endif %}\n"
         );
         setupEnvironment(templates);
 
@@ -84,23 +81,5 @@ public class RenderControlStructuresTests extends FunctionalTests {
         setupEnvironment(templates);
 
         environment.render("foo.twig");
-    }
-
-    @Test
-    public void canRenderForInRange() throws TwigException {
-        HashMap<String, String> templates = new HashMap<>();
-        templates.put(
-                "foo.twig",
-                "{% for foo in 'a'..'c' %}\n" +
-                        "{{ foo }}\n" +
-                        "{% endfor %}"
-        );
-        setupEnvironment(templates);
-
-        Assert.assertEquals(
-                "Contents of range should be rendered",
-                "a\nb\nc\n",
-                environment.render("foo.twig")
-        );
     }
 }

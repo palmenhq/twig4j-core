@@ -1,6 +1,6 @@
 package org.twig.util;
 
-public class HashMap extends java.util.HashMap<String, Object> {
+public class HashMap extends java.util.LinkedHashMap<String, Object> {
     /**
      * Put a value to the HashMap and return itself
      *
@@ -8,7 +8,7 @@ public class HashMap extends java.util.HashMap<String, Object> {
      * @param value The entity
      * @return
      */
-    public java.util.HashMap<String, Object> put(String key, Object value) {
+    public java.util.LinkedHashMap<String, Object> put(String key, Object value) {
         super.put(key, value);
 
         return this;
