@@ -91,13 +91,15 @@ public class RenderControlStructuresTests extends FunctionalTests {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig",
-                "{% for foo in 'a'..'c' %}{{ foo }}{% endfor %}"
+                "{% for foo in 'a'..'c' %}\n" +
+                        "{{ foo }}\n" +
+                        "{% endfor %}"
         );
         setupEnvironment(templates);
 
         Assert.assertEquals(
                 "Contents of range should be rendered",
-                "abc",
+                "a\nb\nc\n",
                 environment.render("foo.twig")
         );
     }

@@ -81,8 +81,8 @@ public class Parser {
      * Does the hard work parsing
      *
      * @param test Function that checks for end tags
-     * @param subparserTag The name of the token parser calling this method
-     * @param dropNeedle Not sure what this does yet
+     * @param subparserTag The name of the token parser calling this method, or null
+     * @param dropNeedle Nexts if the `test` function is applied
      * @return The body nodes
      * @throws SyntaxErrorException On syntax errors
      * @throws TwigRuntimeException On any other errors

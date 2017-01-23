@@ -14,6 +14,7 @@ public class Core implements Extension {
         List<AbstractTokenParser> tokenParsers = new ArrayList<>();
         tokenParsers.add(new If());
         tokenParsers.add(new Set());
+        tokenParsers.add(new For());
 
         return tokenParsers;
     }
@@ -69,6 +70,10 @@ public class Core implements Extension {
     public static Iterable<?> ensureIterable(Object object) {
         if (object instanceof Iterable) {
             return (Iterable)object;
+        }
+
+        if (object instanceof Map) {
+            return ((Map) object).values();
         }
 
         return new ArrayList<>();

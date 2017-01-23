@@ -8,6 +8,14 @@ import org.twig.syntax.parser.node.Node;
 import java.util.List;
 
 public class Set extends Node {
+    /**
+     * Constructor
+     * @param names The variable names
+     * @param values The variable values
+     * @param capture Not sure what this does - does nothing for now
+     * @param line The line the node is on
+     * @param tag Always pass "set" to this one
+     */
     public Set(List<String> names, Node values, Boolean capture, Integer line, String tag) {
         super(line);
         setTag(tag);
