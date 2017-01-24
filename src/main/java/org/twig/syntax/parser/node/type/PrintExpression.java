@@ -14,9 +14,10 @@ public class PrintExpression extends Node {
     @Override
     public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
         compiler
-                .writeLine("output = output.concat(String.valueOf(")
+                .addDebugInfo(this)
+                .write("output = output.concat(String.valueOf(")
                     .subCompile(getExpression())
-                .writeLine("));");
+                .writeRaw("));\n");
     }
 
     public Node getExpression() {

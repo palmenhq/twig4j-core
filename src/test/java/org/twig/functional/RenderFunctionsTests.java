@@ -6,6 +6,7 @@ import org.twig.Environment;
 import org.twig.exception.TwigException;
 import org.twig.exception.TwigRuntimeException;
 import org.twig.loader.HashMapLoader;
+import org.twig.template.Context;
 
 import java.util.HashMap;
 
@@ -16,7 +17,7 @@ public class RenderFunctionsTests extends FunctionalTests {
         templates.put("foo.twig", "{{ foo.getSomething() }}");
         setupEnvironment(templates);
 
-        HashMap<String, Object> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("foo", new TestClass());
 
         Assert.assertEquals("Method return value should be rendered", "foo", environment.render("foo.twig", ctx));
@@ -28,7 +29,7 @@ public class RenderFunctionsTests extends FunctionalTests {
         templates.put("foo.twig", "{{ foo.getSomething }}");
         setupEnvironment(templates);
 
-        HashMap<String, Object> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("foo", new TestClass());
 
         Assert.assertEquals("Method return value should be rendered", "foo", environment.render("foo.twig", ctx));
@@ -40,7 +41,7 @@ public class RenderFunctionsTests extends FunctionalTests {
         templates.put("foo.twig", "{{ foo.something }}");
         setupEnvironment(templates);
 
-        HashMap<String, Object> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("foo", new TestClass());
 
         Assert.assertEquals("Method return value should be rendered", "foo", environment.render("foo.twig", ctx));
@@ -52,7 +53,7 @@ public class RenderFunctionsTests extends FunctionalTests {
         templates.put("foo.twig", "{{ foo.something }}");
         setupEnvironment(templates);
 
-        HashMap<String, Object> ctx = new HashMap<>();
+        Context ctx = new Context();
         HashMap<String, Object> object = new HashMap<>();
         object.put("something", "foo");
         ctx.put("foo", object);
@@ -75,7 +76,7 @@ public class RenderFunctionsTests extends FunctionalTests {
         templates.put("foo.twig", "{{ foo.nonExistingMethod() }}");
         setupEnvironment(templates);
 
-        HashMap<String, Object> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("foo", new TestClass());
 
         environment.render("foo.twig", ctx);
@@ -87,7 +88,7 @@ public class RenderFunctionsTests extends FunctionalTests {
         templates.put("foo.twig", "{{ foo.privateMethod() }}");
         setupEnvironment(templates);
 
-        HashMap<String, Object> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("foo", new TestClass());
 
         environment.render("foo.twig", ctx);
@@ -99,7 +100,7 @@ public class RenderFunctionsTests extends FunctionalTests {
         templates.put("foo.twig", "{{ foo.methodThatThrowsException() }}");
         setupEnvironment(templates);
 
-        HashMap<String, Object> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("foo", new TestClass());
 
         environment.render("foo.twig", ctx);

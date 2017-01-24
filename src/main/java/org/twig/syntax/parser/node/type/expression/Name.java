@@ -12,8 +12,6 @@ public class Name extends Expression {
 
     @Override
     public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
-        compiler
-                .addDebugInfo(this)
-                .writeLine("getContext(context, \"" + getAttribute("name") + "\", false, " + getLine() +")");
+        compiler.writeRaw("getContext(context, \"" + getAttribute("name") + "\", false, " + getLine() +")");
     }
 }

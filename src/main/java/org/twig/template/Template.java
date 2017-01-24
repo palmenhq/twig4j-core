@@ -7,7 +7,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,14 +21,14 @@ abstract public class Template {
     }
 
     public String render() throws TwigRuntimeException {
-        return render(new HashMap<>());
+        return render(new Context());
     }
 
-    public String render(Map<String, ?> context) throws TwigRuntimeException {
+    public String render(Context context) throws TwigRuntimeException {
         return doRender(context);
     }
 
-    abstract protected String doRender(Map<String, ?> context) throws TwigRuntimeException;
+    abstract protected String doRender(Context context) throws TwigRuntimeException;
 
     /**
      * Get the template file name
@@ -58,10 +57,37 @@ abstract public class Template {
         return context.get(item);
     }
 
+    /**
+     * @see this#getAttribute(Object, Object, List, String, boolean, boolean)
+     *
+     * Defaults to strict checks (which means exceptions are thrown when not able to access the property)
+     *
+     * @param object The object or array (hopefully) to get the attribute on
+     * @param item The attribute to get, a String if an object is passed and an Integer if an array/List is passed
+     * @param arguments If this is a method pass the arguments as an array here
+     * @param type Whether it's an array or an actual object
+     *
+     * @return The value
+     * @throws TwigRuntimeException If the item/property can not be accessed
+     */
     protected Object getAttribute(Object object, Object item, List<Object> arguments, String type) throws TwigRuntimeException {
         return getAttribute(object, item, arguments, type, false, false);
     }
 
+    /**
+     * Gets an attribute from an object or array. Object can be a Map<String|Integer|Boolean>, object with the property passed as `item`,
+     * an object that has one of the methods `get(Item)`, `is(Item)` or `has(Item)` where (Item) is the string passed to `item`.
+     *
+     * @param object The object or array (hopefully) to get the attribute on
+     * @param item The attribute to get, a String if an object is passed and an Integer if an array/List is passed
+     * @param arguments If this is a method pass the arguments as an array here
+     * @param type Whether it's an array or an actual object
+     * @param isDefinedTest Not sure what this does but it should always be set to false unless you know what you're doing
+     * @param ignoreStrictChecks Throw exceptions if property can't be accessed if set to false, just return null if set to true
+     *
+     * @return The value
+     * @throws TwigRuntimeException If the item/property can not be accessed
+     */
     protected Object getAttribute(Object object, Object item, List<Object> arguments, String type, boolean isDefinedTest, boolean ignoreStrictChecks) throws TwigRuntimeException {
         if (!type.equals("method")) {
 

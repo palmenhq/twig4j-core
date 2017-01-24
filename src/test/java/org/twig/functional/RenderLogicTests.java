@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.twig.exception.TwigException;
 import org.twig.exception.TwigRuntimeException;
+import org.twig.template.Context;
 
 import javax.script.ScriptEngine;
 import java.util.HashMap;
@@ -43,7 +44,7 @@ public class RenderLogicTests extends FunctionalTests {
         templates.put("foo.twig", "{{ foo == false }}");
         setupEnvironment(templates);
 
-        HashMap<String, Object> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("foo", false);
 
         Assert.assertEquals("Bool should render text bool", "true", environment.render("foo.twig", ctx));
@@ -55,7 +56,7 @@ public class RenderLogicTests extends FunctionalTests {
         templates.put("foo.twig", "{{ foo == \"bar\" }}");
         setupEnvironment(templates);
 
-        HashMap<String, Object> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("foo", "bar");
 
         Assert.assertEquals("Bool should render text bool", "true", environment.render("foo.twig", ctx));
@@ -90,6 +91,25 @@ public class RenderLogicTests extends FunctionalTests {
         Assert.assertEquals("Case sensitive regex should match string with wrong case", "true", environment.render("caseInsensitive.twig"));
     }
 
+    @Test
+    public void canDoIn() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put("trueString.twig", "{{ 'foo' in 'foobar' }}");
+        templates.put("trueArray.twig", "{{ 'foo' in ['foo', 'bar'] }}");
+        templates.put("falseString.twig", "{{ 'nope' in 'foobar' }}");
+        templates.put("falseArray.twig", "{{ 'nope' in ['foo', 'bar'] }}");
+        templates.put("falseInverseString.twig", "{{ 'foo' not in 'foobar' }}");
+        templates.put("trueInverseArray.twig", "{{ 'nope' not in ['foo', 'bar'] }}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals("Can find if string is present in string", "true", environment.render("trueString.twig"));
+        Assert.assertEquals("Can find if string is present in array", "true", environment.render("trueArray.twig"));
+        Assert.assertEquals("Can't find if string is not present in string", "false", environment.render("falseString.twig"));
+        Assert.assertEquals("Can't find if string is not present in array", "false", environment.render("falseArray.twig"));
+        Assert.assertEquals("Can find if string is not present in string when actually is", "false", environment.render("falseInverseString.twig"));
+        Assert.assertEquals("Can find if string is not present in array when is not", "true", environment.render("trueInverseArray.twig"));
+    }
+
     @Test(expected = TwigRuntimeException.class)
     public void cantCompareDifferentTypesWithStrictTypesEnabled() throws TwigException {
         HashMap<String, String> templates = new HashMap<>();
@@ -97,7 +117,7 @@ public class RenderLogicTests extends FunctionalTests {
         setupEnvironment(templates);
         environment.enableStrictTypes();
 
-        HashMap<String, Object> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("foo", "1");
 
         environment.render("foo.twig", ctx);

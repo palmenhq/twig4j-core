@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.twig.Environment;
 import org.twig.exception.TwigException;
 import org.twig.loader.FilesystemLoader;
+import org.twig.template.Context;
 
 import java.util.HashMap;
 
@@ -15,7 +16,7 @@ public class RenderFromFilesystemTests {
         loader.addPath(getClass().getClassLoader().getResource("test-templates").getPath().toString());
         Environment environment = new Environment(loader);
 
-        HashMap<String, WhatClass> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("what", new WhatClass());
 
         Assert.assertEquals(

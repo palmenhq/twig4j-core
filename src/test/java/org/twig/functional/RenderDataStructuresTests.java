@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.twig.exception.TwigException;
 import org.twig.exception.TwigRuntimeException;
+import org.twig.template.Context;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +40,7 @@ public class RenderDataStructuresTests extends FunctionalTests {
         templates.put("foo.twig", "{{ foo[0] }}");
         setupEnvironment(templates);
 
-        Map<String, List<String>> ctx = new HashMap<>();
+        Context ctx = new Context();
         List<String> list = new ArrayList<>();
         list.add("bar");
         ctx.put("foo", list);
@@ -57,7 +58,7 @@ public class RenderDataStructuresTests extends FunctionalTests {
         templates.put("foo.twig", "{{ foo[0] }}");
         setupEnvironment(templates);
 
-        Map<String, Integer> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("foo", 1);
 
         environment.render("foo.twig", ctx);

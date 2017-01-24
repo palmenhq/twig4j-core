@@ -19,6 +19,6 @@ public class TextTests {
 
         verify(compilerStub).write("output = output.concat(");
         verify(compilerStub).writeString("foo");
-        verify(compilerStub).writeLine(");");
+        verify(compilerStub).writeRaw(");\n");
     }
 }

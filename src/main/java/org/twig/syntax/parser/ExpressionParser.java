@@ -11,6 +11,7 @@ import org.twig.syntax.parser.node.type.expression.*;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 
 /**
@@ -116,7 +117,7 @@ public class ExpressionParser {
      */
     public Expression parsePrimaryExpression() throws SyntaxErrorException, TwigRuntimeException {
         Token token = parser.getCurrentToken();
-        Expression node;
+        Expression node = null;
 
         switch(token.getType()) {
             case NAME:
@@ -171,7 +172,7 @@ public class ExpressionParser {
                 }
         }
 
-        return node;
+        return parsePostfixExpression(node);
     }
 
     /**
@@ -427,6 +428,57 @@ public class ExpressionParser {
         stream.expect(Token.Type.PUNCTUATION, ")", "A list of arguments must be closed by a parenthesis");
 
         return new Node(arguments, new HashMap<>(), -1, stream.getFilename());
+    }
+
+    /**
+     * Parse names for an assignment. IMPORTANT - this method's return value differs from Twig for php
+     *
+     * @return A list with the names
+     * @throws SyntaxErrorException
+     * @throws TwigRuntimeException
+     */
+    public List<String> parseAssignmentExpression() throws SyntaxErrorException, TwigRuntimeException {
+        List<String> names = new ArrayList<>();
+
+        while (true) {
+            Token token = parser.getTokenStream().expect(Token.Type.NAME, null, "Only variables can be assigned to");
+            if (token.getValue().equals("true") || token.getValue().equals("false") || token.getValue().equals("none") || token.getValue().equals("null")) {
+                throw new SyntaxErrorException("You cannot assign a value to " + token.getValue(), parser.getFilename(), token.getLine());
+            }
+
+            names.add(token.getValue());;
+
+            if (parser.getTokenStream().getCurrent().is(Token.Type.PUNCTUATION, ",")) {
+                parser.getTokenStream().next();
+            } else {
+                break;
+            }
+        }
+
+        return names;
+    }
+
+    /**
+     * Parse multiple expressions separated by comma
+     *
+     * @return A node with the expressions
+     * @throws SyntaxErrorException
+     * @throws TwigRuntimeException
+     */
+    public Node parseMultitargetExpression() throws SyntaxErrorException, TwigRuntimeException {
+        List<Node> expressions = new ArrayList<>();
+
+        while (true) {
+            expressions.add(parseExpression());
+
+            if (parser.getTokenStream().getCurrent().is(Token.Type.PUNCTUATION, ",")) {
+                parser.getTokenStream().next();
+            } else {
+                break;
+            }
+        }
+
+        return new Node(expressions, new HashMap<>(), -1, "");
     }
 
     /**

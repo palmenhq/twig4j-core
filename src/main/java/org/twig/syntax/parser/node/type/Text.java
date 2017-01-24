@@ -11,6 +11,11 @@ public class Text extends Node {
         super(nodes, attributes, line, tag);
     }
 
+    public Text(String data, Integer line) {
+        super(line);
+        putAttribute("data", data);
+    }
+
     public Text(Integer line) {
         super(line);
     }
@@ -20,6 +25,6 @@ public class Text extends Node {
         String text = String.valueOf(attributes.get("data"));
         compiler.write("output = output.concat(");
         compiler.writeString(text);
-        compiler.writeLine(");");
+        compiler.writeRaw(");\n");
     }
 }
