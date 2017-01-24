@@ -19,7 +19,10 @@ public class For extends AbstractTokenParser {
         Expression seq = parser.getExpressionParser().parseExpression();
         org.twig.syntax.parser.node.type.For.Settings settings = new org.twig.syntax.parser.node.type.For.Settings();
 
-        // TODO check for ifexpr
+        if (tokenStream.getCurrent().test(Token.Type.NAME, "if")) {
+            tokenStream.next();
+            settings.setIfExpr(parser.getExpressionParser().parseExpression());
+        }
 
         tokenStream.expect(Token.Type.BLOCK_END);
 
@@ -35,8 +38,6 @@ public class For extends AbstractTokenParser {
         } else {
             settings.setValueTarget(targets.get(0));
         }
-
-        // TODO the ifexpr body check
 
         // TODO check loop variables
 

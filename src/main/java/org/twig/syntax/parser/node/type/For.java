@@ -4,6 +4,7 @@ import org.twig.compiler.ClassCompiler;
 import org.twig.exception.LoaderException;
 import org.twig.exception.TwigRuntimeException;
 import org.twig.syntax.parser.node.Node;
+import org.twig.syntax.parser.node.type.control.IfBody;
 import org.twig.syntax.parser.node.type.control.IfStatement;
 import org.twig.syntax.parser.node.type.expression.Expression;
 
@@ -19,10 +20,8 @@ public class For extends Node {
         Node body = new Node(Arrays.asList(settings.getBody(), this.loop), new HashMap<>(), line, tag);
 
         if (settings.getIfExpr() != null) {
-            List<Node> ifStatementParams = new ArrayList<>();
-            ifStatementParams.add(settings.getIfExpr());
-            ifStatementParams.add(body);
-            body = new IfStatement(ifStatementParams, line, tag);
+            Node ifBody = new IfBody(settings.getIfExpr(), body, line);
+            body = new IfStatement(Arrays.asList(ifBody), line, tag);
         }
 
         List<Node> nodes = Arrays.asList(
@@ -94,7 +93,7 @@ public class For extends Node {
 
         // Increase the internal iterator index by 1
         compiler
-                .writeLine("((org.twig.util.HashMap)((java.util.Map<String, Object>)context).get(\"_loop_internal\"))")
+                .writeLine("((org.twig.util.HashMap)context.get(\"_loop_internal\"))")
                 .indent()
                     .writeLine(".put(\"iterator_index\",")
                     .indent()
@@ -105,7 +104,7 @@ public class For extends Node {
 
         compiler
                 .unIndent()
-                .writeLine("}")
+                .writeLine("}") // End for
         ;
 
         // Reset loop

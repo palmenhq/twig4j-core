@@ -143,7 +143,7 @@ public class ForTests extends FunctionalTests {
         setupEnvironment(templates);
 
         Assert.assertEquals(
-                "Key and items should be rendered correctly",
+                "Only items that matches if condition should be rendered",
                 "1 3 5 ",
                 environment.render("foo.twig")
         );

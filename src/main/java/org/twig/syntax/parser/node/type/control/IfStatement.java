@@ -34,6 +34,9 @@ public class IfStatement extends Node {
                 compiler
                         .write("} else {\n")
                         .subCompile(node.getNode(0));
+            } else {
+                throw new TwigRuntimeException("Invalid node of type \"" + node.getClass().toString() + "\" passed to if statement" +
+                        "(expected " + IfBody.class.toString() + ", " + ElseIfBody.class.toString() + " or " + ElseBody.class.toString() + ").", null, line);
             }
         }
 

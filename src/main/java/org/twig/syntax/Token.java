@@ -37,6 +37,16 @@ public class Token {
     }
 
     /**
+     * Tests the token for a type and value
+     * @param type The token type to test
+     * @param value The token value to test
+     * @return Whether the provided type and value equals the current token
+     */
+    public Boolean test(Type type, String value) {
+        return type == this.type && value.equals(this.value);
+    }
+
+    /**
      * Returns the english representation of a given type
      *
      * @param type The token type
