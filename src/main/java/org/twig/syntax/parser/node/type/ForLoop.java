@@ -22,6 +22,10 @@ public class ForLoop extends Node {
 
     @Override
     public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
+        if (((Boolean)getAttribute("else"))) {
+            compiler.writeLine("context.put(\"_iterated\", true);");
+        }
+
         if (((Boolean)getAttribute("with_loop"))) {
             compiler
                     .writeLine("((org.twig.util.HashMap)((java.util.Map<String, Object>)context).get(\"loop\"))")

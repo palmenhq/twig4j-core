@@ -26,9 +26,16 @@ public class For extends AbstractTokenParser {
 
         tokenStream.expect(Token.Type.BLOCK_END);
 
-        settings.setBody(this.parser.subparse(this::decideForEnd, null, true));
+        settings.setBody(this.parser.subparse(this::decideForFork, null, false));
         settings.setSeq(seq);
-        // TODO else
+
+        if (tokenStream.getCurrent().is(Token.Type.NAME, "else")) {
+            tokenStream.next();
+            tokenStream.expect(Token.Type.BLOCK_END);
+            settings.setElseBody(parser.subparse(this::decideForEnd, null, true));
+        } else {
+            tokenStream.next();
+        }
 
         tokenStream.expect(Token.Type.BLOCK_END);
 
@@ -50,13 +57,22 @@ public class For extends AbstractTokenParser {
     }
 
     /**
+     * Return whether the token is an else or a for tag
+     *
+     * @param token
+     * @return
+     */
+    public boolean decideForFork(Token token) {
+        return token.is(Token.Type.NAME, "else") || token.is(Token.Type.NAME, "endfor");
+    }
+
+    /**
      * Return whether the token is an endfor tag
      *
      * @param token
      * @return
      */
     public boolean decideForEnd(Token token) {
-        // TODO test else
         return token.is(Token.Type.NAME, "endfor");
     }
 }

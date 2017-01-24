@@ -107,6 +107,16 @@ public class For extends Node {
                 .writeLine("}") // End for
         ;
 
+        // Node 2 = else
+        if (getNode(2) != null) {
+            compiler
+                    .writeLine("if (!((Boolean)context.get(\"_iterated\"))) {")
+                    .indent()
+                        .subCompile(getNode(2))
+                    .unIndent()
+                    .writeLine("}");
+        }
+
         // Reset loop
         compiler
                 .writeLine("tmpForParent = new java.util.HashMap<String, Object>();")

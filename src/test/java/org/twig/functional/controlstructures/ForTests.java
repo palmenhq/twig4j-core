@@ -76,7 +76,6 @@ public class ForTests extends FunctionalTests {
                         "2 1 false 1 0 true bar\n",
                 environment.render("foo.twig")
         );
-
     }
 
     @Test
@@ -108,7 +107,6 @@ public class ForTests extends FunctionalTests {
                 "1 qux 2 1 false\n",
                 environment.render("foo.twig")
         );
-
     }
 
     @Test
@@ -128,7 +126,6 @@ public class ForTests extends FunctionalTests {
                     "baz: qux\n",
                 environment.render("foo.twig")
         );
-
     }
 
     @Test
@@ -147,6 +144,45 @@ public class ForTests extends FunctionalTests {
                 "1 3 5 ",
                 environment.render("foo.twig")
         );
+    }
 
+    @Test
+    public void canUseElseBody() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put(
+                "foo.twig",
+                "{% for i in [] %}\n" +
+                        "do nothing here\n" +
+                        "{% else %}\n" +
+                        "else works" +
+                        "{% endfor %}"
+        );
+        setupEnvironment(templates);
+
+        Assert.assertEquals(
+                "Only \"else works\" text should be printed",
+                "else works",
+                environment.render("foo.twig")
+        );
+    }
+
+    @Test
+    public void doesNotTriggerElseBodyWhenIterated() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put(
+                "foo.twig",
+                "{% for i in [1, 2] %}\n" +
+                        "{{ i }}" +
+                        "{% else %}\n" +
+                        "Don't print this" +
+                        "{% endfor %}"
+        );
+        setupEnvironment(templates);
+
+        Assert.assertEquals(
+                "Else text should not be printed",
+                "12",
+                environment.render("foo.twig")
+        );
     }
 }
