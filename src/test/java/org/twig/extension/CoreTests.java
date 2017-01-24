@@ -24,6 +24,8 @@ public class CoreTests {
         Assert.assertTrue("Returned list should be a list even though null and another type was provided", ensuredList instanceof Iterable);
     }
 
+    // TODO test ensureIterable(Map<?>)
+
     @Test
     public void canCheckInOnString() {
         String haystack = "bar foo baz";
