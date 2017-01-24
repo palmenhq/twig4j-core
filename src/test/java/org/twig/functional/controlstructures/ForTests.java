@@ -110,4 +110,24 @@ public class ForTests extends FunctionalTests {
         );
 
     }
+
+    @Test
+    public void canLoopHashMaps() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put(
+                "foo.twig",
+                "{% for key, item in { foo: 'bar', baz: 'qux' } %}\n" +
+                        "{{ key }}: {{ item }}\n" +
+                        "{% endfor %}"
+        );
+        setupEnvironment(templates);
+
+        Assert.assertEquals(
+                "Key and items should be rendered correctly",
+                "foo: bar\n" +
+                    "baz: qux\n",
+                environment.render("foo.twig")
+        );
+
+    }
 }

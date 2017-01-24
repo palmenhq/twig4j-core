@@ -44,20 +44,20 @@ public class For extends Node {
     public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
         compiler.addDebugInfo(this)
                 .writeLine(putInContext("_parent", "context.clone()"))
-                .write("((java.util.Map<String, Object>)context).put(\"_seq\", org.twig.extension.Core.ensureIterable(");
+                .write("context.put(\"_seq\", org.twig.extension.Core.ensureIterable(");
             this.getNode(0).compile(compiler); // Node 0 = _seq
         compiler
                 .writeRaw("));\n")
                 .writeLine(putInContext("_iterated", "false"))
                 .writeLine(putInContext("_loop_internal", "(new org.twig.util.HashMap())"))
-                .writeLine("((org.twig.util.HashMap)((java.util.Map<String, Object>)context).get(\"_loop_internal\")).put(\"iterator_index\", 0);");
+                .writeLine("((org.twig.util.HashMap)context.get(\"_loop_internal\")).put(\"iterator_index\", 0);");
 
         ;
 
         if (((Boolean)this.getAttribute("with_loop"))) {
             compiler
                     .writeLine(putInContext("loop", "(new org.twig.util.HashMap())"))
-                    .writeLine("((org.twig.util.HashMap)((java.util.Map<String, Object>)context).get(\"loop\"))")
+                    .writeLine("((org.twig.util.HashMap)context.get(\"loop\"))")
                     .indent()
                         .writeLine(".put(\"parent\", ((Object)context.get(\"_parent\")))")
                         .writeLine(".put(\"index0\", 0)")
@@ -117,12 +117,22 @@ public class For extends Node {
      * @param compiler
      */
     protected void compileKeyValueTarget(ClassCompiler compiler, String valueVariableName) throws TwigRuntimeException {
-        compiler.writeLine(putInContext((String)getAttribute("value_target"), valueVariableName));
 
         compiler
                 .writeLine("if (context.get(\"_seq\") instanceof java.util.List) {")
                 .indent()
                     .writeLine(putInContext(((String)getAttribute("key_target")), "((org.twig.util.HashMap)((java.util.Map<String, Object>)context).get(\"_loop_internal\")).get(\"iterator_index\")"))
+                    .writeLine(putInContext((String)getAttribute("value_target"), valueVariableName))
+                .unIndent()
+                .writeLine("} else if (" + valueVariableName + " instanceof java.util.Map.Entry) {")
+                .indent()
+                    .writeLine(putInContext(((String)getAttribute("key_target")), "((java.util.Map.Entry<String, Object>)" + valueVariableName + ").getKey()"))
+                    .writeLine(putInContext(((String)getAttribute("value_target")), "((java.util.Map.Entry<String, Object>)" + valueVariableName + ").getValue()"))
+                .unIndent()
+                .writeLine("} else {")
+                .indent()
+                    .writeLine(putInContext(((String)getAttribute("key_target")), null))
+                    .writeLine(putInContext(((String)getAttribute("value_target")), valueVariableName))
                 .unIndent()
                 .writeLine("}");
     }
@@ -134,7 +144,7 @@ public class For extends Node {
      * @return The put statement
      */
     protected String putInContext(String key, String value) {
-        return "((java.util.Map<String, Object>)context).put(\"" + key + "\", " + value + ");";
+        return "context.put(\"" + key + "\", " + value + ");";
     }
 
     /**

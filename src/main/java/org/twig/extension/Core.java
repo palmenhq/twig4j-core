@@ -73,7 +73,7 @@ public class Core implements Extension {
         }
 
         if (object instanceof Map) {
-            return ((Map) object).values();
+            return ((Map) object).entrySet();
         }
 
         return new ArrayList<>();
