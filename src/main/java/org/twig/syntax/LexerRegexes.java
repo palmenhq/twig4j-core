@@ -126,18 +126,34 @@ public class LexerRegexes {
         StringBuilder pattern = new StringBuilder();
         pattern.append("^(");
 
-
         LinkedHashMap<String, Operator> allOperators = new LinkedHashMap<>();
         allOperators.putAll(unaryOperators);
         allOperators.putAll(binaryOperators);
 
-        Iterator<Map.Entry<String, Operator>> it = allOperators.entrySet().iterator();
+        List<String> operatorSymbols = new ArrayList<>();
+        operatorSymbols.addAll(allOperators.keySet());
+
+        // Sort operators by size from longest to shortest to avoid that i.e. "in" does not get detected when using ie the operator "inside"
+        Collections.sort(operatorSymbols, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                if (o1.length() > o2.length()) {
+                    return -1;
+                } else if (o1.length() == o2.length()){
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        });
+
+        Iterator<String> it = operatorSymbols.iterator();
         while (it.hasNext()) {
-            Map.Entry<String, Operator> operator = it.next();
-            pattern.append(Pattern.quote(operator.getKey()));
+            String operator = it.next();
+            pattern.append(Pattern.quote(operator));
 
             // If the operator ends with a number or character it has to end with spaces
-            if (Pattern.compile("[\\w\\d]+$").matcher(operator.getKey()).matches()) {
+            if (Pattern.compile(".*[\\w\\d]+$").matcher(operator).matches()) {
                 pattern.append("(?=\\s+)");
             }
 
@@ -152,7 +168,6 @@ public class LexerRegexes {
 
         return Pattern.compile(pattern.toString());
     }
-
 
     public Pattern getExpressionName() {
         return Pattern.compile("^[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*");
