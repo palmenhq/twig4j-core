@@ -134,7 +134,6 @@ public class LexerRegexes {
         Iterator<Map.Entry<String, Operator>> it = allOperators.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<String, Operator> operator = it.next();
-            pattern.append("(");
             pattern.append(Pattern.quote(operator.getKey()));
 
             // If the operator ends with a number or character it has to end with spaces
@@ -142,7 +141,7 @@ public class LexerRegexes {
                 pattern.append("(?=\\s+)");
             }
 
-            pattern.append(")|");
+            pattern.append("|");
 
         }
 
