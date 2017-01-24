@@ -43,6 +43,23 @@ public class ForTests extends FunctionalTests {
     }
 
     @Test
+    public void canRenderArrayWithKeys() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put(
+                "foo.twig",
+                "{% for key, item in ['foo', 'bar'] %}{{ key }}: {{ item }}\n" +
+                        "{% endfor %}"
+        );
+        setupEnvironment(templates);
+
+        Assert.assertEquals(
+                "All array keys should be rendered",
+                "0: foo\n1: bar\n",
+                environment.render("foo.twig")
+        );
+    }
+
+    @Test
     public void canUseLoopVariable() throws TwigException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(

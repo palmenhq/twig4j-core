@@ -51,7 +51,12 @@ public class For extends Node {
             this.getNode(0).compile(compiler); // Node 0 = _seq
         compiler
                 .writeRaw("));\n")
-                .writeLine(putInContext("_iterated", "false"));
+                .writeLine(putInContext("_iterated", "false"))
+                .writeLine(putInContext("_loop_internal", "(new org.twig.util.HashMap())"))
+                .writeLine("((org.twig.util.HashMap)((java.util.Map<String, Object>)context).get(\"_loop_internal\")).put(\"iterator_index\", 0);");
+
+        ;
+
         if (((Boolean)this.getAttribute("with_loop"))) {
             compiler
                     .writeLine(putInContext("loop", "(new org.twig.util.HashMap())"))
@@ -60,6 +65,7 @@ public class For extends Node {
                         .writeLine(".put(\"parent\", ((Object)context.get(\"_parent\")))")
                         .writeLine(".put(\"index0\", 0)")
                         .writeLine(".put(\"index\", 1)")
+                        .writeLine(".put(\"_iterator_index\", 0)")
                         .writeLine(".put(\"first\", true);")
                     .unIndent()
                     // Make an extra line break before the for loop
@@ -71,10 +77,23 @@ public class For extends Node {
         // Do the loop
         compiler
                 .writeLine("for (Object value : ((Iterable)(context.get(\"_seq\")))) {")
-                .indent()
-                // TODO set key
-                .writeLine(putInContext((String)getAttribute("value_target"), "value"));
+                .indent();
+
+        compileKeyValueTarget(compiler);
+
         this.getNode(1).compile(compiler); // Node 1 = for body
+
+        // Increase the internal iterator index by 1
+        compiler
+                .writeLine("((org.twig.util.HashMap)((java.util.Map<String, Object>)context).get(\"_loop_internal\"))")
+                .indent()
+                    .writeLine(".put(\"iterator_index\",")
+                    .indent()
+                        .writeLine("((Integer)((org.twig.util.HashMap)((java.util.Map<String, Object>)context).get(\"_loop_internal\")).get(\"iterator_index\")) + 1")
+                    .unIndent()
+                    .writeLine(");")
+                .unIndent();
+
         compiler
                 .unIndent()
                 .writeLine("}");
@@ -90,6 +109,21 @@ public class For extends Node {
                 .writeLine("((java.util.Map<String, Object>)context).putAll(((java.util.HashMap)context.get(\"_old_parent\")));")
                 .writeLine("context.remove(\"_old_parent\");")
         ;
+    }
+
+    /**
+     * Set the key and value variables
+     * @param compiler
+     */
+    protected void compileKeyValueTarget(ClassCompiler compiler) throws TwigRuntimeException {
+        compiler.writeLine(putInContext((String)getAttribute("value_target"), "value"));
+
+        compiler
+                .writeLine("if (context.get(\"_seq\") instanceof java.util.List) {")
+                .indent()
+                    .writeLine(putInContext(((String)getAttribute("key_target")), "((org.twig.util.HashMap)((java.util.Map<String, Object>)context).get(\"_loop_internal\")).get(\"iterator_index\")"))
+                .unIndent()
+                .writeLine("}");
     }
 
     /**

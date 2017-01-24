@@ -40,6 +40,6 @@ public class ForTests {
         Assert.assertEquals("Key target should be set", "key", forStatement.getAttribute("key_target"));
         Assert.assertEquals("Value target should be set", "val", forStatement.getAttribute("value_target"));
         Assert.assertTrue("Thing to loop over should be binary range", forStatement.getNode(0) instanceof BinaryRange);
-        Assert.assertTrue("Body node should be text", forStatement.getNode(1) instanceof Text);
+        Assert.assertTrue("Body node should be a node", forStatement.getNode(1) instanceof Node);
     }
 }
