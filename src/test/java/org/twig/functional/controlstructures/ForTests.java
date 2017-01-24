@@ -65,15 +65,15 @@ public class ForTests extends FunctionalTests {
         templates.put(
                 "foo.twig",
                 "{% for item in ['foo', 'bar'] %}\n" +
-                        "{{ loop.index }} {{ loop.index0 }} {{ loop.first }} {{ item }}\n" +
+                        "{{ loop.index }} {{ loop.index0 }} {{ loop.first }} {{ loop.revindex }} {{ loop.revindex0 }} {{ loop.last }} {{ item }}\n" +
                         "{% endfor %}"
         );
         setupEnvironment(templates);
 
         Assert.assertEquals(
                 "Loop variables should be rendered correctly",
-                "1 0 true foo\n" +
-                        "2 1 false bar\n",
+                "1 0 true 2 1 false foo\n" +
+                        "2 1 false 1 0 true bar\n",
                 environment.render("foo.twig")
         );
 
@@ -126,6 +126,25 @@ public class ForTests extends FunctionalTests {
                 "Key and items should be rendered correctly",
                 "foo: bar\n" +
                     "baz: qux\n",
+                environment.render("foo.twig")
+        );
+
+    }
+
+    @Test
+    public void canLoopWithIf() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put(
+                "foo.twig",
+                "{% for i in 1..5 if i % 2 == 1 %}\n" +
+                        "{{ i }} " +
+                        "{% endfor %}"
+        );
+        setupEnvironment(templates);
+
+        Assert.assertEquals(
+                "Key and items should be rendered correctly",
+                "1 3 5 ",
                 environment.render("foo.twig")
         );
 

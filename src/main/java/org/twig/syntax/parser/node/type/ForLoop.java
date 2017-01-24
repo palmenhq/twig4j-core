@@ -16,7 +16,7 @@ public class ForLoop extends Node {
 
         // TODO change attributes to false when we find out where it's changed to true in another place (probably a node visitor)
         putAttribute("with_loop", true);
-        putAttribute("ifexpr", true);
+        putAttribute("ifExpr", true);
         putAttribute("else", true);
     }
 
@@ -32,6 +32,15 @@ public class ForLoop extends Node {
                     .unIndent();
         }
 
-        // TODO revindex
+        if (((Boolean)getAttribute("ifExpr"))) {
+            compiler
+                    .writeLine("if (((org.twig.util.HashMap)context.get(\"loop\")).containsKey(\"length\")) {")
+                    .indent()
+                        .writeLine("((org.twig.util.HashMap)context.get(\"loop\")).put(\"revindex0\", ((Integer)((org.twig.util.HashMap)context.get(\"loop\")).get(\"revindex0\")) - 1);")
+                        .writeLine("((org.twig.util.HashMap)context.get(\"loop\")).put(\"revindex\", ((Integer)((org.twig.util.HashMap)context.get(\"loop\")).get(\"revindex\")) - 1);")
+                        .writeLine("((org.twig.util.HashMap)context.get(\"loop\")).put(\"last\", ((Integer)((org.twig.util.HashMap)context.get(\"loop\")).get(\"revindex0\")) == 0);")
+                    .unIndent()
+                    .writeLine("}");
+        }
     }
 }

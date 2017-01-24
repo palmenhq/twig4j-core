@@ -69,7 +69,17 @@ public class For extends Node {
                     .writeRaw("\n");
         }
 
-        // TODO revindex
+        if (!(Boolean)getAttribute("ifExpr")) {
+            compiler
+                    .writeLine("if (context.get(\"_seq\") instanceof java.util.Collection) {")
+                    .indent()
+                        .writeLine("((org.twig.util.HashMap)context.get(\"loop\")).put(\"revindex0\", ((java.util.Collection)context.get(\"_seq\")).size() - 1);")
+                        .writeLine("((org.twig.util.HashMap)context.get(\"loop\")).put(\"revindex\", ((java.util.Collection)context.get(\"_seq\")).size());")
+                        .writeLine("((org.twig.util.HashMap)context.get(\"loop\")).put(\"length\", ((java.util.Collection)context.get(\"_seq\")).size());")
+                        .writeLine("((org.twig.util.HashMap)context.get(\"loop\")).put(\"last\", ((java.util.Collection)context.get(\"_seq\")).size() ==  1);")
+                    .unIndent()
+                    .writeLine("}\n");
+        }
 
         String randomVariableName = getRandomVariableName();
         // Do the loop
