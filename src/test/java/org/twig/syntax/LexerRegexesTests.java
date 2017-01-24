@@ -17,4 +17,14 @@ public class LexerRegexesTests {
 
         Assert.assertEquals("Correct regex should be returned", "^(\\Q+\\E|=)", regexes.getOperators().toString());
     }
+
+    @Test
+    public void canCreateOperatorsThatEndWithCharacter() {
+        HashMap<String, Operator> binaryOperators = new HashMap<>();
+        binaryOperators.put("in", new BinaryAdd());
+
+        LexerRegexes regexes = new LexerRegexes(new LexerOptions(), new HashMap<>(), binaryOperators);
+
+        Assert.assertEquals("Correct regex should be returned", "^(\\Qin\\E(?=\\s+)|=)", regexes.getOperators().toString());
+    }
 }
