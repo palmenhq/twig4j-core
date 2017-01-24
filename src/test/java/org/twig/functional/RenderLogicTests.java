@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.twig.exception.TwigException;
 import org.twig.exception.TwigRuntimeException;
+import org.twig.template.Context;
 
 import javax.script.ScriptEngine;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class RenderLogicTests extends FunctionalTests {
         templates.put("foo.twig", "{{ foo == false }}");
         setupEnvironment(templates);
 
-        HashMap<String, Object> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("foo", false);
 
         Assert.assertEquals("Bool should render text bool", "true", environment.render("foo.twig", ctx));
@@ -46,7 +47,7 @@ public class RenderLogicTests extends FunctionalTests {
         templates.put("foo.twig", "{{ foo == \"bar\" }}");
         setupEnvironment(templates);
 
-        HashMap<String, Object> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("foo", "bar");
 
         Assert.assertEquals("Bool should render text bool", "true", environment.render("foo.twig", ctx));
@@ -107,7 +108,7 @@ public class RenderLogicTests extends FunctionalTests {
         setupEnvironment(templates);
         environment.enableStrictTypes();
 
-        HashMap<String, Object> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("foo", "1");
 
         environment.render("foo.twig", ctx);

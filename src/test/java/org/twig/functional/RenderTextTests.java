@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.twig.Environment;
 import org.twig.exception.TwigException;
 import org.twig.loader.HashMapLoader;
+import org.twig.template.Context;
 
 import java.util.HashMap;
 
@@ -33,7 +34,7 @@ public class RenderTextTests extends FunctionalTests {
         templates.put("foo.twig", "{{ bar }}");
         setupEnvironment(templates);
 
-        HashMap<String, String> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("bar", "baz");
 
         Assert.assertEquals("Rendered variable should be equal to value", "baz", environment.render("foo.twig", ctx));
@@ -46,7 +47,7 @@ public class RenderTextTests extends FunctionalTests {
         templates.put("bar.twig", "{{ 'not interpolated #{string}' }}");
         setupEnvironment(templates);
 
-        HashMap<String, String> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("bar", "string");
 
         Assert.assertEquals(
@@ -69,7 +70,7 @@ public class RenderTextTests extends FunctionalTests {
         templates.put("concatVariables.twig", "{{ 'foo' ~ var }}");
         setupEnvironment(templates);
 
-        HashMap<String, String> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("var", "baz");
 
         Assert.assertEquals("Concatenated strings should be concatenated", "foobar", environment.render("concatStrings.twig"));

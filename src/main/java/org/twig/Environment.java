@@ -14,6 +14,7 @@ import org.twig.syntax.operator.Operator;
 import org.twig.syntax.parser.Parser;
 import org.twig.syntax.parser.node.Module;
 import org.twig.syntax.parser.tokenparser.AbstractTokenParser;
+import org.twig.template.Context;
 import org.twig.template.Template;
 
 import javax.xml.bind.DatatypeConverter;
@@ -66,7 +67,7 @@ public class Environment {
         return loadTemplate(name).render();
     }
 
-    public String render(String name, Map<String, ?> context) throws LoaderException, TwigRuntimeException, TwigException {
+    public String render(String name, Context context) throws LoaderException, TwigRuntimeException, TwigException {
         return loadTemplate(name).render(context);
     }
 

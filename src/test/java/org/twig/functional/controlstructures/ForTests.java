@@ -78,4 +78,36 @@ public class ForTests extends FunctionalTests {
         );
 
     }
+
+    @Test
+    public void canDoLoopInsideLoop() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put(
+                "foo.twig",
+                "{% for key1, item1 in ['foo', 'bar'] %}\n" +
+                        "{{ key1 }} {{ item1 }} {{ loop.index }} {{ loop.index0 }} {{ loop.first }}\n" +
+                        "{% for key2, item2 in ['baz', 'qux'] %}\n" +
+                            "{{ key2 }} {{ item2 }} {{ loop.index }} {{ loop.index0 }} {{ loop.first }}\n" +
+                        "{% endfor %}{% endfor %}"
+        );
+        setupEnvironment(templates);
+
+        Assert.assertEquals(
+                "Loop variables should be rendered correctly",
+                // Loop 1:1
+                "0 foo 1 0 true\n" +
+                // Loop 2:1
+                "0 baz 1 0 true\n" +
+                // Loop 2:2
+                "1 qux 2 1 false\n" +
+                // Loop 1:2
+                "1 bar 2 1 false\n" +
+                // Loop 2:1
+                "0 baz 1 0 true\n" +
+                // Loop 2:2
+                "1 qux 2 1 false\n",
+                environment.render("foo.twig")
+        );
+
+    }
 }

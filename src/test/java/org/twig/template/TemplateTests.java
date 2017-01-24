@@ -21,7 +21,7 @@ public class TemplateTests {
 
     @Test
     public void testCanRenderVariable() throws TwigRuntimeException {
-        HashMap<String, String> context = new HashMap<>();
+        Context context = new Context();
         context.put("foo", "bar");
         Template template = new TestVariableTemplate();
 
@@ -37,12 +37,12 @@ public class TemplateTests {
 
         template.setEnvironment(environment);
 
-        template.render(new HashMap<>());
+        template.render(new Context());
     }
 
     @Test
     public void canCallMethodOnContextObject() throws TwigException {
-        HashMap<String, Object> context = new HashMap<>();
+        Context context = new Context();
         context.put("foo", new ClassWithBarMethod());
         Template template = new TestMethodCallTemplate();
 
@@ -104,7 +104,7 @@ public class TemplateTests {
 
     @Test
     public void canGetPropertyGetterIserHaser() throws TwigException {
-        Map<String, TestClassWithGettersAndProperty> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("foo", new TestClassWithGettersAndProperty());
         Environment env = new Environment();
 
@@ -128,7 +128,7 @@ public class TemplateTests {
 
     protected class TestStringTemplate extends Template {
         @Override
-        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigRuntimeException {
             return "foo";
         }
 
@@ -140,7 +140,7 @@ public class TemplateTests {
 
     protected class TestVariableTemplate extends Template {
         @Override
-        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigRuntimeException {
             return getContext(context, "foo", false, 1).toString();
         }
 
@@ -152,7 +152,7 @@ public class TemplateTests {
 
     protected class TestMethodCallTemplate extends Template {
         @Override
-        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigRuntimeException {
             return String.valueOf(getAttribute(context.get("foo"), "bar", Arrays.asList("some ", "argument"), "method"));
         }
 
@@ -174,7 +174,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigRuntimeException {
             return String.valueOf(compare("foo", "bar"));
         }
 
@@ -190,7 +190,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigRuntimeException {
             return String.valueOf(compare("foo", "foo"));
         }
 
@@ -206,7 +206,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigRuntimeException {
             return String.valueOf(compare("true", true));
         }
 
@@ -222,7 +222,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigRuntimeException {
             return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "foo", Arrays.asList(), "any"));
         }
 
@@ -238,7 +238,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigRuntimeException {
             return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "bar", Arrays.asList(), "any"));
         }
 
@@ -254,7 +254,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigRuntimeException {
             return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "baz", Arrays.asList(), "any"));
         }
 
@@ -270,7 +270,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigRuntimeException {
             return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "qux", Arrays.asList(), "any"));
         }
 
@@ -286,7 +286,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Map<String, ?> context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigRuntimeException {
             return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "quux", Arrays.asList(), "any"));
         }
 

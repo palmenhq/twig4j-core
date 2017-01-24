@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.twig.exception.SyntaxErrorException;
 import org.twig.exception.TwigException;
 import org.twig.functional.FunctionalTests;
+import org.twig.template.Context;
 
 import java.util.HashMap;
 
@@ -19,7 +20,7 @@ public class IfTests extends FunctionalTests {
         );
         setupEnvironment(templates);
 
-        HashMap<String, Boolean> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("foo", true);
         ctx.put("bar", false);
 
@@ -39,7 +40,7 @@ public class IfTests extends FunctionalTests {
         );
         setupEnvironment(templates);
 
-        HashMap<String, Boolean> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("foo", false);
 
         Assert.assertEquals(
@@ -60,7 +61,7 @@ public class IfTests extends FunctionalTests {
         );
         setupEnvironment(templates);
 
-        HashMap<String, Boolean> ctx = new HashMap<>();
+        Context ctx = new Context();
         ctx.put("foo", false);
         ctx.put("bar", true);
 

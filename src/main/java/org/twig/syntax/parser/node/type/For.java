@@ -7,10 +7,7 @@ import org.twig.syntax.parser.node.Node;
 import org.twig.syntax.parser.node.type.control.IfStatement;
 import org.twig.syntax.parser.node.type.expression.Expression;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class For extends Node {
     protected ForLoop loop;
@@ -46,7 +43,7 @@ public class For extends Node {
     @Override
     public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
         compiler.addDebugInfo(this)
-                .writeLine(putInContext("_parent", "context"))
+                .writeLine(putInContext("_parent", "context.clone()"))
                 .write("((java.util.Map<String, Object>)context).put(\"_seq\", org.twig.extension.Core.ensureIterable(");
             this.getNode(0).compile(compiler); // Node 0 = _seq
         compiler
@@ -74,12 +71,14 @@ public class For extends Node {
 
         // TODO revindex
 
+        String randomVariableName = getRandomVariableName();
         // Do the loop
         compiler
-                .writeLine("for (Object value : ((Iterable)(context.get(\"_seq\")))) {")
+                .writeLine("// " + randomVariableName + " = " + ((String)getAttribute("value_target")))
+                .writeLine("for (Object " + randomVariableName + " : ((Iterable)(context.get(\"_seq\")))) {")
                 .indent();
 
-        compileKeyValueTarget(compiler);
+        compileKeyValueTarget(compiler, randomVariableName);
 
         this.getNode(1).compile(compiler); // Node 1 = for body
 
@@ -96,18 +95,20 @@ public class For extends Node {
 
         compiler
                 .unIndent()
-                .writeLine("}");
+                .writeLine("}")
+        ;
 
         // Reset loop
         compiler
-                .writeLine(putInContext("_old_parent", "((Object)context.get(\"_parent\"))"))
+                .writeLine("tmpForParent = new java.util.HashMap<String, Object>();")
+                .writeLine("tmpForParent.putAll(((java.util.Map<String, Object>)((java.util.Map<String, Object>)context).get(\"_parent\")));")
                 .writeLine("context.remove(\"_seq\");")
                 .writeLine("context.remove(\"_iterated\");")
                 .writeLine("context.remove(\"" + getAttribute("key_target") + "\");")
                 .writeLine("context.remove(\"" + getAttribute("value_target") + "\");")
                 .writeLine("context.remove(\"_parent\");")
-                .writeLine("((java.util.Map<String, Object>)context).putAll(((java.util.HashMap)context.get(\"_old_parent\")));")
-                .writeLine("context.remove(\"_old_parent\");")
+                .writeLine("context.remove(\"loop\");")
+                .writeLine("((java.util.Map<String, Object>)context).putAll(tmpForParent);")
         ;
     }
 
@@ -115,8 +116,8 @@ public class For extends Node {
      * Set the key and value variables
      * @param compiler
      */
-    protected void compileKeyValueTarget(ClassCompiler compiler) throws TwigRuntimeException {
-        compiler.writeLine(putInContext((String)getAttribute("value_target"), "value"));
+    protected void compileKeyValueTarget(ClassCompiler compiler, String valueVariableName) throws TwigRuntimeException {
+        compiler.writeLine(putInContext((String)getAttribute("value_target"), valueVariableName));
 
         compiler
                 .writeLine("if (context.get(\"_seq\") instanceof java.util.List) {")
@@ -134,6 +135,22 @@ public class For extends Node {
      */
     protected String putInContext(String key, String value) {
         return "((java.util.Map<String, Object>)context).put(\"" + key + "\", " + value + ");";
+    }
+
+    /**
+     * Creates a 15 character long variable name
+     * @return
+     */
+    protected String getRandomVariableName() {
+        String characters = "abcdefghijklmnopqrstuvwxyz";
+        StringBuilder randomString = new StringBuilder();
+        Random random = new Random();
+
+        for (Integer i = 0; i < 15; i++) {
+            randomString.append(characters.charAt(random.nextInt(26)));
+        }
+
+        return randomString.toString();
     }
 
     /**

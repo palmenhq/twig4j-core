@@ -7,7 +7,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,14 +21,14 @@ abstract public class Template {
     }
 
     public String render() throws TwigRuntimeException {
-        return render(new HashMap<>());
+        return render(new Context());
     }
 
-    public String render(Map<String, ?> context) throws TwigRuntimeException {
+    public String render(Context context) throws TwigRuntimeException {
         return doRender(context);
     }
 
-    abstract protected String doRender(Map<String, ?> context) throws TwigRuntimeException;
+    abstract protected String doRender(Context context) throws TwigRuntimeException;
 
     /**
      * Get the template file name
