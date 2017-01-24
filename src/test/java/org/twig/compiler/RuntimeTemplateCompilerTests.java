@@ -13,7 +13,7 @@ public class RuntimeTemplateCompilerTests {
 
         String sourceCode = "package org.twig.template;\n\n"
                 + "public class TestTemplate extends org.twig.template.Template {\n"
-                + "    protected String doRender(java.util.Map<String, ?> context) { return \"foo\"; }\n"
+                + "    protected String doRender(Context context) { return \"foo\"; }\n"
                 + "    public String getTemplateName() { return \"foo\"; }\n"
                 + "}\n";
         Template template = runtimeCompiler.compile(sourceCode, "org.twig.template.TestTemplate");
