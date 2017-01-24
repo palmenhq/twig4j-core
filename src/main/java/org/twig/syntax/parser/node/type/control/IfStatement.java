@@ -5,11 +5,11 @@ import org.twig.exception.LoaderException;
 import org.twig.exception.TwigRuntimeException;
 import org.twig.syntax.parser.node.Node;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class IfStatement extends Node {
-    public IfStatement(ArrayList<Node> nodes, Integer line, String tag) {
+    public IfStatement(List<Node> nodes, Integer line, String tag) {
         super(nodes, new HashMap<>(), line, tag);
     }
 

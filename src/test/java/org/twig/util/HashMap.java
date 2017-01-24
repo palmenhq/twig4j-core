@@ -8,7 +8,7 @@ public class HashMap extends java.util.LinkedHashMap<String, Object> {
      * @param value The entity
      * @return
      */
-    public java.util.LinkedHashMap<String, Object> put(String key, Object value) {
+    public HashMap put(String key, Object value) {
         super.put(key, value);
 
         return this;

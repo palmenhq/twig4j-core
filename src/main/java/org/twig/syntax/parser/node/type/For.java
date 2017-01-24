@@ -4,22 +4,38 @@ import org.twig.compiler.ClassCompiler;
 import org.twig.exception.LoaderException;
 import org.twig.exception.TwigRuntimeException;
 import org.twig.syntax.parser.node.Node;
+import org.twig.syntax.parser.node.type.control.IfStatement;
 import org.twig.syntax.parser.node.type.expression.Expression;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class For extends Node {
+    protected ForLoop loop;
+
     public For(Settings settings, Integer line, String tag) {
         super(line);
 
+        this.loop = new ForLoop(line, tag);
+        Node body = new Node(Arrays.asList(settings.getBody(), this.loop), new HashMap<>(), line, tag);
+
+        if (settings.getIfExpr() != null) {
+            List<Node> ifStatementParams = new ArrayList<>();
+            ifStatementParams.add(settings.getIfExpr());
+            ifStatementParams.add(body);
+            body = new IfStatement(ifStatementParams, line, tag);
+        }
+
         List<Node> nodes = Arrays.asList(
                 settings.getSeq(), // Sequence = 0
-                settings.getBody(), // Body = 1
+                body, // Body = 1
                 settings.getElseBody() // Elsebody = 2
         );
         attributes.put("key_target", settings.getKeyTarget());
         attributes.put("value_target", settings.getValueTarget());
+        // TODO add the Optimizer node visitor that removes with_loop if it's not used
         attributes.put("with_loop", true);
         attributes.put("ifExpr", null != settings.getIfExpr());
 
@@ -34,14 +50,23 @@ public class For extends Node {
                 .write("((java.util.Map<String, Object>)context).put(\"_seq\", org.twig.extension.Core.ensureIterable(");
             this.getNode(0).compile(compiler); // Node 0 = _seq
         compiler
-                .writeLine("));");
-//                .writeLine("context.put(\"_iterated\", false);");
-//                .writeLine("context.put(\"_loop\", (new org.twig.util.HashMap())")
-//                .indent()
-//                    .writeLine(".put(\"parent\", context.get(\"_parent\"))")
-//                    .writeLine(".put(\"index0\", 0)")
-//                    .writeLine(".put(\"index\", 1)")
-//                    .writeLine(".put(\"first\", true)")
+                .writeRaw("));\n")
+                .writeLine(putInContext("_iterated", "false"));
+        if (((Boolean)this.getAttribute("with_loop"))) {
+            compiler
+                    .writeLine(putInContext("loop", "(new org.twig.util.HashMap())"))
+                    .writeLine("((org.twig.util.HashMap)((java.util.Map<String, Object>)context).get(\"loop\"))")
+                    .indent()
+                        .writeLine(".put(\"parent\", ((Object)context.get(\"_parent\")))")
+                        .writeLine(".put(\"index0\", 0)")
+                        .writeLine(".put(\"index\", 1)")
+                        .writeLine(".put(\"first\", true);")
+                    .unIndent()
+                    // Make an extra line break before the for loop
+                    .writeRaw("\n");
+        }
+
+        // TODO revindex
 
         // Do the loop
         compiler

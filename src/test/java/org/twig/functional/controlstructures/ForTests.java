@@ -43,18 +43,20 @@ public class ForTests extends FunctionalTests {
     }
 
     @Test
-    public void canRenderArrayWithKeys() throws TwigException {
+    public void canUseLoopVariable() throws TwigException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig",
-                "{% for key, item in ['foo', 'bar'] %}{{ key }}: {{ item }}\n" +
+                "{% for item in ['foo', 'bar'] %}\n" +
+                        "{{ loop.index }} {{ loop.index0 }} {{ loop.first }} {{ item }}\n" +
                         "{% endfor %}"
         );
         setupEnvironment(templates);
 
         Assert.assertEquals(
-                "All array keys should be rendered",
-                "0: foo\n1: bar\n",
+                "Loop variables should be rendered correctly",
+                "1 0 true foo\n" +
+                        "2 1 false bar\n",
                 environment.render("foo.twig")
         );
 
