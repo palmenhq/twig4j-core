@@ -20,7 +20,7 @@ public class Node implements Compilable, LineAware {
     protected HashMap<String, Object> attributes;
     // The line the node begins on
     protected Integer line;
-    // TODO Find out what this thing does
+    // A tag ("block operation", i.e. "if" or "for") this node belongs to
     private String tag;
 
     public Node(List<Node> nodes, HashMap<String, Object> attributes, Integer line, String tag) {
