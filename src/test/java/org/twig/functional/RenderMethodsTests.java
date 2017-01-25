@@ -10,7 +10,7 @@ import org.twig.template.Context;
 
 import java.util.HashMap;
 
-public class RenderFunctionsTests extends FunctionalTests {
+public class RenderMethodsTests extends FunctionalTests {
     @Test
     public void canRenderContextObjectMethods() throws TwigException {
         HashMap<String, String> templates = new HashMap<>();
