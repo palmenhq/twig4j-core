@@ -20,14 +20,33 @@ abstract public class Template {
         this.environment = environment;
     }
 
+    /**
+     * @see this#render(Context)
+     *
+     * Defaults Context to empty context
+     */
     public String render() throws TwigRuntimeException {
         return render(new Context());
     }
 
+    /**
+     * Returns a string of the rendered template
+     *
+     * @param context The context - a Map that contains all variables to make available in the template
+     * @return Rendered html (or whatever content-type you're rendering)
+     * @throws TwigRuntimeException If there are any errors, i.e. accessing a variable that is not in the context.
+     */
     public String render(Context context) throws TwigRuntimeException {
         return doRender(context);
     }
 
+    /**
+     * The actual rendering of the template, done in the runtime compiled template classes
+     *
+     * @param context The context that contains all variables
+     * @return
+     * @throws TwigRuntimeException
+     */
     abstract protected String doRender(Context context) throws TwigRuntimeException;
 
     /**
