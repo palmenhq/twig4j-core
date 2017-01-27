@@ -3,12 +3,13 @@ package org.twig.loader;
 import org.twig.exception.LoaderException;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Used for unit tests only
  */
 public class HashMapLoader implements Loader {
-    HashMap<String, String> hashMap;
+    Map<String, String> hashMap;
 
     /**
      * Default constructor
@@ -21,7 +22,7 @@ public class HashMapLoader implements Loader {
      * Construct the loader with an existing hash map
      * @param hashMap The hashMap with templates
      */
-    public HashMapLoader(HashMap<String, String> hashMap) {
+    public HashMapLoader(Map<String, String> hashMap) {
         this.hashMap = hashMap;
     }
 
@@ -47,7 +48,7 @@ public class HashMapLoader implements Loader {
      * Get the hash map
      * @return The hashMap with templates
      */
-    public HashMap<String, String> getHashMap() {
+    public Map<String, String> getHashMap() {
         return hashMap;
     }
 
@@ -55,7 +56,7 @@ public class HashMapLoader implements Loader {
      * Set the hashmap
      * @param hashMap The hashMap with templates
      */
-    public void setHashMap(HashMap<String, String> hashMap) {
+    public void setHashMap(Map<String, String> hashMap) {
         this.hashMap = hashMap;
     }
 }
