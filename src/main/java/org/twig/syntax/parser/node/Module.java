@@ -34,7 +34,7 @@ public class Module implements Compilable {
 
         compiler
                 .writeLine("package " + compiler.getEnvironment().getTemplatePackage() + ";\n")
-                .writeLine("import org.twig.exception.TwigRuntimeException;\n")
+                .writeLine("import org.twig.exception.TwigException;\n")
                 .writeLine("/**")
                 .writeLine(" * ".concat(this.fileName))
                 .writeLine(" */")
@@ -58,7 +58,7 @@ public class Module implements Compilable {
 
     protected void compileRender(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
         compiler
-                .writeLine("protected String doRender(Context context) throws TwigRuntimeException {")
+                .writeLine("protected String doRender(Context context) throws TwigException {")
                     .indent()
                     .writeLine("java.util.Map<String, Object> tmpForParent;")
                     .writeLine("String output = \"\";")

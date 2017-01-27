@@ -1,6 +1,7 @@
 package org.twig.template;
 
 import org.twig.Environment;
+import org.twig.exception.TwigException;
 import org.twig.exception.TwigRuntimeException;
 
 import java.lang.reflect.Field;
@@ -25,7 +26,7 @@ abstract public class Template {
      *
      * Defaults Context to empty context
      */
-    public String render() throws TwigRuntimeException {
+    public String render() throws TwigException {
         return render(new Context());
     }
 
@@ -36,7 +37,7 @@ abstract public class Template {
      * @return Rendered html (or whatever content-type you're rendering)
      * @throws TwigRuntimeException If there are any errors, i.e. accessing a variable that is not in the context.
      */
-    public String render(Context context) throws TwigRuntimeException {
+    public String render(Context context) throws TwigException {
         return doRender(context);
     }
 
@@ -47,7 +48,7 @@ abstract public class Template {
      * @return
      * @throws TwigRuntimeException
      */
-    abstract protected String doRender(Context context) throws TwigRuntimeException;
+    abstract protected String doRender(Context context) throws TwigException;
 
     /**
      * Get the template file name
@@ -291,6 +292,33 @@ abstract public class Template {
         }
 
         return a.equals(b);
+    }
+
+    /**
+     * Loads another template
+     *
+     * @param template The actual template name to load
+     * @param requestedTemplateName Whatever is requested as template name
+     * @param line The line it's requested on
+     * @param index The template index TODO implement this
+     * @return The loaded template
+     * @throws TwigException If the included template throws any errors or isn't found
+     */
+    protected Template loadTemplate(String template, String requestedTemplateName, Integer line, Integer index) throws TwigException {
+        try {
+            return environment.resolveTemplate(template);
+        } catch (TwigException e) {
+            if (e.getTemplateName() == null) {
+                e.setTemplateName(requestedTemplateName == null ? getTemplateName() : requestedTemplateName);
+            }
+
+            if (e.getLineNumber() == null) {
+                // TODO guess line number
+                e.setLineNumber(line);
+            }
+
+            throw e;
+        }
     }
 
     /**

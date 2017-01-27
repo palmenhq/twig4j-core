@@ -52,7 +52,7 @@ public class ModuleTests {
         module.compile(classCompilerStub);
 
         verify(classCompilerStub).subCompile(bodyNodeStub);
-        verify(classCompilerStub).writeLine("protected String doRender(Context context) throws TwigRuntimeException {");
+        verify(classCompilerStub).writeLine("protected String doRender(Context context) throws TwigException {");
         verify(classCompilerStub, times(3)).writeLine("}");
     }
 

@@ -3,8 +3,11 @@ package org.twig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.twig.compiler.ClassCompiler;
+import org.twig.compiler.RuntimeTemplateCompiler;
 import org.twig.exception.LoaderException;
+import org.twig.exception.SyntaxErrorException;
 import org.twig.exception.TwigException;
+import org.twig.exception.TwigRuntimeException;
 import org.twig.loader.HashMapLoader;
 import org.twig.loader.Loader;
 import org.twig.syntax.Lexer;
@@ -12,9 +15,12 @@ import org.twig.syntax.TokenStream;
 import org.twig.syntax.parser.Parser;
 import org.twig.syntax.parser.node.Module;
 import org.twig.syntax.parser.node.type.Body;
+import org.twig.template.Context;
 import org.twig.template.Template;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
 
@@ -92,5 +98,73 @@ public class EnvironmentTests {
         String result = environment.render("foo");
 
         Assert.assertEquals("Rendered result should be template contents", "bar", result);
+    }
+
+    public void testCanResolveTemplate() throws TwigException {
+        Loader loaderStub = mock(HashMapLoader.class);
+        Environment environment = new Environment(loaderStub);
+
+        Lexer lexerStub = mock(Lexer.class);
+        Parser parserStub = mock(Parser.class);
+        ClassCompiler compilerStub = mock(ClassCompiler.class);
+        RuntimeTemplateCompiler runtimeTemplateCompiler = mock(RuntimeTemplateCompiler.class);
+
+        environment
+                .setLexer(lexerStub)
+                .setParser(parserStub)
+                .setClassCompiler(compilerStub)
+                .setRuntimeTemplateCompiler(runtimeTemplateCompiler);
+
+        when(loaderStub.getSource("foo.twig")).thenReturn("foo");
+
+        Template testTemplate = new Template_Test_0();
+        when(runtimeTemplateCompiler.compile(anyString(), "foo.twig")).thenReturn(testTemplate);
+
+        Assert.assertSame(
+                "Template returned from runtime compiler should be template resolved",
+                testTemplate,
+                environment.resolveTemplate("foo.twig")
+        );
+    }
+
+    public void testCanResolveTemplateFromList() throws TwigException {
+        Loader loaderStub = mock(HashMapLoader.class);
+        Environment environment = new Environment(loaderStub);
+
+        Lexer lexerStub = mock(Lexer.class);
+        Parser parserStub = mock(Parser.class);
+        ClassCompiler compilerStub = mock(ClassCompiler.class);
+        RuntimeTemplateCompiler runtimeTemplateCompiler = mock(RuntimeTemplateCompiler.class);
+
+        environment
+                .setLexer(lexerStub)
+                .setParser(parserStub)
+                .setClassCompiler(compilerStub)
+                .setRuntimeTemplateCompiler(runtimeTemplateCompiler);
+
+        // First load attempt
+        when(loaderStub.getSource("foo.twig")).thenThrow(LoaderException.notDefined("foo.twig"));
+        // 2nd load attempt
+        when(loaderStub.getSource("bar.twig")).thenReturn("bar");
+        Template testTemplate = new Template_Test_0();
+        when(runtimeTemplateCompiler.compile(anyString(), "bar.twig")).thenReturn(testTemplate);
+
+        Assert.assertSame(
+                "Template returned from runtime compiler should be template resolved",
+                testTemplate,
+                environment.resolveTemplate(Arrays.asList("foo.twig", "bar.twig"))
+        );
+    }
+
+    protected class Template_Test_0 extends Template {
+        @Override
+        protected String doRender(Context context) throws TwigRuntimeException {
+            return "foobar";
+        }
+
+        @Override
+        public String getTemplateName() {
+            return "foo.twig";
+        }
     }
 }

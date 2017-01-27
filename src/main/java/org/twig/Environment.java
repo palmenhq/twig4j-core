@@ -55,22 +55,115 @@ public class Environment {
         init();
     }
 
+    /**
+     * Initializes the extensions required for twig
+     */
     private void init() {
         addExtension(new Core());
     }
 
-    public Template loadTemplate(String name) throws LoaderException, TwigRuntimeException, TwigException {
-        return loadTemplate(name, 0);
-    }
-
+    /**
+     * @see this#render(String, Context)
+     * Defaults context to empty context
+     *
+     * @param name
+     * @return
+     * @throws LoaderException
+     * @throws TwigRuntimeException
+     * @throws TwigException
+     */
     public String render(String name) throws LoaderException, TwigRuntimeException, TwigException {
         return loadTemplate(name).render();
     }
 
+    /**
+     * Loads a template and call's it's render method.
+     * @see Template#render(Context)
+     * @see this#loadTemplate(String)
+     *
+     * @param name The name of the template to render (defaults index to 0)
+     * @param context A map of the variables to provide in the template
+     * @return The rendered contents as a string
+     * @throws LoaderException If the template is not found
+     * @throws TwigRuntimeException On any runtime errors, i.e. trying to access a variable that doesn't exist
+     * @throws TwigException On any unknown errors
+     */
     public String render(String name, Context context) throws LoaderException, TwigRuntimeException, TwigException {
         return loadTemplate(name).render(context);
     }
 
+    /**
+     * Loads a singe template
+     *
+     * @see this#loadTemplate(String)
+     *
+     * @param templateName The template name to resolve
+     * @return The template object
+     * @throws LoaderException
+     * @throws TwigException
+     */
+    public Template resolveTemplate(String templateName) throws LoaderException, TwigException {
+        return resolveTemplate(Arrays.asList(templateName));
+    }
+
+    /**
+     * Loads the first template of the list
+     *
+     * @param templates The list of templates to load
+     * @return The first resolved template in the list
+     * @throws LoaderException
+     * @throws TwigException
+     */
+    public Template resolveTemplate(List<String> templates) throws LoaderException, TwigException {
+        Integer templatesCount = templates.size();
+
+        for (String template : templates) {
+            try {
+                return loadTemplate(((String) template));
+            } catch (LoaderException e) {
+                // Do nothing if there are multiple templates to find. If there are more templates and none of them are found throw
+                // the error at the end of this method
+                if (templatesCount == 1) {
+                    throw e;
+                }
+            } catch (TwigException e) {
+                // Always throw errors on other exceptions than loader exceptions;
+                throw e;
+            }
+        }
+
+        throw new LoaderException(
+            String.format(
+                "Unable to find one of the following templates: \"%s\".",
+                String.join(", ", templates)
+            )
+        );
+    }
+
+    /**
+     * @see this#loadTemplate(String, Integer)
+     * Defaults index to 0
+     *
+     * @param name
+     * @return
+     * @throws LoaderException
+     * @throws TwigRuntimeException
+     * @throws TwigException
+     */
+    public Template loadTemplate(String name) throws LoaderException, TwigRuntimeException, TwigException {
+        return loadTemplate(name, 0);
+    }
+
+    /**
+     * Resolved a template (from cache or provided loader), and returns a template object ready to render
+     *
+     * @param name The name of the template
+     * @param index The index TODO find out what this is
+     * @return The template object
+     * @throws LoaderException If the template fails to load
+     * @throws TwigRuntimeException On other errors, such as template compilation errors
+     * @throws TwigException On unknown errors
+     */
     public Template loadTemplate(String name, Integer index) throws LoaderException, TwigRuntimeException, TwigException {
         if (!hasInitedExtensions) {
             initExtensions();
@@ -92,6 +185,7 @@ public class Environment {
         } catch (ClassNotFoundException e) {
             String javaSourceCode = compileSource(getLoader().getSource(name), name);
             Template template = this.runtimeTemplateCompiler.compile(javaSourceCode, fullTemplateClassName);
+            template.setEnvironment(this);
 
             this.loadedTemplates.put(className, template);
 
@@ -154,6 +248,7 @@ public class Environment {
 
     /**
      * Create a sha 256 hash from something
+     *
      * @param text The text to hash
      * @return The checksum
      */
@@ -175,6 +270,7 @@ public class Environment {
 
     /**
      * Initializes all extensions added to Twig
+     *
      * @return this
      */
     protected Environment initExtensions() {

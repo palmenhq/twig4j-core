@@ -15,6 +15,7 @@ public class Core implements Extension {
         tokenParsers.add(new If());
         tokenParsers.add(new Set());
         tokenParsers.add(new For());
+        tokenParsers.add(new Include());
 
         return tokenParsers;
     }

@@ -14,13 +14,13 @@ import java.util.Map;
 
 public class TemplateTests {
     @Test
-    public void testCanRenderString() throws TwigRuntimeException {
+    public void testCanRenderString() throws TwigException {
         Template template = new TestStringTemplate();
         Assert.assertEquals("Rendered string should be returned", "foo", template.render());
     }
 
     @Test
-    public void testCanRenderVariable() throws TwigRuntimeException {
+    public void testCanRenderVariable() throws TwigException {
         Context context = new Context();
         context.put("foo", "bar");
         Template template = new TestVariableTemplate();
@@ -29,7 +29,7 @@ public class TemplateTests {
     }
 
     @Test(expected = TwigRuntimeException.class)
-    public void testAccessUndefinedVariableThrowsRuntimeException() throws TwigRuntimeException {
+    public void testAccessUndefinedVariableThrowsRuntimeException() throws TwigException {
         Template template = new TestVariableTemplate();
         Environment environment = mock(Environment.class);
 
@@ -126,9 +126,26 @@ public class TemplateTests {
         Assert.assertEquals("quux should be called", "quux contents", quuxMethod.render(ctx));
     }
 
+    @Test
+    public void canLoadOtherTemplate() throws TwigException {
+        Environment environment = mock(Environment.class);
+        Template barTwig = new TestStringTemplate();
+
+        when(environment.resolveTemplate("bar.twig")).thenReturn(barTwig);
+
+        Template template = new TestLoadTemplateTemplate();
+        template.setEnvironment(environment);
+
+        Assert.assertEquals(
+            "Contents of template that only loads other template should be the same as content of the loaded template",
+            barTwig.render(),
+            template.render()
+        );
+    }
+
     protected class TestStringTemplate extends Template {
         @Override
-        protected String doRender(Context context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigException {
             return "foo";
         }
 
@@ -140,7 +157,7 @@ public class TemplateTests {
 
     protected class TestVariableTemplate extends Template {
         @Override
-        protected String doRender(Context context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigException {
             return getContext(context, "foo", false, 1).toString();
         }
 
@@ -152,7 +169,7 @@ public class TemplateTests {
 
     protected class TestMethodCallTemplate extends Template {
         @Override
-        protected String doRender(Context context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigException {
             return String.valueOf(getAttribute(context.get("foo"), "bar", Arrays.asList("some ", "argument"), "method"));
         }
 
@@ -174,7 +191,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Context context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigException {
             return String.valueOf(compare("foo", "bar"));
         }
 
@@ -190,7 +207,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Context context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigException {
             return String.valueOf(compare("foo", "foo"));
         }
 
@@ -206,7 +223,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Context context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigException {
             return String.valueOf(compare("true", true));
         }
 
@@ -222,7 +239,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Context context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigException {
             return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "foo", Arrays.asList(), "any"));
         }
 
@@ -238,7 +255,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Context context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigException {
             return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "bar", Arrays.asList(), "any"));
         }
 
@@ -254,7 +271,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Context context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigException {
             return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "baz", Arrays.asList(), "any"));
         }
 
@@ -270,7 +287,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Context context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigException {
             return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "qux", Arrays.asList(), "any"));
         }
 
@@ -286,7 +303,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Context context) throws TwigRuntimeException {
+        protected String doRender(Context context) throws TwigException {
             return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "quux", Arrays.asList(), "any"));
         }
 
@@ -313,6 +330,18 @@ public class TemplateTests {
 
         public String quux() {
             return "quux contents";
+        }
+    }
+
+    protected class TestLoadTemplateTemplate extends Template {
+        @Override
+        protected String doRender(Context context) throws TwigException {
+            return loadTemplate("bar.twig", "bar.twig", 1, null).render();
+        }
+
+        @Override
+        public String getTemplateName() {
+            return "foo.twig";
         }
     }
 }
