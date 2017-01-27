@@ -14,19 +14,19 @@ public class Include extends AbstractTokenParser {
         Boolean only = false;
         Expression variables = null;
 
-        if (parser.getTokenStream().nextIs(Token.Type.NAME, "ignore")) {
+        if (parser.getTokenStream().getCurrent().is(Token.Type.NAME, "ignore")) {
             parser.getTokenStream().next();
             parser.getTokenStream().expect(Token.Type.NAME, "missing");
 
             ignoreMissing = true;
         }
 
-        if (parser.getTokenStream().nextIs(Token.Type.NAME, "with")) {
+        if (parser.getTokenStream().getCurrent().is(Token.Type.NAME, "with")) {
             parser.getTokenStream().next();
             variables = parser.getExpressionParser().parseExpression();
         }
 
-        if (parser.getTokenStream().nextIs(Token.Type.NAME, "only")) {
+        if (parser.getTokenStream().getCurrent().is(Token.Type.NAME, "only")) {
             parser.getTokenStream().next();
             only = true;
         }
@@ -36,8 +36,8 @@ public class Include extends AbstractTokenParser {
         return new org.twig.syntax.parser.node.type.Include(
                 templateName,
                 variables,
-                ignoreMissing,
                 only,
+                ignoreMissing,
                 token.getLine(),
                 getTag()
         );

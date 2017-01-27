@@ -37,6 +37,22 @@ public class Include extends Node {
                 .indent();
         }
 
+
+        if ((Boolean)getAttribute("only")) {
+            compiler
+                .writeLine("context.put(\"_include_context\", new org.twig.template.Context());");
+        } else {
+            compiler.writeLine("context.put(\"_include_context\", context.clone());");
+        }
+
+        if (getNode(1) != null) {
+            compiler
+                .write("((org.twig.template.Context)context.get(\"_include_context\")).putAll(")
+                .subCompile(getNode(1)) // Variables
+                .writeRaw(");\n");
+        }
+
+
         compiler.write("output = output.concat(String.valueOf(");
 
         // Load the template
@@ -44,7 +60,7 @@ public class Include extends Node {
             .writeRaw("loadTemplate(")
             .subCompile(getNode(0)) // expr/template name
             .writeRaw(", ")
-            .representValue("null")
+            .representValue(null)
             .writeRaw(", ")
             .representValue(getLine())
             .writeRaw(", ")
@@ -53,18 +69,21 @@ public class Include extends Node {
 
         compiler
             .writeRaw(".render(")
+            .writeRaw("((org.twig.template.Context)context.get(\"_include_context\"))")
             .writeRaw(")");
 
-        compiler.writeRaw("));\n\n");
+        compiler.writeRaw("));\n");
+
+        compiler.writeLine("context.remove(\"_include_context\");");
 
         if ((Boolean) getAttribute("ignore_missing")) {
             compiler
+                .unIndent()
                 .writeLine("} catch (TwigException e) {")
                 .indent()
                     .writeLine("// Ignore missing")
                 .unIndent()
-                .writeLine("}")
-                .unIndent();
+                .writeLine("}");
         }
     }
 }

@@ -23,5 +23,4 @@ If you want to contribute or have feedback of any kind feel free to drop an emai
 Not everything is listed here but this is what's prioritized currently:
  - Filters
  - Functions
- - The `include("template")` functionality
  - Template blocks/extending templates (the `{% block foo %}`)
