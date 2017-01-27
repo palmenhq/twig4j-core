@@ -120,7 +120,7 @@ public class ClassCompiler {
             return this;
         }
 
-        if (value.equals(true) || value.equals(false) || value == null) {
+        if (value == null || value.equals(true) || value.equals(false)) {
             writeRaw(String.valueOf(value));
 
             return this;

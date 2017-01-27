@@ -145,6 +145,42 @@ public class ClassCompilerTests {
     }
 
     @Test
+    public void canRepresentNull() throws LoaderException {
+        ClassCompiler classCompiler = new ClassCompiler(new Environment());
+
+        classCompiler.representValue(null);
+        Assert.assertEquals(
+                "Represent value should have compiled null",
+                "null",
+                classCompiler.getSourceCode()
+        );
+    }
+
+    @Test
+    public void canRepresentTrue() throws LoaderException {
+        ClassCompiler classCompiler = new ClassCompiler(new Environment());
+
+        classCompiler.representValue(true);
+        Assert.assertEquals(
+                "Represent value should have compiled true",
+                "true",
+                classCompiler.getSourceCode()
+        );
+    }
+
+    @Test
+    public void canRepresentFalse() throws LoaderException {
+        ClassCompiler classCompiler = new ClassCompiler(new Environment());
+
+        classCompiler.representValue(false);
+        Assert.assertEquals(
+                "Represent value should have compiled false",
+                "false",
+                classCompiler.getSourceCode()
+        );
+    }
+
+    @Test
     public void canAddDebugInfo() {
         ClassCompiler classCompiler = new ClassCompiler(new Environment());
 
