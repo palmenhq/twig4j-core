@@ -7,6 +7,7 @@ import org.twig.exception.TwigException;
 import org.twig.exception.TwigRuntimeException;
 import org.twig.extension.Core;
 import org.twig.extension.Extension;
+import org.twig.filter.Filter;
 import org.twig.loader.Loader;
 import org.twig.syntax.Lexer;
 import org.twig.syntax.TokenStream;
@@ -44,6 +45,7 @@ public class Environment {
     private HashMap<String, Template> loadedTemplates = new HashMap<>();
 
     private List<Extension> extensions = new ArrayList<>();
+    private Map<String, Filter> filters = new HashMap<>();
 
     public Environment() {
         init();
@@ -530,5 +532,26 @@ public class Environment {
         extensions.add(extension);
 
         return this;
+    }
+
+    /**
+     * Adds a filter to the environment
+     * @param filter The filter to add
+     * @return this
+     */
+    public Environment addFilter(Filter filter) {
+        filters.put(filter.getName(), filter);
+
+        return this;
+    }
+
+    /**
+     * Get a filter from its name
+     *
+     * @param name The filter name
+     * @return
+     */
+    public Filter getFilter(String name) {
+        return filters.get(name);
     }
 }

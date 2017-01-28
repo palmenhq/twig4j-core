@@ -1,5 +1,6 @@
 package org.twig.syntax.parser;
 
+import org.twig.Environment;
 import org.twig.exception.SyntaxErrorException;
 import org.twig.exception.TwigRuntimeException;
 import org.twig.syntax.Token;
@@ -16,7 +17,7 @@ import java.util.regex.Matcher;
 
 /**
  * Parses expressions.
- *
+ * <p>
  * This parser implements a "Precedence climbing" algorithm.
  *
  * @see http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm
@@ -46,22 +47,22 @@ public class ExpressionParser {
         Expression expr = getPrimary();
         Token token = parser.getCurrentToken();
 
-        while(isBinary(token.getValue()) && getBinaryOperator(token.getValue()).getPrecedence() >= precedence) {
+        while (isBinary(token.getValue()) && getBinaryOperator(token.getValue()).getPrecedence() >= precedence) {
             Token operatorToken = token;
             Operator operator = getBinaryOperator(token.getValue());
             parser.getTokenStream().next();
 
             // TODO find out what the "callable" thing is for binary operators
             Node expr2 = parseExpression(
-                    operator.getAssociativity() == Operator.Associativity.LEFT
-                            ? (operator.getPrecedence() + 1) : operator.getPrecedence()
+                operator.getAssociativity() == Operator.Associativity.LEFT
+                    ? (operator.getPrecedence() + 1) : operator.getPrecedence()
             );
             Class nodeClass = operator.getNodeClass();
 
             try {
-                expr = (Expression)nodeClass
-                        .getConstructor(Node.class, Node.class, Integer.class)
-                        .newInstance(expr, expr2, token.getLine());
+                expr = (Expression) nodeClass
+                    .getConstructor(Node.class, Node.class, Integer.class)
+                    .newInstance(expr, expr2, token.getLine());
             } catch (Exception e) {
                 throw TwigRuntimeException.badOperatorFailedNode(operatorToken.getValue(), parser.getFilename(), operatorToken.getLine(), e);
             }
@@ -88,13 +89,13 @@ public class ExpressionParser {
 
             try {
                 Constructor operatorConstructor = operator.getNodeClass().getConstructor(Node.class, Integer.class);
-                return parsePostfixExpression((Expression)operatorConstructor.newInstance(expression, token.getLine()));
+                return parsePostfixExpression((Expression) operatorConstructor.newInstance(expression, token.getLine()));
             } catch (Exception e) {
                 throw new TwigRuntimeException(
-                        "Missing or misconfigured constructor or class for operator \"" + operator.getNodeClass().getName() + "\"",
-                        parser.getFilename(),
-                        token.getLine(),
-                        e
+                    "Missing or misconfigured constructor or class for operator \"" + operator.getNodeClass().getName() + "\"",
+                    parser.getFilename(),
+                    token.getLine(),
+                    e
                 );
             }
         }
@@ -119,7 +120,7 @@ public class ExpressionParser {
         Token token = parser.getCurrentToken();
         Expression node = null;
 
-        switch(token.getType()) {
+        switch (token.getType()) {
             case NAME:
                 parser.getTokenStream().next();
 
@@ -203,7 +204,7 @@ public class ExpressionParser {
         }
 
         // Add a concat for each node in the list if more than one
-        Expression expression = (Expression)nodes.remove(0);
+        Expression expression = (Expression) nodes.remove(0);
         for (Node node : nodes) {
             expression = new BinaryConcat(expression, node, node.getLine());
         }
@@ -246,8 +247,8 @@ public class ExpressionParser {
 
     /**
      * Parse a hash expression (hashmap, ie {foo: bar})
-     * @return The hash expression
      *
+     * @return The hash expression
      * @throws SyntaxErrorException
      * @throws TwigRuntimeException
      */
@@ -282,13 +283,13 @@ public class ExpressionParser {
                 // TODO if "("
             } else {
                 throw new SyntaxErrorException(
-                        String.format(
-                                "A hash key must be a quoted string, a number, a name, or an expression enclosed in parentheses (unexpected token \"%s\" of value \"%s\"",
-                                Token.typeToEnglish(tokenStream.getCurrent().getType()),
-                                tokenStream.getCurrent().getValue()
-                        ),
-                        parser.getFilename(),
-                        tokenStream.getCurrent().getLine()
+                    String.format(
+                        "A hash key must be a quoted string, a number, a name, or an expression enclosed in parentheses (unexpected token \"%s\" of value \"%s\"",
+                        Token.typeToEnglish(tokenStream.getCurrent().getType()),
+                        tokenStream.getCurrent().getValue()
+                    ),
+                    parser.getFilename(),
+                    tokenStream.getCurrent().getLine()
                 );
             }
 
@@ -345,10 +346,10 @@ public class ExpressionParser {
         if (token.getValue().equals(".")) {
             token = tokenStream.next();
             if (
-                    token.getType() == Token.Type.NAME
+                token.getType() == Token.Type.NAME
                     || token.getType() == Token.Type.NUMBER
                     || token.getType() == Token.Type.OPERATOR // TODO get if matches name operator
-            ) {
+                ) {
                 arg = new Constant(getScalarValue(token), token.getLine());
 
                 // If this is a method
@@ -374,24 +375,70 @@ public class ExpressionParser {
         return new GetAttr(node, arg, arguments, type, token.getLine());
     }
 
+    public Node parseFilterExpression(Node node) throws SyntaxErrorException, TwigRuntimeException {
+        parser.getTokenStream().next();
+
+        return parseFilterExpressionRaw(node);
+    }
+
+    public Node parseFilterExpressionRaw(Node node) throws SyntaxErrorException, TwigRuntimeException {
+        while (true) {
+            Token token = parser.getTokenStream().expect(Token.Type.NAME);
+            Constant name = new Constant(token.getValue(), token.getLine());
+
+            Node arguments = new Node(token.getLine());
+            if (parser.getTokenStream().getCurrent().is(Token.Type.PUNCTUATION, "(")) {
+                arguments = parseArguments();
+            }
+
+            Class filterNodeClass = getFilterNodeClass(((String) name.getAttribute("data")), token.getLine());
+            try {
+                Constructor filterNodeClassConstructor = filterNodeClass.getConstructor(Node.class, Constant.class, Node.class, Integer.class, String.class);
+                node = (Node) filterNodeClassConstructor.newInstance(node, name, arguments, token.getLine(), null);
+            } catch (Exception e) {
+                throw new TwigRuntimeException("Incorrectly declared filter class node \"" + filterNodeClass.getName() + "\".", parser.getFilename(), token.getLine(), e);
+            }
+
+            // Chained filters
+            if (!parser.getTokenStream().getCurrent().is(Token.Type.PUNCTUATION, "|")){
+                break;
+            }
+
+        }
+
+        return node;
+    }
+
+    private Class getFilterNodeClass(String name, Integer line) throws SyntaxErrorException {
+        Environment environment = parser.getEnvironment();
+        org.twig.filter.Filter filter = environment.getFilter(name);
+        if (filter == null) {
+            SyntaxErrorException e = new SyntaxErrorException("Unknown \"" + name + "\" filter", parser.getFilename(), line);
+            // TODO add suggestions
+            throw e;
+        }
+
+        // TODO deprecated
+
+        return filter.getOptions().getNodeClass();
+    }
+
     /**
-     * @see static#parseArguments(boolean, boolean)
-     * Defaults both parameters to false
-     *
      * @return The argument nodes
      * @throws SyntaxErrorException
+     * @see static#parseArguments(boolean, boolean)
+     * Defaults both parameters to false
      */
     public Node parseArguments() throws SyntaxErrorException, TwigRuntimeException {
         return parseArguments(false, false);
     }
 
     /**
-     * @see static#parseArguments(boolean, boolean)
-     * Defaults isFunctionDefinition to false
-     *
      * @param useNamedArguments Whether to use named arguments
      * @return The argument nodes
      * @throws SyntaxErrorException
+     * @see static#parseArguments(boolean, boolean)
+     * Defaults isFunctionDefinition to false
      */
     public Node parseArguments(boolean useNamedArguments) throws SyntaxErrorException, TwigRuntimeException {
         return parseArguments(useNamedArguments, false);
@@ -399,7 +446,8 @@ public class ExpressionParser {
 
     /**
      * Parse function/method arguments
-     * @param useNamedArguments Whether to use named arguments
+     *
+     * @param useNamedArguments    Whether to use named arguments
      * @param isFunctionDefinition Whether these arguments are for a function definition or a call
      * @return
      * @throws SyntaxErrorException
@@ -446,7 +494,8 @@ public class ExpressionParser {
                 throw new SyntaxErrorException("You cannot assign a value to " + token.getValue(), parser.getFilename(), token.getLine());
             }
 
-            names.add(token.getValue());;
+            names.add(token.getValue());
+            ;
 
             if (parser.getTokenStream().getCurrent().is(Token.Type.PUNCTUATION, ",")) {
                 parser.getTokenStream().next();
@@ -483,6 +532,7 @@ public class ExpressionParser {
 
     /**
      * Check whether the operator is in the binary operators map in the env
+     *
      * @param operator The operator to check for
      * @return
      */
@@ -492,6 +542,7 @@ public class ExpressionParser {
 
     /**
      * Get an operator from the twig environment by the name
+     *
      * @param operator The operator name
      * @return
      */
@@ -501,6 +552,7 @@ public class ExpressionParser {
 
     /**
      * Check whether the operator is in the unary operators map in the env
+     *
      * @param operator The operator to check for
      * @return
      */
@@ -510,6 +562,7 @@ public class ExpressionParser {
 
     /**
      * Get an operator from the twig environment by the name
+     *
      * @param operator The operator name
      * @return
      */
@@ -540,9 +593,9 @@ public class ExpressionParser {
                 // TODO check for function
 
                 if (token.getValue().matches("^(\\d+)$")) {
-                    return (Integer)Integer.parseInt(token.getValue());
+                    return (Integer) Integer.parseInt(token.getValue());
                 } else if (token.getValue().matches("^[\\d\\.]+$")) {
-                    return (Double)Double.parseDouble(token.getValue());
+                    return (Double) Double.parseDouble(token.getValue());
                 }
 
                 return token.getValue();

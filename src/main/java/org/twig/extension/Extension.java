@@ -1,5 +1,6 @@
 package org.twig.extension;
 
+import org.twig.filter.Filter;
 import org.twig.syntax.operator.Operator;
 import org.twig.syntax.parser.tokenparser.AbstractTokenParser;
 
@@ -24,6 +25,12 @@ public interface Extension {
      * @return A hashmap of operators indexed by their operator string
      */
     public Map<String, Operator> getBinaryOperators();
+
+    /**
+     * Get the filters beloning to this extension
+     * @return The filters
+     */
+    public Map<String, Filter> getFilters();
 
     /**
      * Get the name of the extension

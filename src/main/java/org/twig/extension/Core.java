@@ -1,12 +1,11 @@
 package org.twig.extension;
 
+import org.twig.filter.Filter;
 import org.twig.syntax.operator.*;
 import org.twig.syntax.parser.tokenparser.*;
+import org.twig.syntax.parser.tokenparser.Set;
 
-import java.util.Map;
-import java.util.LinkedHashMap;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Core implements Extension {
     @Override
@@ -57,6 +56,13 @@ public class Core implements Extension {
         operators.put("%", new BinaryMod());
 
         return operators;
+    }
+
+    @Override
+    public Map<String, Filter> getFilters() {
+        Map<String, Filter> filters = new HashMap<>();
+
+        return filters;
     }
 
     @Override

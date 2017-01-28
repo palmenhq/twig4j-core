@@ -6,6 +6,7 @@ import org.twig.Environment;
 import org.twig.exception.SyntaxErrorException;
 import org.twig.exception.TwigException;
 import org.twig.exception.TwigRuntimeException;
+import org.twig.filter.*;
 import org.twig.syntax.Token;
 import org.twig.syntax.TokenStream;
 import org.twig.syntax.operator.*;
@@ -17,6 +18,7 @@ import org.twig.syntax.parser.node.type.expression.*;
 import org.twig.syntax.parser.node.type.expression.BinaryAdd;
 import org.twig.syntax.parser.node.type.expression.BinaryConcat;
 import org.twig.syntax.parser.node.type.expression.BinaryMultiply;
+import org.twig.syntax.parser.node.type.expression.Filter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -580,5 +582,36 @@ public class ExpressionParserTests {
         Assert.assertEquals("Number of items in list should be correct", 1, parsedExpressions.getNodes().size());
 
         Assert.assertEquals("First item should be of correct type", StringConstant.class, parsedExpressions.getNode(0).getClass());
+    }
+
+    @Test
+    public void canParseFilters() throws SyntaxErrorException, TwigRuntimeException {
+        ArrayList<Token> tokens = new ArrayList<>();
+        tokens.add(new Token(Token.Type.PUNCTUATION, "|", 1));
+        tokens.add(new Token(Token.Type.NAME, "upper", 1));
+        tokens.add(new Token(Token.Type.PUNCTUATION, "(", 1));
+        tokens.add(new Token(Token.Type.STRING, "bar", 1));
+        tokens.add(new Token(Token.Type.PUNCTUATION, ")", 1));
+        tokens.add(new Token(Token.Type.EOF, null, 1));
+        TokenStream tokenStream = new TokenStream(tokens);
+
+        Environment environment = mock(Environment.class);
+        Parser parser = new Parser(environment);
+        parser.setTokenStream(tokenStream);
+        ExpressionParser expressionParser = new ExpressionParser(parser);
+
+        when(environment.getFilter("upper")).thenReturn(new org.twig.filter.Filter("upper", this::activateUpperFilter));
+        Node expectedBodyNode = new Constant("foo", 1);
+        Node parsedExpression = expressionParser.parseFilterExpression(expectedBodyNode);
+
+        Assert.assertEquals("Should be of type filter", Filter.class, parsedExpression.getClass());
+        Assert.assertEquals("Filter name node should be filter name", "upper", parsedExpression.getNode(1).getAttribute("data"));
+        Assert.assertSame("Body node should be passed node", expectedBodyNode, parsedExpression.getNode(0));
+        Assert.assertEquals("Number of arguments should be 1", 1, parsedExpression.getNode(2).getNodes().size());
+        Assert.assertEquals("Argument passed should be of correct type", StringConstant.class, parsedExpression.getNode(2).getNode(0).getClass());
+    }
+
+    public Object activateUpperFilter(Object foo) {
+        return foo;
     }
 }
