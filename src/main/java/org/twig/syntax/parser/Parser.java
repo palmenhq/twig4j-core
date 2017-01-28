@@ -9,10 +9,13 @@ import org.twig.syntax.parser.node.Module;
 import org.twig.syntax.parser.node.Node;
 import org.twig.syntax.parser.node.type.PrintExpression;
 import org.twig.syntax.parser.node.type.Text;
+import org.twig.syntax.parser.node.type.expression.Expression;
 import org.twig.syntax.parser.tokenparser.AbstractTokenParser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
 import java.util.function.Function;
 
 public class Parser {
@@ -24,6 +27,12 @@ public class Parser {
     private Environment environment;
     // Map of handlers/token parsers
     private HashMap<String, AbstractTokenParser> handlers = new HashMap<>();
+    // Parent template name (if any)
+    private Expression parent;
+    // Blocks
+    private List<String> blocks = new ArrayList<>();
+    // Handles blocks inside blocks
+    private Stack<String> blockStack = new Stack<>();
 
     public Parser(Environment environment) {
         this.environment = environment;
@@ -45,6 +54,10 @@ public class Parser {
         // TODO: Create node visitors
 
         this.tokenStream = tokenStream;
+        parent = null;
+        blocks = new ArrayList<>();
+        blockStack = new Stack<>();
+
         // TODO Find out what all the other properties does
 
         Node body;
@@ -183,6 +196,16 @@ public class Parser {
     }
 
     /**
+     * Check whether we're in the global scope
+     *
+     * @return
+     */
+    public Boolean isMainScope() {
+        // TODO check something here
+        return true;
+    }
+
+    /**
      * Get the file name of the token stream currently being parsed
      *
      * @return The file/template name
@@ -237,6 +260,66 @@ public class Parser {
     public Parser setHandlers(HashMap<String, AbstractTokenParser> handlers) {
         this.handlers = handlers;
 
+        return this;
+    }
+
+    /**
+     * Get the parent template name
+     *
+     * @return
+     */
+    public Expression getParent() {
+        return parent;
+    }
+
+    /**
+     * Set the parent template name
+     *
+     * @param parent The parent template name
+     * @return this
+     */
+    public Parser setParent(Expression parent) {
+        this.parent = parent;
+
+        return this;
+    }
+
+    /**
+     * Get the blocks in the current template
+     * @return
+     */
+    public List<String> getBlocks() {
+        return blocks;
+    }
+
+    /**
+     * Set all blocks in the current template
+     *
+     * @param blocks Blocks to set
+     * @return this
+     */
+    public Parser setBlocks(List<String> blocks) {
+        this.blocks = blocks;
+        return this;
+    }
+
+    /**
+     * Get the block stack
+     *
+     * @return The block stack
+     */
+    public Stack<String> getBlockStack() {
+        return blockStack;
+    }
+
+    /**
+     * Set the whole block stack
+     *
+     * @param blockStack
+     * @return
+     */
+    public Parser setBlockStack(Stack<String> blockStack) {
+        this.blockStack = blockStack;
         return this;
     }
 }
