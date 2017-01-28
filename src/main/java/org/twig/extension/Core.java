@@ -67,6 +67,7 @@ public class Core implements Extension {
         try {
             filters.put("upper", new Filter("upper", CoreFilters.class.getMethod("upper", String.class)));
             filters.put("lower", new Filter("lower", CoreFilters.class.getMethod("lower", String.class)));
+            filters.put("join", new Filter("join", CoreFilters.class.getMethod("join", List.class, String.class)));
         } catch (NoSuchMethodException e) {
             throw new TwigRuntimeException("Invalid core filter specified", e);
         }

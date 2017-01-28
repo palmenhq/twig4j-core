@@ -4,6 +4,7 @@ import org.twig.compiler.ClassCompiler;
 import org.twig.exception.LoaderException;
 import org.twig.exception.TwigException;
 import org.twig.exception.TwigRuntimeException;
+import org.twig.syntax.parser.node.Node;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -59,7 +60,15 @@ abstract public class Call extends Expression {
             first = false;
         }
 
-        // TODO arguments
+        // TODO named arguments
+        for (Node argument : getNode(2).getNodes()) {
+            if (!first) {
+                compiler.writeRaw(", ");
+            }
+
+            compiler.subCompile(argument);
+            first = false;
+        }
 
         compiler.writeRaw(")");
     }
