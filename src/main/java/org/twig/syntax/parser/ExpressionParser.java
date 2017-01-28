@@ -319,8 +319,8 @@ public class ExpressionParser {
 
             if (token.getValue().equals(".") || token.getValue().equals("[")) {
                 node = parseSubscriptExpression(node);
-            } else if (false) {
-                // TODO filters
+            } else if (token.is(Token.Type.PUNCTUATION, "|")) {
+                node = parseFilterExpression(node);
             } else {
                 break;
             }
@@ -375,13 +375,13 @@ public class ExpressionParser {
         return new GetAttr(node, arg, arguments, type, token.getLine());
     }
 
-    public Node parseFilterExpression(Node node) throws SyntaxErrorException, TwigRuntimeException {
+    public Expression parseFilterExpression(Expression node) throws SyntaxErrorException, TwigRuntimeException {
         parser.getTokenStream().next();
 
         return parseFilterExpressionRaw(node);
     }
 
-    public Node parseFilterExpressionRaw(Node node) throws SyntaxErrorException, TwigRuntimeException {
+    public Expression parseFilterExpressionRaw(Expression node) throws SyntaxErrorException, TwigRuntimeException {
         while (true) {
             Token token = parser.getTokenStream().expect(Token.Type.NAME);
             Constant name = new Constant(token.getValue(), token.getLine());
@@ -394,7 +394,7 @@ public class ExpressionParser {
             Class filterNodeClass = getFilterNodeClass(((String) name.getAttribute("data")), token.getLine());
             try {
                 Constructor filterNodeClassConstructor = filterNodeClass.getConstructor(Node.class, Constant.class, Node.class, Integer.class, String.class);
-                node = (Node) filterNodeClassConstructor.newInstance(node, name, arguments, token.getLine(), null);
+                node = (Expression) filterNodeClassConstructor.newInstance(node, name, arguments, token.getLine(), null);
             } catch (Exception e) {
                 throw new TwigRuntimeException("Incorrectly declared filter class node \"" + filterNodeClass.getName() + "\".", parser.getFilename(), token.getLine(), e);
             }
@@ -404,6 +404,7 @@ public class ExpressionParser {
                 break;
             }
 
+            parser.getTokenStream().next();
         }
 
         return node;
@@ -536,7 +537,7 @@ public class ExpressionParser {
      * @param operator The operator to check for
      * @return
      */
-    public boolean isBinary(String operator) {
+    public boolean isBinary(String operator) throws TwigRuntimeException {
         return this.parser.getEnvironment().getBinaryOperators().containsKey(operator);
     }
 
@@ -546,7 +547,7 @@ public class ExpressionParser {
      * @param operator The operator name
      * @return
      */
-    public Operator getBinaryOperator(String operator) {
+    public Operator getBinaryOperator(String operator) throws TwigRuntimeException {
         return this.parser.getEnvironment().getBinaryOperators().get(operator);
     }
 
@@ -556,7 +557,7 @@ public class ExpressionParser {
      * @param operator The operator to check for
      * @return
      */
-    public boolean isUnary(String operator) {
+    public boolean isUnary(String operator) throws TwigRuntimeException {
         return this.parser.getEnvironment().getUnaryOperators().containsKey(operator);
     }
 
@@ -566,7 +567,7 @@ public class ExpressionParser {
      * @param operator The operator name
      * @return
      */
-    public Operator getUnaryOperator(String operator) {
+    public Operator getUnaryOperator(String operator) throws TwigRuntimeException {
         return this.parser.getEnvironment().getUnaryOperators().get(operator);
     }
 

@@ -101,7 +101,7 @@ public class Lexer {
      *
      * @param options The options to use
      */
-    public Lexer(LexerOptions options, Environment environment) {
+    public Lexer(LexerOptions options, Environment environment) throws TwigRuntimeException {
         this.options = options;
         this.environment = new Environment();
         regexes = new LexerRegexes(this.options, environment.getUnaryOperators(), environment.getBinaryOperators());

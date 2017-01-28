@@ -275,23 +275,26 @@ public class Environment {
      *
      * @return this
      */
-    protected Environment initExtensions() {
+    protected Environment initExtensions() throws TwigRuntimeException {
         if (hasInitedExtensions) {
             return this;
         }
 
         hasInitedExtensions = true;
 
-        extensions.forEach(this::initExtension);
+        for (Extension extension : extensions) {
+            initExtension(extension);
+        }
 
         return this;
     }
 
-    protected void initExtension(Extension extension) {
+    protected void initExtension(Extension extension) throws TwigRuntimeException {
 
         // Operators
         this.unaryOperators.putAll(extension.getUnaryOperators());
         this.binaryOperators.putAll(extension.getBinaryOperators());
+        this.filters.putAll(extension.getFilters());
 
         // Token parsers
         for (AbstractTokenParser tokenParser : extension.getTokenParsers()) {
@@ -417,7 +420,7 @@ public class Environment {
         return this;
     }
 
-    public LinkedHashMap<String, Operator> getBinaryOperators() {
+    public LinkedHashMap<String, Operator> getBinaryOperators() throws TwigRuntimeException {
         if (!hasInitedExtensions) {
             initExtensions();
         }
@@ -431,7 +434,7 @@ public class Environment {
         return this;
     }
 
-    public LinkedHashMap<String, Operator> getUnaryOperators() {
+    public LinkedHashMap<String, Operator> getUnaryOperators() throws TwigRuntimeException {
         if (!hasInitedExtensions) {
             initExtensions();
         }

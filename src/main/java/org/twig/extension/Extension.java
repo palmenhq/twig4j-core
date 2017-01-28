@@ -1,5 +1,6 @@
 package org.twig.extension;
 
+import org.twig.exception.TwigRuntimeException;
 import org.twig.filter.Filter;
 import org.twig.syntax.operator.Operator;
 import org.twig.syntax.parser.tokenparser.AbstractTokenParser;
@@ -30,7 +31,7 @@ public interface Extension {
      * Get the filters beloning to this extension
      * @return The filters
      */
-    public Map<String, Filter> getFilters();
+    public Map<String, Filter> getFilters() throws TwigRuntimeException;
 
     /**
      * Get the name of the extension

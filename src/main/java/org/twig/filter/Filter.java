@@ -1,25 +1,27 @@
 package org.twig.filter;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 public class Filter {
     // The name of the filter
     private String name;
     // Whatever to call when the filter's invoked
-    private Function<Object, Object> function;
+    private Method method;
+    // The arguments used for this filter
+    private List<String> arguments = new ArrayList<>();
     // The options
     private Options options = new Options();
 
-    public Filter(String name, Function<Object, Object> function) {
+    public Filter(String name, Method method) {
         this.name = name;
-        this.function = function;
+        this.method = method;
     }
 
-    public Filter(String name, Function<Object, Object> function, Options options) {
+    public Filter(String name, Method method, Options options) {
         this.name = name;
-        this.function = function;
+        this.method = method;
         this.options = options;
     }
 
@@ -32,12 +34,21 @@ public class Filter {
         return this;
     }
 
-    public Function<Object, Object> getFunction() {
-        return function;
+    public Method getMethod() {
+        return method;
     }
 
-    public Filter setFunction(Function<Object, Object> function) {
-        this.function = function;
+    public Filter setMethod(Method method) {
+        this.method = method;
+        return this;
+    }
+
+    public List<String> getArguments() {
+        return arguments;
+    }
+
+    public Filter setArguments(List<String> arguments) {
+        this.arguments = arguments;
         return this;
     }
 

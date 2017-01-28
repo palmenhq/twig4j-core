@@ -600,9 +600,14 @@ public class ExpressionParserTests {
         parser.setTokenStream(tokenStream);
         ExpressionParser expressionParser = new ExpressionParser(parser);
 
-        when(environment.getFilter("upper")).thenReturn(new org.twig.filter.Filter("upper", this::activateUpperFilter));
-        Node expectedBodyNode = new Constant("foo", 1);
-        Node parsedExpression = expressionParser.parseFilterExpression(expectedBodyNode);
+        try {
+            when(environment.getFilter("upper")).thenReturn(new org.twig.filter.Filter("upper", getClass().getMethod("activateUpperFilter", String.class)));
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("Logic is dead! The declared method to use does not exist in test.");
+        }
+
+        Expression expectedBodyNode = new Constant("foo", 1);
+        Expression parsedExpression = expressionParser.parseFilterExpression(expectedBodyNode);
 
         Assert.assertEquals("Should be of type filter", Filter.class, parsedExpression.getClass());
         Assert.assertEquals("Filter name node should be filter name", "upper", parsedExpression.getNode(1).getAttribute("data"));
@@ -611,7 +616,7 @@ public class ExpressionParserTests {
         Assert.assertEquals("Argument passed should be of correct type", StringConstant.class, parsedExpression.getNode(2).getNode(0).getClass());
     }
 
-    public Object activateUpperFilter(Object foo) {
+    public String activateUpperFilter(String foo) {
         return foo;
     }
 }
