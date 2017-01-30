@@ -16,8 +16,15 @@ public class Block extends Node {
 
     @Override
     public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
-        super.compile(compiler);
-
-        // TODO
+        compiler
+            .addDebugInfo(this)
+            .writeLine("public String block_" + getAttribute("name") + "(Context context) throws TwigException {")
+            .indent()
+                .writeLine("java.util.Map<String, Object> tmpForParent;")
+                .writeLine("String output = \"\";")
+                .subCompile(getNode(0))
+                .writeLine("return output;")
+            .unIndent()
+            .writeLine("}\n");
     }
 }

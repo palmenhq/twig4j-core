@@ -11,17 +11,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 abstract public class Template {
     protected Environment environment;
     protected Template parent;
-    protected Map<String, Function<Context, String>> blocks = new HashMap<>();
+    protected Map<String, TwigExceptionAwareFunction<Context, String>> blocks = new HashMap<>();
 
     public Template() {
     }
 
-    public Template(Environment environment) {
+    public Template(Environment environment) throws TwigException {
         this.environment = environment;
     }
 
@@ -302,18 +301,18 @@ abstract public class Template {
      * Loads another template
      *
      * @param template The actual template name to load
-     * @param requestedTemplateName Whatever is requested as template name
+     * @param requestingTemplateName Whoever requested as template
      * @param line The line it's requested on
      * @param index The template index TODO implement this
      * @return The loaded template
      * @throws TwigException If the included template throws any errors or isn't found
      */
-    protected Template loadTemplate(String template, String requestedTemplateName, Integer line, Integer index) throws TwigException {
+    protected Template loadTemplate(String template, String requestingTemplateName, Integer line, Integer index) throws TwigException {
         try {
             return environment.resolveTemplate(template);
         } catch (TwigException e) {
             if (e.getTemplateName() == null) {
-                e.setTemplateName(requestedTemplateName == null ? getTemplateName() : requestedTemplateName);
+                e.setTemplateName(requestingTemplateName == null ? getTemplateName() : requestingTemplateName);
             }
 
             if (e.getLineNumber() == null) {

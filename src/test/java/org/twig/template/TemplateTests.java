@@ -186,7 +186,7 @@ public class TemplateTests {
     }
 
     protected class TestCompareDifferentConstantsTemplate extends Template {
-        public TestCompareDifferentConstantsTemplate(Environment environment) {
+        public TestCompareDifferentConstantsTemplate(Environment environment) throws TwigException {
             super(environment);
         }
 
@@ -202,7 +202,7 @@ public class TemplateTests {
     }
 
     protected class TestCompareSameConstantsTemplate extends Template {
-        public TestCompareSameConstantsTemplate(Environment environment) {
+        public TestCompareSameConstantsTemplate(Environment environment) throws TwigException {
             super(environment);
         }
 
@@ -218,7 +218,7 @@ public class TemplateTests {
     }
 
     protected class TestCompareDifferentTypesConstantsTemplate extends Template {
-        public TestCompareDifferentTypesConstantsTemplate(Environment environment) {
+        public TestCompareDifferentTypesConstantsTemplate(Environment environment) throws TwigException {
             super(environment);
         }
 
@@ -234,7 +234,7 @@ public class TemplateTests {
     }
 
     protected class TestGetFooPropertyTemplate extends Template {
-        public TestGetFooPropertyTemplate(Environment environment) {
+        public TestGetFooPropertyTemplate(Environment environment) throws TwigException {
             super(environment);
         }
 
@@ -250,7 +250,7 @@ public class TemplateTests {
     }
 
     protected class TestGetBarGetterTemplate extends Template {
-        public TestGetBarGetterTemplate(Environment environment) {
+        public TestGetBarGetterTemplate(Environment environment) throws TwigException {
             super(environment);
         }
 
@@ -266,7 +266,7 @@ public class TemplateTests {
     }
 
     protected class TestGetBazIserTemplate extends Template {
-        public TestGetBazIserTemplate(Environment environment) {
+        public TestGetBazIserTemplate(Environment environment) throws TwigException {
             super(environment);
         }
 
@@ -282,7 +282,7 @@ public class TemplateTests {
     }
 
     protected class TestGetQuxHaserTemplate extends Template {
-        public TestGetQuxHaserTemplate(Environment environment) {
+        public TestGetQuxHaserTemplate(Environment environment) throws TwigException {
             super(environment);
         }
 
@@ -298,7 +298,7 @@ public class TemplateTests {
     }
 
     protected class TestGetQuuxMethodTemplate extends Template {
-        public TestGetQuuxMethodTemplate(Environment environment) {
+        public TestGetQuuxMethodTemplate(Environment environment) throws TwigException {
             super(environment);
         }
 

@@ -180,14 +180,20 @@ public class Environment {
         }
 
         try {
-            Template template = (Template) Class.forName(fullTemplateClassName).newInstance();
-            template.setEnvironment(this);
+            // First try to load template with Environment constructor, if that doesn't work load it with default constructor
+            try {
+                Template template = (Template) Class.forName(fullTemplateClassName).getConstructor(Environment.class).newInstance(this);
 
-            return template;
+                return template;
+            } catch (NoSuchMethodException e) {
+                Template template = (Template) Class.forName(fullTemplateClassName).newInstance();
+                template.setEnvironment(this);
+
+                return template;
+            }
         } catch (ClassNotFoundException e) {
             String javaSourceCode = compileSource(getLoader().getSource(name), name);
             Template template = this.runtimeTemplateCompiler.compile(javaSourceCode, fullTemplateClassName);
-            template.setEnvironment(this);
 
             this.loadedTemplates.put(className, template);
 

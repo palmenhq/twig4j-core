@@ -4,24 +4,25 @@ import org.twig.compiler.ClassCompiler;
 import org.twig.compiler.Compilable;
 import org.twig.exception.LoaderException;
 import org.twig.exception.TwigRuntimeException;
+import org.twig.syntax.parser.node.type.Block;
 
-import java.util.List;
+import java.util.Map;
 
 public class Module implements Compilable {
-    Node bodyNode;
-    Node parent;
-    List<String> blocks;
+    protected Node bodyNode;
+    protected Node parent;
+    protected Map<String, Block> blocks;
 
     protected String fileName = "";
 
-    public Module(Node bodyNode, Node parent) {
+    public Module(Node bodyNode) {
         this.bodyNode = bodyNode;
-        this.parent = parent;
     }
 
-    public Module(Node bodyNode, Node parent, String fileName) {
+    public Module(Node bodyNode, Node parent, Map<String, Block> blocks, String fileName) {
         this.bodyNode = bodyNode;
         this.parent = parent;
+        this.blocks = blocks;
         this.fileName = fileName;
     }
 
@@ -36,6 +37,8 @@ public class Module implements Compilable {
         }
 
         compileRender(compiler);
+
+        compileBlocks(compiler);
 
         compileClassFooter(compiler);
     }
@@ -56,18 +59,21 @@ public class Module implements Compilable {
 
     protected void compileConstructor(ClassCompiler compiler, String className) throws LoaderException, TwigRuntimeException {
         compiler
-            .writeLine("public " + className + "() {")
-            .indent();
+            .writeLine("public " + className + "(org.twig.Environment environment) throws TwigException {")
+            .indent()
+                .writeLine("this.environment = environment;\n")
+                .addDebugInfo(parent)
+                .write("parent = loadTemplate(")
+                .subCompile(parent)
+                .writeRaw(", \"" + getFileName() + "\", 1, null);\n\n");
+
+        for (Map.Entry block : blocks.entrySet()) {
+            compiler.writeLine("blocks.put(\"" + block.getKey() + "\", this::block_" + block.getKey() + ");");
+        }
 
         compiler
-            .addDebugInfo(parent)
-            .writeLine("parent = loadTemplate(")
-            .subCompile(parent)
-            .writeRaw("\"" + getFileName() + "\");\n\n");
-
-        for (String block : blocks) {
-            compiler.writeLine("blocks.put(\"" + block + "\", this::block_" + block);
-        }
+            .unIndent()
+            .writeLine("}\n");
     }
 
     protected void compileClassFooter(ClassCompiler compiler) {
@@ -95,12 +101,40 @@ public class Module implements Compilable {
                 .writeLine("}");
     }
 
+    protected void compileBlocks(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
+        if (blocks == null) {
+            return;
+        }
+
+        for (Map.Entry<String, Block> block : blocks.entrySet()) {
+            compiler.subCompile(block.getValue());
+        }
+    }
+
     public Node getBodyNode() {
         return bodyNode;
     }
 
     public void setBodyNode(Node bodyNode) {
         this.bodyNode = bodyNode;
+    }
+
+    public Node getParent() {
+        return parent;
+    }
+
+    public Module setParent(Node parent) {
+        this.parent = parent;
+        return this;
+    }
+
+    public Map<String, Block> getBlocks() {
+        return blocks;
+    }
+
+    public Module setBlocks(Map<String, Block> blocks) {
+        this.blocks = blocks;
+        return this;
     }
 
     public String getFileName() {

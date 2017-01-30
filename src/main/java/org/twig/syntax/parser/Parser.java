@@ -52,9 +52,9 @@ public class Parser {
         // TODO: Create node visitors
 
         this.tokenStream = tokenStream;
-        parent = null;
-        blocks = new HashMap<>();
-        blockStack = new Stack<>();
+        this.parent = null;
+        this.blocks = new HashMap<>();
+        this.blockStack = new Stack<>();
 
         // TODO Find out what all the other properties does
 
@@ -73,7 +73,7 @@ public class Parser {
             throw e;
         }
 
-        Module node = new Module(body, null, tokenStream.getFilename());
+        Module node = new Module(body, parent, this.blocks, tokenStream.getFilename());
 
         return node;
     }

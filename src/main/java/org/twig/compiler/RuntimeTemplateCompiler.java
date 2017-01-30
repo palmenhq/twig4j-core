@@ -39,10 +39,17 @@ public class RuntimeTemplateCompiler {
 
             }
 
-            Template template = (Template) cachedCompiler.loadFromJava(name, sourceCode).newInstance();
-            template.setEnvironment(environment);
+            // First try to load template with Environment constructor, if that doesn't work load it with default constructor
+            try {
+                Template template = (Template) cachedCompiler.loadFromJava(name, sourceCode).getConstructor(Environment.class).newInstance(environment);
 
-            return template;
+                return template;
+            } catch (NoSuchMethodException e) {
+                Template template = (Template) cachedCompiler.loadFromJava(name, sourceCode).newInstance();
+                template.setEnvironment(environment);
+
+                return template;
+            }
         } catch (ClassNotFoundException e) {
             throw new TwigRuntimeException("Failed to find compiled class " + name + ". Maybe it failed to compile?", e);
         } catch (Exception e) {

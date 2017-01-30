@@ -15,7 +15,7 @@ public class ModuleTests {
         ClassCompiler classCompilerStub = mock(ClassCompiler.class);
         Environment environmentStub = mock(Environment.class);
 
-        Module module = new Module(new Body(1), null);
+        Module module = new Module(new Body(1));
         module.setFileName("foo");
 
         setupClassCompilerStubWhens(classCompilerStub, environmentStub);
@@ -44,7 +44,7 @@ public class ModuleTests {
 
         Body bodyNodeStub = mock(Body.class);
 
-        Module module = new Module(bodyNodeStub, null);
+        Module module = new Module(bodyNodeStub);
         module.setFileName("foo");
 
         setupClassCompilerStubWhens(classCompilerStub, environmentStub);
@@ -71,4 +71,5 @@ public class ModuleTests {
         when(environmentStub.getTemplateBaseClass()).thenReturn("org.twig.template.Template");
         when(environmentStub.getTemplatePackage()).thenReturn("org.twig.template");
     }
+
 }
