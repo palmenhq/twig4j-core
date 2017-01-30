@@ -209,14 +209,15 @@ public class Parser {
         }
 
         // Recursively filter out output nodes
-        Integer i = 0;
+        List<Node> newBodyNodes = new ArrayList<>();
         for (Node node : body.getNodes()) {
             Node filteredNode = filterBodyNodes(node);
-            if (filteredNode == null) {
-                body.removeNode(i);
+            if (filteredNode != null) {
+                newBodyNodes.add(filteredNode);
             }
-            i ++;
         }
+        body.getNodes().clear();
+        body.getNodes().addAll(newBodyNodes);
 
         return body;
     }
