@@ -72,6 +72,6 @@ public class Block extends AbstractTokenParser {
 
     @Override
     public String getTag() {
-        return "extends";
+        return "block";
     }
 }

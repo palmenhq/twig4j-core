@@ -15,7 +15,7 @@ public class ModuleTests {
         ClassCompiler classCompilerStub = mock(ClassCompiler.class);
         Environment environmentStub = mock(Environment.class);
 
-        Module module = new Module(new Body(1));
+        Module module = new Module(new Body(1), null);
         module.setFileName("foo");
 
         setupClassCompilerStubWhens(classCompilerStub, environmentStub);
@@ -44,7 +44,7 @@ public class ModuleTests {
 
         Body bodyNodeStub = mock(Body.class);
 
-        Module module = new Module(bodyNodeStub);
+        Module module = new Module(bodyNodeStub, null);
         module.setFileName("foo");
 
         setupClassCompilerStubWhens(classCompilerStub, environmentStub);

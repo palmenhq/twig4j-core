@@ -5,31 +5,42 @@ import org.twig.compiler.Compilable;
 import org.twig.exception.LoaderException;
 import org.twig.exception.TwigRuntimeException;
 
+import java.util.List;
+
 public class Module implements Compilable {
     Node bodyNode;
+    Node parent;
+    List<String> blocks;
 
     protected String fileName = "";
 
-    public Module(Node bodyNode) {
+    public Module(Node bodyNode, Node parent) {
         this.bodyNode = bodyNode;
+        this.parent = parent;
     }
 
-    public Module(Node bodyNode, String fileName) {
+    public Module(Node bodyNode, Node parent, String fileName) {
         this.bodyNode = bodyNode;
+        this.parent = parent;
         this.fileName = fileName;
     }
 
     @Override
     public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
-        compileClassHeader(compiler);
+        String className = compiler.getEnvironment().getTemplateClass(this.fileName);
+
+        compileClassHeader(compiler, className);
+
+        if (parent != null) {
+            compileConstructor(compiler, className);
+        }
 
         compileRender(compiler);
 
         compileClassFooter(compiler);
     }
 
-    protected void compileClassHeader(ClassCompiler compiler) throws LoaderException {
-        String className = compiler.getEnvironment().getTemplateClass(this.fileName);
+    protected void compileClassHeader(ClassCompiler compiler, String className) throws LoaderException {
         String baseClass = compiler.getEnvironment().getTemplateBaseClass();
 
         compiler
@@ -41,6 +52,22 @@ public class Module implements Compilable {
                 .write("public class ".concat(className))
                 .writeLine(" extends ".concat(baseClass).concat(" {"))
                 .indent();
+    }
+
+    protected void compileConstructor(ClassCompiler compiler, String className) throws LoaderException, TwigRuntimeException {
+        compiler
+            .writeLine("public " + className + "() {")
+            .indent();
+
+        compiler
+            .addDebugInfo(parent)
+            .writeLine("parent = loadTemplate(")
+            .subCompile(parent)
+            .writeRaw("\"" + getFileName() + "\");\n\n");
+
+        for (String block : blocks) {
+            compiler.writeLine("blocks.put(\"" + block + "\", this::block_" + block);
+        }
     }
 
     protected void compileClassFooter(ClassCompiler compiler) {

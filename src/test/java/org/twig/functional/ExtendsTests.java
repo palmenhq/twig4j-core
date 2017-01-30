@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 public class ExtendsTests extends FunctionalTests {
     @Test
-    public void canIncludeTemplate() throws TwigException {
+    public void canExtendTemplateWithBlocks() throws TwigException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
             "foo.twig",

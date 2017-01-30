@@ -57,7 +57,7 @@ public class EnvironmentTests {
         Parser parserStub = mock(Parser.class);
         ClassCompiler compilerStub = mock(ClassCompiler.class);
         TokenStream tokenStream = new TokenStream();
-        Module module = new Module(new Body(1));
+        Module module = new Module(new Body(1), null);
 
         environment
                 .setLexer(lexerStub)
