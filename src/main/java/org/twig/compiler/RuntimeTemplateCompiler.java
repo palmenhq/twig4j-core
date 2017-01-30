@@ -3,10 +3,9 @@ package org.twig.compiler;
 import net.openhft.compiler.CachedCompiler;
 import net.openhft.compiler.CompilerUtils;
 import org.twig.Environment;
+import org.twig.exception.TwigException;
 import org.twig.exception.TwigRuntimeException;
 import org.twig.template.Template;
-
-import java.lang.reflect.Constructor;
 
 public class RuntimeTemplateCompiler {
     private CachedCompiler cachedCompiler = CompilerUtils.CACHED_COMPILER;
@@ -31,7 +30,7 @@ public class RuntimeTemplateCompiler {
      * @param name The name of the template class INCLUDING package name (ie org.twig.template.02ntueh0k2b20rckb9940ntqb_0)
      * @return
      */
-    public Template compile(String sourceCode, String name) throws TwigRuntimeException {
+    public Template compile(String sourceCode, String name) throws TwigException {
         try {
             if (environment.isDebug()) {
                 System.out.println("Compiling template " + name);
@@ -53,6 +52,10 @@ public class RuntimeTemplateCompiler {
         } catch (ClassNotFoundException e) {
             throw new TwigRuntimeException("Failed to find compiled class " + name + ". Maybe it failed to compile?", e);
         } catch (Exception e) {
+            if (e.getCause() instanceof TwigException) {
+                throw (TwigException)e.getCause();
+            }
+
             throw new TwigRuntimeException("Exception " + e.toString() + " thrown by compiler when compiling template " + name + ".", e);
         }
     }

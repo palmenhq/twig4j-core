@@ -58,7 +58,7 @@ public class Block extends AbstractTokenParser {
         }
         tokenStream.expect(Token.Type.BLOCK_END);
 
-        block.addNode(body);
+        block.getNodes().set(0, body);
 
         parser.getBlockStack().pop();
         // TODO parser.popLocalScope()

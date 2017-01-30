@@ -7,7 +7,9 @@ import org.twig.syntax.Token;
 import org.twig.syntax.TokenStream;
 import org.twig.syntax.parser.node.Module;
 import org.twig.syntax.parser.node.Node;
+import org.twig.syntax.parser.node.Output;
 import org.twig.syntax.parser.node.type.Block;
+import org.twig.syntax.parser.node.type.BlockReference;
 import org.twig.syntax.parser.node.type.PrintExpression;
 import org.twig.syntax.parser.node.type.Text;
 import org.twig.syntax.parser.node.type.expression.Expression;
@@ -61,6 +63,14 @@ public class Parser {
         Node body;
         try {
             body = subparse();
+
+            if (this.parent != null) {
+                Node filteredBodyNodes = filterBodyNodes(body);
+
+                if (filteredBodyNodes == null) {
+                    body = new Node(1);
+                }
+            }
         } catch (SyntaxErrorException e) {
             if (e.getTemplateName() == null) {
                 e.setTemplateName(getFilename());
@@ -182,6 +192,33 @@ public class Parser {
         }
 
         return new Node(rv, new HashMap<>(), lineno, null);
+    }
+
+    protected Node filterBodyNodes(Node body) throws SyntaxErrorException, TwigRuntimeException {
+        // Check that the body does not contain non-empty output nodes
+        // TODO check for file "bom"
+        if ((body instanceof Output && !(body instanceof BlockReference)) || (body instanceof Text && !((String)body.getAttribute("data")).matches("^[\\s\\n]+$"))) {
+            throw new SyntaxErrorException("A template that extends another one cannot have a body.", getFilename(), body.getLine());
+        }
+
+        // TODO the thing about "set" nodes
+
+        // Remove outputs
+        if (body instanceof Output) {
+            return null;
+        }
+
+        // Recursively filter out output nodes
+        Integer i = 0;
+        for (Node node : body.getNodes()) {
+            Node filteredNode = filterBodyNodes(node);
+            if (filteredNode == null) {
+                body.removeNode(i);
+            }
+            i ++;
+        }
+
+        return body;
     }
 
     /**

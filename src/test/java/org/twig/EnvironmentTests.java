@@ -158,7 +158,7 @@ public class EnvironmentTests {
 
     protected class Template_Test_0 extends Template {
         @Override
-        protected String doRender(Context context) throws TwigRuntimeException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigRuntimeException {
             return "foobar";
         }
 

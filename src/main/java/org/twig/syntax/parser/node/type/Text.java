@@ -2,11 +2,12 @@ package org.twig.syntax.parser.node.type;
 
 import org.twig.compiler.*;
 import org.twig.syntax.parser.node.Node;
+import org.twig.syntax.parser.node.Output;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Text extends Node {
+public class Text extends Node implements Output {
     public Text(ArrayList<Node> nodes, HashMap<String, Object> attributes, Integer line, String tag) {
         super(nodes, attributes, line, tag);
     }

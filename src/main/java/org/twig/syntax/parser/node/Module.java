@@ -5,6 +5,7 @@ import org.twig.compiler.Compilable;
 import org.twig.exception.LoaderException;
 import org.twig.exception.TwigRuntimeException;
 import org.twig.syntax.parser.node.type.Block;
+import org.twig.syntax.parser.node.type.expression.Constant;
 
 import java.util.Map;
 
@@ -32,11 +33,9 @@ public class Module implements Compilable {
 
         compileClassHeader(compiler, className);
 
-        if (parent != null) {
-            compileConstructor(compiler, className);
-        }
+        compileConstructor(compiler, className);
 
-        compileRender(compiler);
+        compileDisplay(compiler);
 
         compileBlocks(compiler);
 
@@ -61,18 +60,35 @@ public class Module implements Compilable {
         compiler
             .writeLine("public " + className + "(org.twig.Environment environment) throws TwigException {")
             .indent()
-                .writeLine("this.environment = environment;\n")
+                .writeLine("this.environment = environment;\n");
+
+        if (parent != null) {
+            compiler
                 .addDebugInfo(parent)
                 .write("parent = loadTemplate(")
                 .subCompile(parent)
                 .writeRaw(", \"" + getFileName() + "\", 1, null);\n\n");
-
-        for (Map.Entry block : blocks.entrySet()) {
-            compiler.writeLine("blocks.put(\"" + block.getKey() + "\", this::block_" + block.getKey() + ");");
         }
 
+        if (blocks.entrySet().size() > 0) {
+            compiler
+                .writeLine("try {")
+                .indent();
+
+            for (Map.Entry block : blocks.entrySet()) {
+                compiler.writeLine("blocks.put(\"" + block.getKey() + "\", new TemplateBlockMethodSet(this, this.getClass().getMethod(\"block_" + block.getKey() + "\", Context.class)));");
+            }
+
+            compiler
+                .unIndent()
+                .writeLine("} catch (NoSuchMethodException e) {")
+                .indent()
+                .writeLine("throw new org.twig.exception.TwigRuntimeException(\"Could not find method for block (\\\"\" + e.getMessage() + \"\\\").\", getTemplateName(), -1, e);")
+                .unIndent()
+                .writeLine("}")
+                .unIndent();
+        }
         compiler
-            .unIndent()
             .writeLine("}\n");
     }
 
@@ -89,16 +105,34 @@ public class Module implements Compilable {
                 .writeLine("}");
     }
 
-    protected void compileRender(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
+    protected void compileDisplay(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
         compiler
-                .writeLine("protected String doRender(Context context) throws TwigException {")
+                .writeLine("protected String doDisplay(Context context, java.util.Map<String, TemplateBlockMethodSet> blocks) throws TwigException {")
                     .indent()
                     .writeLine("java.util.Map<String, Object> tmpForParent;")
-                    .writeLine("String output = \"\";")
-                    .subCompile(this.getBodyNode())
+                    .writeLine("String output = \"\";");
+
+        compiler
+                    .subCompile(this.getBodyNode());
+
+        if (parent != null) {
+            compiler.addDebugInfo(parent);
+            if (parent instanceof Constant) {
+                compiler
+                    .writeLine("java.util.Map<String, TemplateBlockMethodSet> mergedBlocks = new java.util.HashMap<>();")
+                    .writeLine("mergedBlocks.putAll(this.blocks);")
+                    .writeLine("mergedBlocks.putAll(blocks);")
+                    .writeLine("output = output + parent.display(context, mergedBlocks);");
+            } else {
+                // TODO
+                throw new RuntimeException("not implemented yet");
+            }
+        }
+
+        compiler
                 .writeLine("return output;")
-                .unIndent()
-                .writeLine("}");
+            .unIndent()
+            .writeLine("}");
     }
 
     protected void compileBlocks(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
@@ -107,7 +141,7 @@ public class Module implements Compilable {
         }
 
         for (Map.Entry<String, Block> block : blocks.entrySet()) {
-            compiler.subCompile(block.getValue());
+            block.getValue().compile(compiler);
         }
     }
 

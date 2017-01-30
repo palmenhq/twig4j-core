@@ -149,14 +149,14 @@ public class TemplateTests {
         Template template = new TestDisplayBlockTemplate(environment);
 
         Assert.assertEquals(
-            "Contents of rendered templat should be what's in block a",
+            "Contents of rendered template should be what's in block a",
             "foo",
             template.render()
         );
     }
     protected class TestStringTemplate extends Template {
         @Override
-        protected String doRender(Context context) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
             return "foo";
         }
 
@@ -168,7 +168,7 @@ public class TemplateTests {
 
     protected class TestVariableTemplate extends Template {
         @Override
-        protected String doRender(Context context) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
             return getContext(context, "foo", false, 1).toString();
         }
 
@@ -180,7 +180,7 @@ public class TemplateTests {
 
     protected class TestMethodCallTemplate extends Template {
         @Override
-        protected String doRender(Context context) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
             return String.valueOf(getAttribute(context.get("foo"), "bar", Arrays.asList("some ", "argument"), "method"));
         }
 
@@ -202,7 +202,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Context context) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
             return String.valueOf(compare("foo", "bar"));
         }
 
@@ -218,7 +218,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Context context) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
             return String.valueOf(compare("foo", "foo"));
         }
 
@@ -234,7 +234,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Context context) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
             return String.valueOf(compare("true", true));
         }
 
@@ -250,7 +250,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Context context) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
             return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "foo", Arrays.asList(), "any"));
         }
 
@@ -266,7 +266,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Context context) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
             return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "bar", Arrays.asList(), "any"));
         }
 
@@ -282,7 +282,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Context context) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
             return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "baz", Arrays.asList(), "any"));
         }
 
@@ -298,7 +298,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Context context) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
             return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "qux", Arrays.asList(), "any"));
         }
 
@@ -314,7 +314,7 @@ public class TemplateTests {
         }
 
         @Override
-        protected String doRender(Context context) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
             return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "quux", Arrays.asList(), "any"));
         }
 
@@ -346,7 +346,7 @@ public class TemplateTests {
 
     protected class TestLoadTemplateTemplate extends Template {
         @Override
-        protected String doRender(Context context) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
             return loadTemplate("bar.twig", "bar.twig", 1, null).render();
         }
 
@@ -358,15 +358,19 @@ public class TemplateTests {
 
     protected class TestDisplayBlockTemplate extends Template {
         public TestDisplayBlockTemplate(Environment environment) throws TwigException {
-            blocks.put("a", this::block_a);
+            try {
+                blocks.put("a", new TemplateBlockMethodSet(this, getClass().getMethod("block_a", Context.class)));
+            } catch (NoSuchMethodException e) {
+                throw new org.twig.exception.TwigRuntimeException("Could not find method for block.", getTemplateName(), -1, e);
+            }
         }
 
         @Override
-        protected String doRender(Context context) throws TwigException {
-            return displayBlock("a", context);
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
+            return displayBlock("a", context, blocks);
         }
 
-        protected String block_a(Context context) throws TwigException {
+        public String block_a(Context context) throws TwigException {
             return "foo";
         }
 

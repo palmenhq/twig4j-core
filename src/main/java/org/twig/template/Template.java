@@ -1,6 +1,7 @@
 package org.twig.template;
 
 import org.twig.Environment;
+import org.twig.exception.LoaderException;
 import org.twig.exception.TwigException;
 import org.twig.exception.TwigRuntimeException;
 
@@ -15,7 +16,7 @@ import java.util.Map;
 abstract public class Template {
     protected Environment environment;
     protected Template parent;
-    protected Map<String, TwigExceptionAwareFunction<Context, String>> blocks = new HashMap<>();
+    protected Map<String, TemplateBlockMethodSet> blocks = new HashMap<>();
 
     public Template() {
     }
@@ -41,7 +42,16 @@ abstract public class Template {
      * @throws TwigRuntimeException If there are any errors, i.e. accessing a variable that is not in the context.
      */
     public String render(Context context) throws TwigException {
-        return doRender(context);
+        return display(context, blocks);
+    }
+
+
+    public String display(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
+        Map<String, TemplateBlockMethodSet> mergedBlocks = new HashMap<>();
+        mergedBlocks.putAll(this.blocks);
+        mergedBlocks.putAll(blocks);
+
+        return doDisplay(context, mergedBlocks);
     }
 
     /**
@@ -51,7 +61,7 @@ abstract public class Template {
      * @return
      * @throws TwigRuntimeException
      */
-    abstract protected String doRender(Context context) throws TwigException;
+    abstract protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException;
 
     /**
      * Get the template file name
@@ -324,15 +334,15 @@ abstract public class Template {
         }
     }
 
-    protected String displayBlock(String name, Context context) throws TwigException {
+    protected String displayBlock(String name, Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
         // TODO find out what the displayBlock and useBlocks is for
 
         if (!blocks.containsKey(name)) {
-            return parent.displayBlock(name, context);
+            return parent.displayBlock(name, context, blocks);
         }
 
         try {
-            return blocks.get(name).apply(context);
+            return blocks.get(name).invoke(name, context);
         } catch (TwigException e) {
             if (e.getTemplateName() == null) {
                 e.setTemplateName(getTemplateName());
@@ -362,5 +372,42 @@ abstract public class Template {
      */
     public void setEnvironment(Environment environment) {
         this.environment = environment;
+    }
+
+    public class TemplateBlockMethodSet {
+        protected Template template;
+        protected Method method;
+
+        public TemplateBlockMethodSet(Template template, Method method) {
+            this.template = template;
+            this.method = method;
+        }
+
+        public String invoke(String name, Context context) throws TwigRuntimeException {
+            try {
+                return (String)method.invoke(template, context);
+            } catch (ReflectiveOperationException e) {
+                throw new TwigRuntimeException("Failed displaying block \"" + name + "\" (\"" + e.getMessage() + "\")", getTemplateName(), -1, e);
+            }
+
+        }
+
+        public Template getTemplate() {
+            return template;
+        }
+
+        public TemplateBlockMethodSet setTemplate(Template template) {
+            this.template = template;
+            return this;
+        }
+
+        public Method getMethod() {
+            return method;
+        }
+
+        public TemplateBlockMethodSet setMethod(Method method) {
+            this.method = method;
+            return this;
+        }
     }
 }

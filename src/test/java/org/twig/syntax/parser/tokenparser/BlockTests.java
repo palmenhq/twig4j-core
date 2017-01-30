@@ -10,6 +10,7 @@ import org.twig.syntax.TokenStream;
 import org.twig.syntax.parser.Parser;
 import org.twig.syntax.parser.node.Node;
 import org.twig.syntax.parser.node.type.BlockReference;
+import org.twig.syntax.parser.node.type.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +39,11 @@ public class BlockTests {
 
         Assert.assertEquals("Block reference should be instance of block reference", BlockReference.class, blockReference.getClass());
         Assert.assertEquals("Block reference name should be block name", "a", blockReference.getAttribute("name"));
+        Assert.assertEquals(
+            "Parser's block body should be of type text",
+            Text.class,
+            parser.getBlocks().get("a").getNode(0).getClass()
+        );
 
     }
 

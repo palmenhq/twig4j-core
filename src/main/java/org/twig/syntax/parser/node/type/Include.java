@@ -4,11 +4,12 @@ import org.twig.compiler.ClassCompiler;
 import org.twig.exception.LoaderException;
 import org.twig.exception.TwigRuntimeException;
 import org.twig.syntax.parser.node.Node;
+import org.twig.syntax.parser.node.Output;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class Include extends Node {
+public class Include extends Node implements Output {
     /**
      * Constructor
      *

@@ -4,8 +4,9 @@ import org.twig.compiler.ClassCompiler;
 import org.twig.exception.LoaderException;
 import org.twig.exception.TwigRuntimeException;
 import org.twig.syntax.parser.node.Node;
+import org.twig.syntax.parser.node.Output;
 
-public class BlockReference extends Node {
+public class BlockReference extends Node implements Output {
     public BlockReference(String name, Integer line, String tag) {
         super(line);
         setTag(tag);
@@ -15,8 +16,8 @@ public class BlockReference extends Node {
 
     @Override
     public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
-        super.compile(compiler);
-
-        // TODO
+        compiler
+            .addDebugInfo(this)
+            .writeLine("output = output + displayBlock(\"" + getAttribute("name") + "\", context, blocks);");
     }
 }
