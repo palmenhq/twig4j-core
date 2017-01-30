@@ -6,7 +6,7 @@ import org.twig.exception.LoaderException;
 
 import java.util.HashMap;
 
-public class ListLoaderTests {
+public class HashMapLoaderTests {
     @Test
     public void canGetSource() throws LoaderException {
         HashMap<String, String> hashMap = new HashMap<String, String>();
