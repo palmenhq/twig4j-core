@@ -7,15 +7,13 @@ import org.twig.syntax.Token;
 import org.twig.syntax.TokenStream;
 import org.twig.syntax.parser.node.Module;
 import org.twig.syntax.parser.node.Node;
+import org.twig.syntax.parser.node.type.Block;
 import org.twig.syntax.parser.node.type.PrintExpression;
 import org.twig.syntax.parser.node.type.Text;
 import org.twig.syntax.parser.node.type.expression.Expression;
 import org.twig.syntax.parser.tokenparser.AbstractTokenParser;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 import java.util.function.Function;
 
 public class Parser {
@@ -30,7 +28,7 @@ public class Parser {
     // Parent template name (if any)
     private Expression parent;
     // Blocks
-    private List<String> blocks = new ArrayList<>();
+    private Map<String, Block> blocks = new HashMap<>();
     // Handles blocks inside blocks
     private Stack<String> blockStack = new Stack<>();
 
@@ -55,7 +53,7 @@ public class Parser {
 
         this.tokenStream = tokenStream;
         parent = null;
-        blocks = new ArrayList<>();
+        blocks = new HashMap<>();
         blockStack = new Stack<>();
 
         // TODO Find out what all the other properties does
@@ -288,7 +286,7 @@ public class Parser {
      * Get the blocks in the current template
      * @return
      */
-    public List<String> getBlocks() {
+    public Map<String, Block> getBlocks() {
         return blocks;
     }
 
@@ -298,7 +296,7 @@ public class Parser {
      * @param blocks Blocks to set
      * @return this
      */
-    public Parser setBlocks(List<String> blocks) {
+    public Parser setBlocks(Map<String, Block> blocks) {
         this.blocks = blocks;
         return this;
     }
