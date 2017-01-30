@@ -143,6 +143,17 @@ public class TemplateTests {
         );
     }
 
+    @Test
+    public void canDisplayBlock() throws TwigException {
+        Environment environment = mock(Environment.class);
+        Template template = new TestDisplayBlockTemplate(environment);
+
+        Assert.assertEquals(
+            "Contents of rendered templat should be what's in block a",
+            "foo",
+            template.render()
+        );
+    }
     protected class TestStringTemplate extends Template {
         @Override
         protected String doRender(Context context) throws TwigException {
@@ -337,6 +348,26 @@ public class TemplateTests {
         @Override
         protected String doRender(Context context) throws TwigException {
             return loadTemplate("bar.twig", "bar.twig", 1, null).render();
+        }
+
+        @Override
+        public String getTemplateName() {
+            return "foo.twig";
+        }
+    }
+
+    protected class TestDisplayBlockTemplate extends Template {
+        public TestDisplayBlockTemplate(Environment environment) throws TwigException {
+            blocks.put("a", this::block_a);
+        }
+
+        @Override
+        protected String doRender(Context context) throws TwigException {
+            return displayBlock("a", context);
+        }
+
+        protected String block_a(Context context) throws TwigException {
+            return "foo";
         }
 
         @Override

@@ -324,6 +324,38 @@ abstract public class Template {
         }
     }
 
+    protected String displayBlock(String name, Context context) throws TwigException {
+        // TODO find out what the displayBlock and useBlocks is for
+
+        if (!blocks.containsKey(name)) {
+            return parent.displayBlock(name, context);
+        }
+
+        try {
+            return blocks.get(name).apply(context);
+        } catch (TwigException e) {
+            if (e.getTemplateName() == null) {
+                e.setTemplateName(getTemplateName());
+            }
+
+            // this is mostly useful for Loader exceptions
+            // see LoaderException
+            if (e.getLineNumber() == null) {
+                e.setLineNumber(-1);
+                // TODO guess line number
+            }
+
+            throw e;
+        } catch (Exception e) {
+            throw new TwigRuntimeException(
+                String.format("An exception has been thrown during the rendering of a template (\"%s\").", e.getMessage()),
+                getTemplateName(),
+                -1,
+                e
+            );
+        }
+    }
+
     /**
      * Set the environment
      * @param environment The environment
