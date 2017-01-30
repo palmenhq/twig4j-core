@@ -1,7 +1,6 @@
 package org.twig.template;
 
 import org.twig.Environment;
-import org.twig.exception.LoaderException;
 import org.twig.exception.TwigException;
 import org.twig.exception.TwigRuntimeException;
 
@@ -45,7 +44,13 @@ abstract public class Template {
         return display(context, blocks);
     }
 
-
+    /**
+     * The actual rendering of the template. Composes blocks and then runs the actual template render method.
+     * @param context The context to render
+     * @param blocks The blocks (or empty map if none)
+     * @return The rendered result
+     * @throws TwigException
+     */
     public String display(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
         Map<String, TemplateBlockMethodSet> mergedBlocks = new HashMap<>();
         mergedBlocks.putAll(this.blocks);
@@ -334,6 +339,14 @@ abstract public class Template {
         }
     }
 
+    /**
+     * Invokes the appropriate block method to display
+     * @param name The name of the block (i.e. "a")
+     * @param context The context
+     * @param blocks A collection of available blocks
+     * @return Generated source code
+     * @throws TwigException On any errors
+     */
     protected String displayBlock(String name, Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
         // TODO find out what the displayBlock and useBlocks is for
 
@@ -374,6 +387,9 @@ abstract public class Template {
         this.environment = environment;
     }
 
+    /**
+     * A set of Template objects and a matching block methods
+     */
     public class TemplateBlockMethodSet {
         protected Template template;
         protected Method method;
