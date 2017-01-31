@@ -62,14 +62,6 @@ public class Module implements Compilable {
             .indent()
                 .writeLine("this.environment = environment;\n");
 
-        if (parent != null) {
-            compiler
-                .addDebugInfo(parent)
-                .write("parent = loadTemplate(")
-                .subCompile(parent)
-                .writeRaw(", \"" + getFileName() + "\", 1, null);\n\n");
-        }
-
         if (blocks.entrySet().size() > 0) {
             compiler
                 .writeLine("try {")
@@ -108,7 +100,17 @@ public class Module implements Compilable {
     protected void compileDisplay(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
         compiler
                 .writeLine("protected String doDisplay(Context context, java.util.Map<String, TemplateBlockMethodSet> blocks) throws TwigException {")
-                    .indent()
+                    .indent();
+
+        if (parent != null) {
+            compiler
+                .addDebugInfo(parent)
+                .write("parent = loadTemplate(")
+                .subCompile(parent)
+                .writeRaw(", \"" + getFileName() + "\", 1, null);\n\n");
+        }
+
+        compiler
                     .writeLine("java.util.Map<String, Object> tmpForParent;")
                     .writeLine("String output = \"\";");
 
