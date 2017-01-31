@@ -367,7 +367,7 @@ public class TemplateTests {
 
         @Override
         protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
-            return displayBlock("a", context, blocks);
+            return displayBlock("a", context, blocks, true);
         }
 
         public String block_a(Context context) throws TwigException {

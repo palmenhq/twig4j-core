@@ -63,4 +63,22 @@ public class ExtendsTests extends FunctionalTests {
             environment.render("foo.twig")
         );
     }
+
+    @Test
+    public void canDoParent() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put(
+            "foo.twig",
+            "{% extends 'bar.twig' %}\n" +
+                "{% block a %}{{ parent() }}{% endblock %}"
+        );
+        templates.put("bar.twig", "foo {% block a %}parent A{% endblock %}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals(
+            "Templates should be rendered correctly",
+            "foo parent A",
+            environment.render("foo.twig")
+        );
+    }
 }

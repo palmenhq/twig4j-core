@@ -19,9 +19,10 @@ import java.util.regex.Matcher;
  * Parses expressions.
  * <p>
  * This parser implements a "Precedence climbing" algorithm.
+ * </p>
  *
- * @see http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm
- * @see http://en.wikipedia.org/wiki/Operator-precedence_parser
+ * see http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm
+ * see http://en.wikipedia.org/wiki/Operator-precedence_parser
  */
 public class ExpressionParser {
     private Parser parser;
@@ -126,6 +127,12 @@ public class ExpressionParser {
 
                 if (getScalarValue(token) == null || !getScalarValue(token).getClass().equals(String.class)) {
                     node = new Constant(getScalarValue(token), token.getLine());
+                } else if ( // Has "(" after token
+                    parser.getCurrentToken() != null
+                        && parser.getCurrentToken().getType() == Token.Type.PUNCTUATION
+                        && parser.getCurrentToken().getValue().equals("(")
+                    ) {
+                    node = getFunctionNode(token.getValue(), token.getLine());
                 } else {
                     node = new Name(token.getValue(), token.getLine());
                 }
@@ -532,6 +539,37 @@ public class ExpressionParser {
     }
 
     /**
+     * Get a function node (i.e. parent(), block() or a user defined function)
+     *
+     * @param name The name of the function
+     * @param line The line the function is on
+     * @return The function node
+     */
+    protected Expression getFunctionNode(String name, Integer line) throws SyntaxErrorException, TwigRuntimeException {
+        switch (name) {
+            case "parent":
+                parseArguments(false, false);
+                if (parser.getBlockStack().size() == 0) {
+                    throw new SyntaxErrorException("Calling \"parent\" outside a block is forbidden.", parser.getFilename(), line);
+                }
+
+                // TODO check for traits (whatever that is)
+                if (parser.getParent() == null) {
+                    throw new SyntaxErrorException(
+                        "Calling \"parent\" on a template that does not extend nor \"use\" another template is forbidden.",
+                        parser.getFilename(),
+                        line
+                    );
+                }
+
+                return new Parent(parser.getBlockStack().get(parser.getBlockStack().size() - 1), line);
+            default:
+                // TODO
+                return null;
+        }
+    }
+
+    /**
      * Check whether the operator is in the binary operators map in the env
      *
      * @param operator The operator to check for
@@ -591,8 +629,6 @@ public class ExpressionParser {
             case "NONE":
                 return null;
             default:
-                // TODO check for function
-
                 if (token.getValue().matches("^(\\d+)$")) {
                     return (Integer) Integer.parseInt(token.getValue());
                 } else if (token.getValue().matches("^[\\d\\.]+$")) {

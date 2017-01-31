@@ -339,19 +339,39 @@ abstract public class Template {
         }
     }
 
+    protected String displayParentBlock(String name, Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
+        // TODO check for traits
+
+        // TODO use getParent() instead
+        if (parent != null) {
+            return parent.displayBlock(name, context, blocks, false);
+        } else {
+            throw new TwigRuntimeException(
+                String.format("The template has no parent and no traits defining the \"%s\" block", name),
+                getTemplateName(),
+                -1
+            );
+        }
+    }
+
     /**
      * Invokes the appropriate block method to display
+     *
      * @param name The name of the block (i.e. "a")
      * @param context The context
      * @param blocks A collection of available blocks
      * @return Generated source code
      * @throws TwigException On any errors
      */
-    protected String displayBlock(String name, Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
+    protected String displayBlock(String name, Context context, Map<String, TemplateBlockMethodSet> blocks, boolean useBlocks) throws TwigException {
         // TODO find out what the displayBlock and useBlocks is for
 
+        if (!useBlocks) {
+            blocks = this.blocks;
+        }
+
         if (!blocks.containsKey(name)) {
-            return parent.displayBlock(name, context, blocks);
+            return parent.displayBlock(name, context, blocks, false);
         }
 
         try {

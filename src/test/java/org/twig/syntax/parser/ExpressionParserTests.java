@@ -616,6 +616,28 @@ public class ExpressionParserTests {
         Assert.assertEquals("Argument passed should be of correct type", StringConstant.class, parsedExpression.getNode(2).getNode(0).getClass());
     }
 
+    @Test
+    public void canParseParentFunction() throws SyntaxErrorException, TwigRuntimeException {
+        ArrayList<Token> tokens = new ArrayList<>();
+        tokens.add(new Token(Token.Type.NAME, "parent", 1));
+        tokens.add(new Token(Token.Type.PUNCTUATION, "(", 1));
+        tokens.add(new Token(Token.Type.PUNCTUATION, ")", 1));
+        tokens.add(new Token(Token.Type.EOF, null, 1));
+        TokenStream tokenStream = new TokenStream(tokens);
+
+        Environment environment = mock(Environment.class);
+        Parser parser = new Parser(environment);
+        parser.getBlockStack().push("foo");
+        parser.setParent(new StringConstant("foo.twig", 1));
+        parser.setTokenStream(tokenStream);
+        ExpressionParser expressionParser = new ExpressionParser(parser);
+
+        Expression parsedExpression = expressionParser.parsePrimaryExpression();
+
+        Assert.assertEquals("Should be of type parent", Parent.class, parsedExpression.getClass());
+        Assert.assertEquals("Node name should be block name", "foo", parsedExpression.getAttribute("name"));
+    }
+
     public String activateUpperFilter(String foo) {
         return foo;
     }
