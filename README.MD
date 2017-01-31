@@ -7,8 +7,8 @@ This is a Java implementation of the [Twig templating engine](http://twig.sensio
 ## About the project
 The project is still under heavy development and only a few things work as expected. To see what currently works my
  suggestion is that you look at
- [the functional tests (src/tests/java/org/twig/functional)](https://github.com/palmfjord/twig-java/tree/master/src/test/java/org/twig/functional)
- as that's where every functionality (such as render variables, maths, method calls, etc.) is tested.
+ [the functional tests (src/tests/java/org/twig/functional)](https://github.com/palmfjord/twigjava/tree/master/src/test/java/org/twigjava/functional)
+ as that's where all functionality (such as render variables, maths, method calls, etc.) is tested.
 
 Since Java and PHP are relatively different (especially when it comes to typing) some things available in the original
  Twig library probably won't work in a Java port, but the intention is to make a library where you can just take the
@@ -21,5 +21,6 @@ If you want to contribute or have feedback of any kind feel free to drop an emai
 
 ### To do/upcoming
 Not everything is listed here but this is what's prioritized currently:
- - Template blocks/extending templates (the `{% block foo %}`)
- - Functions
+ - User-defined functions (that aren't "hard-coded" in the parser)
+ - Use tags: `{% use 'foo.twig' %}`
+ - Macros
