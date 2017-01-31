@@ -563,6 +563,8 @@ public class ExpressionParser {
                 }
 
                 return new Parent(parser.getBlockStack().get(parser.getBlockStack().size() - 1), line);
+            case "block":
+                return new BlockReferenceExpression((Expression)parseArguments().getNode(0), line, null);
             default:
                 // TODO
                 return null;

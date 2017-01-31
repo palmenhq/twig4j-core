@@ -13,6 +13,7 @@ import org.twig.syntax.operator.*;
 import org.twig.syntax.operator.UnaryNot;
 import org.twig.syntax.parser.node.Module;
 import org.twig.syntax.parser.node.Node;
+import org.twig.syntax.parser.node.type.BlockReference;
 import org.twig.syntax.parser.node.type.PrintExpression;
 import org.twig.syntax.parser.node.type.expression.*;
 import org.twig.syntax.parser.node.type.expression.BinaryAdd;
@@ -636,6 +637,30 @@ public class ExpressionParserTests {
 
         Assert.assertEquals("Should be of type parent", Parent.class, parsedExpression.getClass());
         Assert.assertEquals("Node name should be block name", "foo", parsedExpression.getAttribute("name"));
+    }
+
+    @Test
+    public void canParseBlockFunction() throws SyntaxErrorException, TwigRuntimeException {
+        ArrayList<Token> tokens = new ArrayList<>();
+        tokens.add(new Token(Token.Type.NAME, "block", 1));
+        tokens.add(new Token(Token.Type.PUNCTUATION, "(", 1));
+        tokens.add(new Token(Token.Type.STRING, "foo", 1));
+        tokens.add(new Token(Token.Type.PUNCTUATION, ")", 1));
+        tokens.add(new Token(Token.Type.EOF, null, 1));
+        TokenStream tokenStream = new TokenStream(tokens);
+
+        Environment environment = mock(Environment.class);
+        Parser parser = new Parser(environment);
+        parser.getBlockStack().push("foo");
+        parser.setParent(new StringConstant("foo.twig", 1));
+        parser.setTokenStream(tokenStream);
+        ExpressionParser expressionParser = new ExpressionParser(parser);
+
+        Expression parsedExpression = expressionParser.parsePrimaryExpression();
+
+        Assert.assertEquals("Should be of type block reference", BlockReferenceExpression.class, parsedExpression.getClass());
+        Assert.assertEquals("Node name should be a string constant", StringConstant.class, parsedExpression.getNode(0).getClass());
+        Assert.assertEquals("Node name should be 'foo'", "foo", parsedExpression.getNode(0).getAttribute("data"));
     }
 
     public String activateUpperFilter(String foo) {
