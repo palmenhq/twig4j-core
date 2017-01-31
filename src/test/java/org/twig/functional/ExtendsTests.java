@@ -31,6 +31,26 @@ public class ExtendsTests extends FunctionalTests {
         );
     }
 
+    @Test
+    public void canExtendTemplateWithSpacesAndNewlinesWithBlocks() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put(
+            "foo.twig",
+            "\n   {% extends 'bar.twig' %} \n\n" +
+                "{% block a %}\n" +
+                "foo\n" +
+                "{% endblock %}    \n\n"
+        );
+        templates.put("bar.twig", "bar {% block a %}{% endblock %}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals(
+            "Templates should be rendered correctly",
+            "bar foo\n",
+            environment.render("foo.twig")
+        );
+    }
+
     @Test(expected = SyntaxErrorException.class)
     public void throwsExceptionOnExtendingTemplateWithBody() throws TwigException {
         HashMap<String, String> templates = new HashMap<>();

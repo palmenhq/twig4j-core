@@ -197,7 +197,7 @@ public class Parser {
     protected Node filterBodyNodes(Node body) throws SyntaxErrorException, TwigRuntimeException {
         // Check that the body does not contain non-empty output nodes
         // TODO check for file "bom"
-        if ((body instanceof Output && !(body instanceof BlockReference)) || (body instanceof Text && !((String)body.getAttribute("data")).matches("^[\\s\\n]+$"))) {
+        if ((body instanceof Output && !(body instanceof BlockReference) && !(body instanceof Text)) || (body instanceof Text && !((String)body.getAttribute("data")).matches("^[\\s\\n]+$"))) {
             throw new SyntaxErrorException("A template that extends another one cannot have a body.", getFilename(), body.getLine());
         }
 
