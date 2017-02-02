@@ -18,6 +18,6 @@ public class BlockReference extends Node implements Output {
     public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
         compiler
             .addDebugInfo(this)
-            .writeLine("output = output.concat(displayBlock(\"" + getAttribute("name") + "\", context, blocks, true));");
+            .writeLine("output.append(displayBlock(\"" + getAttribute("name") + "\", context, blocks, true));");
     }
 }

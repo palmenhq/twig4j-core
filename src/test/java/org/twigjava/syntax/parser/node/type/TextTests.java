@@ -17,7 +17,7 @@ public class TextTests {
         Text text = new Text(new ArrayList<>(), data, 1, "");
         text.compile(compilerStub);
 
-        verify(compilerStub).write("output = output.concat(");
+        verify(compilerStub).write("output.append(");
         verify(compilerStub).writeString("foo");
         verify(compilerStub).writeRaw(");\n");
     }

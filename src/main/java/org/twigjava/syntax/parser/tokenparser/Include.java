@@ -4,10 +4,9 @@ import org.twigjava.exception.SyntaxErrorException;
 import org.twigjava.exception.TwigRuntimeException;
 import org.twigjava.syntax.Token;
 import org.twigjava.syntax.parser.node.Node;
-import org.twigjava.syntax.parser.node.Output;
 import org.twigjava.syntax.parser.node.type.expression.Expression;
 
-public class Include extends AbstractTokenParser implements Output {
+public class Include extends AbstractTokenParser {
     @Override
     public Node parse(Token token) throws SyntaxErrorException, TwigRuntimeException {
         Expression templateName = parser.getExpressionParser().parseExpression();

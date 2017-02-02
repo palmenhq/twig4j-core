@@ -68,7 +68,7 @@ public class For extends Node {
                     .writeRaw("\n");
         }
 
-        if (!(Boolean)getAttribute("ifExpr")) {
+        if (!(Boolean)getAttribute("ifExpr") && (Boolean)getAttribute("with_loop")) {
             compiler
                     .writeLine("if (context.get(\"_seq\") instanceof java.util.Collection) {")
                     .indent()
@@ -97,7 +97,7 @@ public class For extends Node {
                 .indent()
                     .writeLine(".put(\"iterator_index\",")
                     .indent()
-                        .writeLine("((Integer)((org.twigjava.util.HashMap)((java.util.Map<String, Object>)context).get(\"_loop_internal\")).get(\"iterator_index\")) + 1")
+                        .writeLine("((Integer)((org.twigjava.util.HashMap)context.get(\"_loop_internal\")).get(\"iterator_index\")) + 1")
                     .unIndent()
                     .writeLine(");")
                 .unIndent();
@@ -120,14 +120,14 @@ public class For extends Node {
         // Reset loop
         compiler
                 .writeLine("tmpForParent = new java.util.HashMap<String, Object>();")
-                .writeLine("tmpForParent.putAll(((java.util.Map<String, Object>)((java.util.Map<String, Object>)context).get(\"_parent\")));")
+                .writeLine("tmpForParent.putAll(((java.util.Map<String, Object>)context.get(\"_parent\")));")
                 .writeLine("context.remove(\"_seq\");")
                 .writeLine("context.remove(\"_iterated\");")
                 .writeLine("context.remove(\"" + getAttribute("key_target") + "\");")
                 .writeLine("context.remove(\"" + getAttribute("value_target") + "\");")
                 .writeLine("context.remove(\"_parent\");")
                 .writeLine("context.remove(\"loop\");")
-                .writeLine("((java.util.Map<String, Object>)context).putAll(tmpForParent);")
+                .writeLine("context.putAll(tmpForParent);")
         ;
     }
 
@@ -140,7 +140,7 @@ public class For extends Node {
         compiler
                 .writeLine("if (context.get(\"_seq\") instanceof java.util.List) {")
                 .indent()
-                    .writeLine(putInContext(((String)getAttribute("key_target")), "((org.twigjava.util.HashMap)((java.util.Map<String, Object>)context).get(\"_loop_internal\")).get(\"iterator_index\")"))
+                    .writeLine(putInContext(((String)getAttribute("key_target")), "((org.twigjava.util.HashMap)context.get(\"_loop_internal\")).get(\"iterator_index\")"))
                     .writeLine(putInContext((String)getAttribute("value_target"), valueVariableName))
                 .unIndent()
                 .writeLine("} else if (" + valueVariableName + " instanceof java.util.Map.Entry) {")

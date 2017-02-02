@@ -20,7 +20,7 @@ public class BlockReferenceExpression extends Expression implements Output {
 
         if ((Boolean) getAttribute("output")) {
             compiler
-                .writeLine("output = output.concat(displayBlock(")
+                .writeLine("output.append(displayBlock(")
                    .subCompile(getNode(0))
                 .writeRaw(", context, blocks, true));");
         } else {

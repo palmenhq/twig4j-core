@@ -28,10 +28,10 @@ public class ForLoop extends Node {
 
         if (((Boolean)getAttribute("with_loop"))) {
             compiler
-                    .writeLine("((org.twigjava.util.HashMap)((java.util.Map<String, Object>)context).get(\"loop\"))")
+                    .writeLine("((org.twigjava.util.HashMap)context.get(\"loop\"))")
                     .indent()
-                        .writeLine(".put(\"index\", ((Integer)((org.twigjava.util.HashMap)((java.util.Map<String, Object>)context).get(\"loop\")).get(\"index\")) + 1)")
-                        .writeLine(".put(\"index0\", ((Integer)((org.twigjava.util.HashMap)((java.util.Map<String, Object>)context).get(\"loop\")).get(\"index0\")) + 1)")
+                        .writeLine(".put(\"index\", ((Integer)((org.twigjava.util.HashMap)context.get(\"loop\")).get(\"index\")) + 1)")
+                        .writeLine(".put(\"index0\", ((Integer)((org.twigjava.util.HashMap)context.get(\"loop\")).get(\"index0\")) + 1)")
                         .writeLine(".put(\"first\", false);")
                     .unIndent();
         }

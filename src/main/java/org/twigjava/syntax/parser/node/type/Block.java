@@ -21,9 +21,9 @@ public class Block extends Node {
             .writeLine("public String block_" + getAttribute("name") + "(Context context) throws TwigException {")
             .indent()
                 .writeLine("java.util.Map<String, Object> tmpForParent;")
-                .writeLine("String output = \"\";")
+                .writeLine("StringBuilder output = new StringBuilder();")
                 .subCompile(getNode(0))
-                .writeLine("return output;")
+                .writeLine("return output.toString();")
             .unIndent()
             .writeLine("}\n");
     }

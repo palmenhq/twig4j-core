@@ -24,7 +24,7 @@ public class Text extends Node implements Output {
     @Override
     public void compile(ClassCompiler compiler) {
         String text = String.valueOf(attributes.get("data"));
-        compiler.write("output = output.concat(");
+        compiler.write("output.append(");
         compiler.writeString(text);
         compiler.writeRaw(");\n");
     }

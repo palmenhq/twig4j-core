@@ -112,7 +112,7 @@ public class Module implements Compilable {
 
         compiler
                     .writeLine("java.util.Map<String, Object> tmpForParent;")
-                    .writeLine("String output = \"\";");
+                    .writeLine("StringBuilder output = new StringBuilder();");
 
         compiler
                     .subCompile(this.getBodyNode());
@@ -124,7 +124,7 @@ public class Module implements Compilable {
                     .writeLine("java.util.Map<String, TemplateBlockMethodSet> mergedBlocks = new java.util.HashMap<>();")
                     .writeLine("mergedBlocks.putAll(this.blocks);")
                     .writeLine("mergedBlocks.putAll(blocks);")
-                    .writeLine("output = output + parent.display(context, mergedBlocks);");
+                    .writeLine("output.append(parent.display(context, mergedBlocks));");
             } else {
                 // TODO
                 throw new RuntimeException("not implemented yet");
@@ -132,7 +132,7 @@ public class Module implements Compilable {
         }
 
         compiler
-                .writeLine("return output;")
+                .writeLine("return output.toString();")
             .unIndent()
             .writeLine("}");
     }

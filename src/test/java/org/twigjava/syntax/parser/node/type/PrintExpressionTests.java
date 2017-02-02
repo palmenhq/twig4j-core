@@ -24,8 +24,8 @@ public class PrintExpressionTests {
         print.compile(compiler);
 
         verify(compiler).addDebugInfo(print);
-        verify(compiler).write("output = output.concat(String.valueOf(");
+        verify(compiler).write("output.append(");
         verify(compiler).subCompile(constant);
-        verify(compiler).writeRaw("));\n");
+        verify(compiler).writeRaw(");\n");
     }
 }

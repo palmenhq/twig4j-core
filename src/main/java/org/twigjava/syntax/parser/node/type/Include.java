@@ -53,7 +53,7 @@ public class Include extends Node implements Output {
         }
 
 
-        compiler.write("output = output.concat(String.valueOf(");
+        compiler.write("output.append(");
 
         // Load the template
         compiler
@@ -72,7 +72,7 @@ public class Include extends Node implements Output {
             .writeRaw("((org.twigjava.template.Context)context.get(\"_include_context\"))")
             .writeRaw(")");
 
-        compiler.writeRaw("));\n");
+        compiler.writeRaw(");\n");
 
         compiler.writeLine("context.remove(\"_include_context\");");
 
