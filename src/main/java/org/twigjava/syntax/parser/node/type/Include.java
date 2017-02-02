@@ -48,6 +48,7 @@ public class Include extends Node implements Output {
         if (getNode(1) != null) {
             compiler
                 .write("((org.twigjava.template.Context)context.get(\"_include_context\")).putAll(")
+                .writeRaw("(java.util.Map<String, Object>)")
                 .subCompile(getNode(1)) // Variables
                 .writeRaw(");\n");
         }
