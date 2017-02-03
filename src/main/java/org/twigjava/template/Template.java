@@ -230,25 +230,25 @@ abstract public class Template {
 
         // 1. Try to invoke the "method" directly (ie `property()`)
         try {
-            Method methodToInvoke = object.getClass().getDeclaredMethod(String.valueOf(item), argumentClasses.toArray(new Class[argumentClasses.size()]));
+            Method methodToInvoke = object.getClass().getMethod(String.valueOf(item), argumentClasses.toArray(new Class[argumentClasses.size()]));
 
             return methodToInvoke.invoke(object, arguments.toArray());
         } catch (NoSuchMethodException e) {
             // 2. Try a getter (ie `getProperty()`)
             try {
-                Method methodToInvoke = object.getClass().getDeclaredMethod("get" + propertyNameWithUpperFirst);
+                Method methodToInvoke = object.getClass().getMethod("get" + propertyNameWithUpperFirst);
 
                 return methodToInvoke.invoke(object);
             } catch (NoSuchMethodException getterException) {
                 // 3. Try a "haser' (ie `hasProperty()`)
                 try {
-                    Method methodToInvoke = object.getClass().getDeclaredMethod("is" + propertyNameWithUpperFirst);
+                    Method methodToInvoke = object.getClass().getMethod("is" + propertyNameWithUpperFirst);
 
                     return methodToInvoke.invoke(object);
                 } catch (NoSuchMethodException iserException) {
                     // 4. Try an "iser" (ie `isProperty()`)
                     try {
-                        Method methodToInvoke = object.getClass().getDeclaredMethod("has" + propertyNameWithUpperFirst);
+                        Method methodToInvoke = object.getClass().getMethod("has" + propertyNameWithUpperFirst);
 
                         return methodToInvoke.invoke(object);
                     } catch (NoSuchMethodException haserException) {
