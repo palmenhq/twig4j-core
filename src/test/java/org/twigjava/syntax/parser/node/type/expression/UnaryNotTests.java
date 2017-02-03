@@ -19,7 +19,7 @@ public class UnaryNotTests {
 
         Assert.assertEquals(
                 "Compiled source should be an not expression",
-                " !true",
+                " !(Boolean)true",
                 compiler.getSourceCode()
         );
     }

@@ -10,7 +10,7 @@ public class UnaryNot extends Unary {
 
     @Override
     protected Unary compileOperator(ClassCompiler compiler) {
-        compiler.writeRaw("!");
+        compiler.writeRaw("!(Boolean)");
 
         return this;
     }
