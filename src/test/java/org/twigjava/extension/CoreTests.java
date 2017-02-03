@@ -3,9 +3,7 @@ package org.twigjava.extension;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class CoreTests {
     @Test
@@ -14,6 +12,28 @@ public class CoreTests {
         Iterable<String> ensuredList = (Iterable<String>)Core.ensureIterable(list);
 
         Assert.assertSame("Returned list should be the same as the provided list", list, ensuredList);
+    }
+
+    @Test
+    public void canEnsureIterableOnMap() {
+        Map<String, String> map = new HashMap<>();
+        map.put("foo", "bar");
+        Iterable<Map.Entry<String, String>> ensuredList = (Iterable<Map.Entry<String, String>>)Core.ensureIterable(map);
+
+        for (Map.Entry<String, String> thing : ensuredList) {
+            Assert.assertEquals("Returned entry set key should be correct", "foo", thing.getKey());
+            Assert.assertEquals("Returned entry set value should be correct", "bar", thing.getValue());
+        }
+    }
+
+    @Test
+    public void canEnsureIterableOnArray() {
+        Integer[] integers = new Integer[] {1};
+        Iterable<Integer> ensuredList = (Iterable<Integer>)Core.ensureIterable(integers);
+
+        for (Integer thing : ensuredList) {
+            Assert.assertEquals("Returned integer should be correct", (Integer)1, thing);
+        }
     }
 
     @Test

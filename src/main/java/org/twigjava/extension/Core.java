@@ -88,6 +88,10 @@ public class Core implements Extension {
      * @return
      */
     public static Iterable<?> ensureIterable(Object object) {
+        if (object instanceof Object && object.getClass().isArray()) {
+            return Arrays.asList((Object[])object);
+        }
+
         if (object instanceof Iterable) {
             return (Iterable)object;
         }
