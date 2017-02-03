@@ -6,9 +6,7 @@ import org.twigjava.compiler.LineAware;
 import org.twigjava.exception.LoaderException;
 import org.twigjava.exception.TwigRuntimeException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Represents something in the AST.
@@ -17,13 +15,13 @@ public class Node implements Compilable, LineAware {
     // The nodes belonging to this node
     protected List<Node> nodes;
     // The attributes belonging to this node
-    protected HashMap<String, Object> attributes;
+    protected Map<String, Object> attributes;
     // The line the node begins on
     protected Integer line;
     // A tag ("block operation", i.e. "if" or "for") this node belongs to
     private String tag;
 
-    public Node(List<Node> nodes, HashMap<String, Object> attributes, Integer line, String tag) {
+    public Node(List<Node> nodes, Map<String, Object> attributes, Integer line, String tag) {
         this.nodes = nodes;
         this.attributes = attributes;
         this.line = line;
@@ -32,7 +30,7 @@ public class Node implements Compilable, LineAware {
 
     public Node(Integer line) {
         this.nodes = new ArrayList<>();
-        this.attributes = new HashMap<>();
+        this.attributes = new LinkedHashMap<>();
         this.line = line;
     }
 
