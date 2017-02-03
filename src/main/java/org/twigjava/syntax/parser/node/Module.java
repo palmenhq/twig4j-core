@@ -68,7 +68,7 @@ public class Module implements Compilable {
                 .indent();
 
             for (Map.Entry block : blocks.entrySet()) {
-                compiler.writeLine("blocks.put(\"" + block.getKey() + "\", new TemplateBlockMethodSet(this, this.getClass().getMethod(\"block_" + block.getKey() + "\", Context.class)));");
+                compiler.writeLine("blocks.put(\"" + block.getKey() + "\", new TemplateBlockMethodSet(this, this.getClass().getMethod(\"block_" + block.getKey() + "\", Context.class, java.util.Map.class)));");
             }
 
             compiler

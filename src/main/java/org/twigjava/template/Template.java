@@ -375,7 +375,7 @@ abstract public class Template {
         }
 
         try {
-            return blocks.get(name).invoke(name, context);
+            return blocks.get(name).invoke(name, context, blocks);
         } catch (TwigException e) {
             if (e.getTemplateName() == null) {
                 e.setTemplateName(getTemplateName());
@@ -419,9 +419,9 @@ abstract public class Template {
             this.method = method;
         }
 
-        public String invoke(String name, Context context) throws TwigRuntimeException {
+        public String invoke(String name, Context context, java.util.Map<String, TemplateBlockMethodSet> blocks) throws TwigRuntimeException {
             try {
-                return (String)method.invoke(template, context);
+                return (String)method.invoke(template, context, blocks);
             } catch (ReflectiveOperationException e) {
                 throw new TwigRuntimeException("Failed displaying block \"" + name + "\" (\"" + e.getMessage() + "\")", getTemplateName(), -1, e);
             }

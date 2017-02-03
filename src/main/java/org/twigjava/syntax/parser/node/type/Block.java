@@ -18,7 +18,7 @@ public class Block extends Node {
     public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
         compiler
             .addDebugInfo(this)
-            .writeLine("public String block_" + getAttribute("name") + "(Context context) throws TwigException {")
+            .writeLine("public String block_" + getAttribute("name") + "(Context context, java.util.Map<String, TemplateBlockMethodSet> blocks) throws TwigException {")
             .indent()
                 .writeLine("java.util.Map<String, Object> tmpForParent;")
                 .writeLine("StringBuilder output = new StringBuilder();")

@@ -29,6 +29,24 @@ public class ExtendsTests extends FunctionalTests {
     }
 
     @Test
+    public void canExtendTemplateWithBlocksInsideBlocks() throws TwigException {
+        HashMap<String, String> templates = new HashMap<>();
+        templates.put(
+            "foo.twigjava",
+            "{% extends 'bar.twigjava' %}\n" +
+                "{% block b %}bar{% endblock %}"
+        );
+        templates.put("bar.twigjava", "{% block a %}foo {% block b %}{% endblock b %}{% endblock a %}");
+        setupEnvironment(templates);
+
+        Assert.assertEquals(
+            "Templates should be rendered correctly",
+            "foo bar",
+            environment.render("foo.twigjava")
+        );
+    }
+
+    @Test
     public void canExtendTemplateWithSpacesAndNewlinesWithBlocks() throws TwigException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(

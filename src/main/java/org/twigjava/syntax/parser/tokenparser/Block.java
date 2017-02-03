@@ -41,7 +41,6 @@ public class Block extends AbstractTokenParser {
 
             // If the endblock tag is with the block name
             if (tokenStream.getCurrent().is(Token.Type.NAME)) {
-                tokenStream.next();
                 String endBlockName = tokenStream.next().getValue();
 
                 if (!endBlockName.equals(blockName)) {

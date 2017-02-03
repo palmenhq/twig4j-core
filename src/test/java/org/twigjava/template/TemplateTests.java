@@ -358,7 +358,7 @@ public class TemplateTests {
     protected class TestDisplayBlockTemplate extends Template {
         public TestDisplayBlockTemplate(Environment environment) throws TwigException {
             try {
-                blocks.put("a", new TemplateBlockMethodSet(this, getClass().getMethod("block_a", Context.class)));
+                blocks.put("a", new TemplateBlockMethodSet(this, getClass().getMethod("block_a", Context.class, Map.class)));
             } catch (NoSuchMethodException e) {
                 throw new org.twigjava.exception.TwigRuntimeException("Could not find method for block.", getTemplateName(), -1, e);
             }
@@ -369,7 +369,7 @@ public class TemplateTests {
             return displayBlock("a", context, blocks, true);
         }
 
-        public String block_a(Context context) throws TwigException {
+        public String block_a(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
             return "foo";
         }
 
