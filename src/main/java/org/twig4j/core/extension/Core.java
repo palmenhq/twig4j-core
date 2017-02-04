@@ -1,6 +1,6 @@
 package org.twig4j.core.extension;
 
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.filter.Filter;
 import org.twig4j.core.syntax.operator.*;
 import org.twig4j.core.syntax.parser.tokenparser.*;
@@ -62,7 +62,7 @@ public class Core implements Extension {
     }
 
     @Override
-    public Map<String, Filter> getFilters() throws TwigRuntimeException {
+    public Map<String, Filter> getFilters() throws Twig4jRuntimeException {
         Map<String, Filter> filters = new HashMap<>();
 
         try {
@@ -70,7 +70,7 @@ public class Core implements Extension {
             filters.put("lower", new Filter("lower", CoreFilters.class.getMethod("lower", String.class)));
             filters.put("join", new Filter("join", CoreFilters.class.getMethod("join", List.class, String.class)));
         } catch (NoSuchMethodException e) {
-            throw new TwigRuntimeException("Invalid core filter specified", e);
+            throw new Twig4jRuntimeException("Invalid core filter specified", e);
         }
 
         return filters;

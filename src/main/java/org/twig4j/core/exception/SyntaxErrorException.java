@@ -3,7 +3,7 @@ package org.twig4j.core.exception;
 import org.twig4j.core.syntax.Lexer;
 import org.twig4j.core.syntax.Token;
 
-public class SyntaxErrorException extends TwigException {
+public class SyntaxErrorException extends Twig4jException {
     /**
      * {@inheritDoc}
      */

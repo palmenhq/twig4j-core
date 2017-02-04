@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.twig4j.core.Environment;
 import org.twig4j.core.exception.SyntaxErrorException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.Token;
 import org.twig4j.core.syntax.TokenStream;
 import org.twig4j.core.syntax.parser.node.Module;
@@ -15,7 +15,7 @@ import org.twig4j.core.syntax.parser.node.type.expression.Name;
 
 public class ParserTests {
     @Test
-    public void canParseText() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseText() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = new TokenStream("aFile");
         tokenStream.add(new Token(Token.Type.TEXT, "Hello world!", 1));
         tokenStream.add(new Token(Token.Type.EOF, null, 2));
@@ -28,7 +28,7 @@ public class ParserTests {
     }
 
     @Test
-    public void canParseStringPrint() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseStringPrint() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = new TokenStream("aFile");
         tokenStream.add(new Token(Token.Type.VAR_START, null, 1));
         tokenStream.add(new Token(Token.Type.STRING, "foo", 1));
@@ -53,7 +53,7 @@ public class ParserTests {
     }
 
     @Test
-    public void canParseVariable() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseVariable() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = new TokenStream("aFile");
         tokenStream.add(new Token(Token.Type.VAR_START, null, 1));
         tokenStream.add(new Token(Token.Type.NAME, "foo", 1));
@@ -83,7 +83,7 @@ public class ParserTests {
     }
 
     @Test
-    public void canParseInteger() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseInteger() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = new TokenStream("aFile");
         tokenStream.add(new Token(Token.Type.VAR_START, null, 1));
         tokenStream.add(new Token(Token.Type.NUMBER, "1", 1));
@@ -111,7 +111,7 @@ public class ParserTests {
     }
 
     @Test
-    public void canParseBoolean() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseBoolean() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = new TokenStream("aFile");
         tokenStream.add(new Token(Token.Type.VAR_START, null, 1));
         tokenStream.add(new Token(Token.Type.NAME, "true", 1));
@@ -139,7 +139,7 @@ public class ParserTests {
     }
 
     @Test
-    public void canParseNull() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseNull() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = new TokenStream("aFile");
         tokenStream.add(new Token(Token.Type.VAR_START, null, 1));
         tokenStream.add(new Token(Token.Type.NAME, "null", 1));

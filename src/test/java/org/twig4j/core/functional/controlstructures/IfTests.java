@@ -3,7 +3,7 @@ package org.twig4j.core.functional.controlstructures;
 import org.junit.Assert;
 import org.junit.Test;
 import org.twig4j.core.exception.SyntaxErrorException;
-import org.twig4j.core.exception.TwigException;
+import org.twig4j.core.exception.Twig4jException;
 import org.twig4j.core.functional.FunctionalTests;
 import org.twig4j.core.template.Context;
 
@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 public class IfTests extends FunctionalTests {
     @Test
-    public void canRenderIf() throws TwigException {
+    public void canRenderIf() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig4j",
@@ -32,7 +32,7 @@ public class IfTests extends FunctionalTests {
     }
 
     @Test
-    public void canRenderElse() throws TwigException {
+    public void canRenderElse() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig4j",
@@ -51,7 +51,7 @@ public class IfTests extends FunctionalTests {
     }
 
     @Test
-    public void canRenderElseIf() throws TwigException {
+    public void canRenderElseIf() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig4j",
@@ -73,7 +73,7 @@ public class IfTests extends FunctionalTests {
     }
 
     @Test(expected = SyntaxErrorException.class)
-    public void cantRenderUnclosedIf() throws TwigException {
+    public void cantRenderUnclosedIf() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig4j",

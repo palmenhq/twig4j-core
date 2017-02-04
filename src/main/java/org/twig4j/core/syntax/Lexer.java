@@ -2,7 +2,7 @@ package org.twig4j.core.syntax;
 
 import org.twig4j.core.Environment;
 import org.twig4j.core.exception.SyntaxErrorException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import com.caucho.quercus.lib.string.StringModule;
 
 import java.util.ArrayList;
@@ -102,9 +102,9 @@ public class Lexer {
      * @param options The options to use
      * @param environment The twig environment
      *
-     * @throws TwigRuntimeException If the environment fails to initialize
+     * @throws Twig4jRuntimeException If the environment fails to initialize
      */
-    public Lexer(LexerOptions options, Environment environment) throws TwigRuntimeException {
+    public Lexer(LexerOptions options, Environment environment) throws Twig4jRuntimeException {
         this.options = options;
         this.environment = new Environment();
         regexes = new LexerRegexes(this.options, environment.getUnaryOperators(), environment.getBinaryOperators());
@@ -119,9 +119,9 @@ public class Lexer {
      * @return The stream of tokens from the source
      *
      * @throws SyntaxErrorException If we can't keep on tokenizing for some reason (i.e. missing closing tag)
-     * @throws TwigRuntimeException On runtime exceptions, i.e. if environment fails to initialize
+     * @throws Twig4jRuntimeException On runtime exceptions, i.e. if environment fails to initialize
      */
-    public TokenStream tokenize(String code, String filename) throws SyntaxErrorException, TwigRuntimeException {
+    public TokenStream tokenize(String code, String filename) throws SyntaxErrorException, Twig4jRuntimeException {
         this.code = code;
         this.filename = filename;
         this.cursor = 0;
@@ -249,9 +249,9 @@ public class Lexer {
      * Lexes a variable expression "{{ aVar }}"
      *
      * @throws SyntaxErrorException If we can't keep on tokenizing for some reason (i.e. missing closing tag)
-     * @throws TwigRuntimeException On runtime exceptions, i.e. if environment fails to initialize
+     * @throws Twig4jRuntimeException On runtime exceptions, i.e. if environment fails to initialize
      */
-    protected void lexVariable() throws SyntaxErrorException, TwigRuntimeException {
+    protected void lexVariable() throws SyntaxErrorException, Twig4jRuntimeException {
         Matcher endVarTagMatcher = this.regexes.getLexVariableEnd().matcher(this.code.substring(this.cursor));
 
         // Check if this is the variable closing token
@@ -269,9 +269,9 @@ public class Lexer {
      * Lexes a block/tag "{% foo %}"
      *
      * @throws SyntaxErrorException On syntax errors, i.e. unclosed block
-     * @throws TwigRuntimeException On runtime exceptions, i.e. if environment fails to initialize
+     * @throws Twig4jRuntimeException On runtime exceptions, i.e. if environment fails to initialize
      */
-    protected void lexBlock() throws SyntaxErrorException, TwigRuntimeException {
+    protected void lexBlock() throws SyntaxErrorException, Twig4jRuntimeException {
         Matcher endBlockTagMatcher = this.regexes.getLexBlockEnd().matcher(this.code.substring(this.cursor));
 
         // Check if this is the variable closing token
@@ -390,9 +390,9 @@ public class Lexer {
      * Move past comment blocks
      *
      * @throws SyntaxErrorException On any unclosed comments
-     * @throws TwigRuntimeException On runtime exceptions, i.e. if environment fails to initialize
+     * @throws Twig4jRuntimeException On runtime exceptions, i.e. if environment fails to initialize
      */
-    protected void lexComment() throws SyntaxErrorException, TwigRuntimeException {
+    protected void lexComment() throws SyntaxErrorException, Twig4jRuntimeException {
         Matcher endCommentTagMatcher = this.regexes.getLexCommentEnd().matcher(this.code.substring(this.cursor));
 
         // Check if this is the variable closing token
@@ -408,9 +408,9 @@ public class Lexer {
      * Lexes a string's contenst
      *
      * @throws SyntaxErrorException On unclosed strings
-     * @throws TwigRuntimeException On runtime exceptions, i.e. if environment fails to initialize
+     * @throws Twig4jRuntimeException On runtime exceptions, i.e. if environment fails to initialize
      */
-    protected void lexString() throws SyntaxErrorException, TwigRuntimeException {
+    protected void lexString() throws SyntaxErrorException, Twig4jRuntimeException {
         String codeAfterCursor = this.code.substring(this.cursor);
 
         // If this is a string interpolation
@@ -456,9 +456,9 @@ public class Lexer {
      * Lexes a string interpolation and it's expressions
      *
      * @throws SyntaxErrorException If lexExpression() throws any syntax errors
-     * @throws TwigRuntimeException On runtime exceptions, i.e. if environment fails to initialize
+     * @throws Twig4jRuntimeException On runtime exceptions, i.e. if environment fails to initialize
      */
-    protected void lexInterpolation() throws SyntaxErrorException, TwigRuntimeException {
+    protected void lexInterpolation() throws SyntaxErrorException, Twig4jRuntimeException {
         Bracket currentBracket = this.brackets.get(this.brackets.size() - 1);
 
         // If this is the end of the interpolation end it, otherwise lex the expression inside it
@@ -519,11 +519,11 @@ public class Lexer {
     /**
      * Resets the state to the previous state
      *
-     * @throws TwigRuntimeException If poping state without having a previous state
+     * @throws Twig4jRuntimeException If poping state without having a previous state
      */
-    protected void popState() throws TwigRuntimeException {
+    protected void popState() throws Twig4jRuntimeException {
         if (states.size() == 0) {
-            throw TwigRuntimeException.popStateWithoutState(filename, line);
+            throw Twig4jRuntimeException.popStateWithoutState(filename, line);
         }
 
         states.remove(states.size() - 1);

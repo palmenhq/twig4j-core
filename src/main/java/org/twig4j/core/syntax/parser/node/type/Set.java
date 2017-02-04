@@ -2,7 +2,7 @@ package org.twig4j.core.syntax.parser.node.type;
 
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.parser.node.Node;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class Set extends Node {
     }
 
     @Override
-    public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
+    public void compile(ClassCompiler compiler) throws LoaderException, Twig4jRuntimeException {
         List<String> names = (List<String>)getAttribute("names");
 
         compiler.addDebugInfo(this);

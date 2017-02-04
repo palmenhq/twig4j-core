@@ -2,7 +2,7 @@ package org.twig4j.core.syntax.parser.node.type;
 
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.parser.node.Node;
 
 public class Block extends Node {
@@ -15,10 +15,10 @@ public class Block extends Node {
     }
 
     @Override
-    public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
+    public void compile(ClassCompiler compiler) throws LoaderException, Twig4jRuntimeException {
         compiler
             .addDebugInfo(this)
-            .writeLine("public String block_" + getAttribute("name") + "(Context context, java.util.Map<String, TemplateBlockMethodSet> blocks) throws TwigException {")
+            .writeLine("public String block_" + getAttribute("name") + "(Context context, java.util.Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {")
             .indent()
                 .writeLine("java.util.Map<String, Object> tmpForParent;")
                 .writeLine("StringBuilder output = new StringBuilder();")

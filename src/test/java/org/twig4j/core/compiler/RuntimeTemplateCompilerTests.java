@@ -3,13 +3,13 @@ package org.twig4j.core.compiler;
 import org.junit.Assert;
 import org.junit.Test;
 import org.twig4j.core.Environment;
-import org.twig4j.core.exception.TwigException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.template.Template;
 
 public class RuntimeTemplateCompilerTests {
     @Test
-    public void testCompileJavaCode() throws TwigException {
+    public void testCompileJavaCode() throws Twig4jException {
         RuntimeTemplateCompiler runtimeCompiler = new RuntimeTemplateCompiler(new Environment());
 
         String sourceCode = "package org.twig4j.core.template;\n\n"
@@ -22,8 +22,8 @@ public class RuntimeTemplateCompilerTests {
         Assert.assertEquals("Complied class method render() should return \"foo\"", "foo", template.render());
     }
 
-    @Test(expected = TwigRuntimeException.class)
-    public void testThrowsRuntimeErrorExceptionOnFailToCompile() throws TwigException {
+    @Test(expected = Twig4jRuntimeException.class)
+    public void testThrowsRuntimeErrorExceptionOnFailToCompile() throws Twig4jException {
         RuntimeTemplateCompiler runtimeCompiler = new RuntimeTemplateCompiler(new Environment());
 
         String sourceCode = "invalid java code";

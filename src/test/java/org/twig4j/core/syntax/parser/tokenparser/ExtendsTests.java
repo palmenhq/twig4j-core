@@ -2,7 +2,7 @@ package org.twig4j.core.syntax.parser.tokenparser;
 
 import org.junit.Test;
 import org.twig4j.core.exception.SyntaxErrorException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.TokenStream;
 import org.twig4j.core.syntax.Token;
 import org.twig4j.core.syntax.parser.ExpressionParser;
@@ -13,7 +13,7 @@ import static org.mockito.Mockito.*;
 
 public class ExtendsTests {
     @Test
-    public void canParseExtends() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseExtends() throws SyntaxErrorException, Twig4jRuntimeException {
         Extends extendsParser = new Extends();
 
         Parser parser = mock(Parser.class);
@@ -34,7 +34,7 @@ public class ExtendsTests {
     }
 
     @Test(expected = SyntaxErrorException.class)
-    public void cantExtendInsideBlock() throws SyntaxErrorException, TwigRuntimeException {
+    public void cantExtendInsideBlock() throws SyntaxErrorException, Twig4jRuntimeException {
         Extends extendsParser = new Extends();
 
         Parser parser = mock(Parser.class);
@@ -46,7 +46,7 @@ public class ExtendsTests {
     }
 
     @Test(expected = SyntaxErrorException.class)
-    public void cantUseMultipleExtends() throws SyntaxErrorException, TwigRuntimeException {
+    public void cantUseMultipleExtends() throws SyntaxErrorException, Twig4jRuntimeException {
         Extends extendsParser = new Extends();
 
         Parser parser = mock(Parser.class);

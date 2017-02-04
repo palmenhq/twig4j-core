@@ -2,7 +2,7 @@ package org.twig4j.core.compiler;
 
 import org.twig4j.core.Environment;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 
 public class ClassCompiler {
     private int numberOfIndents = 0;
@@ -24,9 +24,9 @@ public class ClassCompiler {
      * @return this
      *
      * @throws LoaderException If failing to find a template
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public ClassCompiler subCompile(Compilable node) throws LoaderException, TwigRuntimeException {
+    public ClassCompiler subCompile(Compilable node) throws LoaderException, Twig4jRuntimeException {
         indent();
 
         node.compile(this);
@@ -44,9 +44,9 @@ public class ClassCompiler {
      * @return this
      *
      * @throws LoaderException If a template can't be loaded
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public ClassCompiler compile(Compilable node) throws LoaderException, TwigRuntimeException {
+    public ClassCompiler compile(Compilable node) throws LoaderException, Twig4jRuntimeException {
         // Reset compiler
         sourceCode = new StringBuilder();
         numberOfIndents = 0;

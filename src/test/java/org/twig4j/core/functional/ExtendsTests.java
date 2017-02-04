@@ -3,13 +3,13 @@ package org.twig4j.core.functional;
 import org.junit.Assert;
 import org.junit.Test;
 import org.twig4j.core.exception.SyntaxErrorException;
-import org.twig4j.core.exception.TwigException;
+import org.twig4j.core.exception.Twig4jException;
 
 import java.util.HashMap;
 
 public class ExtendsTests extends FunctionalTests {
     @Test
-    public void canExtendTemplateWithBlocks() throws TwigException {
+    public void canExtendTemplateWithBlocks() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
             "foo.twig4j",
@@ -29,7 +29,7 @@ public class ExtendsTests extends FunctionalTests {
     }
 
     @Test
-    public void canExtendTemplateWithBlocksInsideBlocks() throws TwigException {
+    public void canExtendTemplateWithBlocksInsideBlocks() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
             "foo.twig4j",
@@ -47,7 +47,7 @@ public class ExtendsTests extends FunctionalTests {
     }
 
     @Test
-    public void canExtendTemplateWithSpacesAndNewlinesWithBlocks() throws TwigException {
+    public void canExtendTemplateWithSpacesAndNewlinesWithBlocks() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
             "foo.twig4j",
@@ -67,7 +67,7 @@ public class ExtendsTests extends FunctionalTests {
     }
 
     @Test(expected = SyntaxErrorException.class)
-    public void throwsExceptionOnExtendingTemplateWithBody() throws TwigException {
+    public void throwsExceptionOnExtendingTemplateWithBody() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
             "foo.twig4j",
@@ -81,7 +81,7 @@ public class ExtendsTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoMultipleExtends() throws TwigException {
+    public void canDoMultipleExtends() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
             "foo.twig4j",
@@ -100,7 +100,7 @@ public class ExtendsTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoParent() throws TwigException {
+    public void canDoParent() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
             "foo.twig4j",
@@ -118,7 +118,7 @@ public class ExtendsTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoBlockReferenceFunction() throws TwigException {
+    public void canDoBlockReferenceFunction() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
             "foo.twig4j",

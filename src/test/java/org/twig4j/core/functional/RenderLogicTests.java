@@ -2,15 +2,15 @@ package org.twig4j.core.functional;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.twig4j.core.exception.TwigException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.template.Context;
 
 import java.util.HashMap;
 
 public class RenderLogicTests extends FunctionalTests {
     @Test
-    public void canRenderPlainBoolean() throws TwigException {
+    public void canRenderPlainBoolean() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ true }}");
         setupEnvironment(templates);
@@ -19,7 +19,7 @@ public class RenderLogicTests extends FunctionalTests {
     }
 
     @Test
-    public void canRenderPlainInverseBoolean() throws TwigException {
+    public void canRenderPlainInverseBoolean() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ not true }}");
         setupEnvironment(templates);
@@ -28,7 +28,7 @@ public class RenderLogicTests extends FunctionalTests {
     }
 
     @Test
-    public void canRenderComparedBoolean() throws TwigException {
+    public void canRenderComparedBoolean() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ true == false }}");
         setupEnvironment(templates);
@@ -37,7 +37,7 @@ public class RenderLogicTests extends FunctionalTests {
     }
 
     @Test
-    public void canCompareBoolVars() throws TwigException {
+    public void canCompareBoolVars() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ foo == false }}");
         setupEnvironment(templates);
@@ -49,7 +49,7 @@ public class RenderLogicTests extends FunctionalTests {
     }
 
     @Test
-    public void canCompareStringVars() throws TwigException {
+    public void canCompareStringVars() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ foo == \"bar\" }}");
         setupEnvironment(templates);
@@ -61,7 +61,7 @@ public class RenderLogicTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoStartsWith() throws TwigException {
+    public void canDoStartsWith() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ 'foobar' starts with 'foo' }}");
         setupEnvironment(templates);
@@ -70,7 +70,7 @@ public class RenderLogicTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoEndsWith() throws TwigException {
+    public void canDoEndsWith() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ 'foobar' ends with 'bar' }}");
         setupEnvironment(templates);
@@ -79,7 +79,7 @@ public class RenderLogicTests extends FunctionalTests {
     }
 
     @Test
-    public void matches() throws TwigException {
+    public void matches() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("caseSensitive.twig4j", "{{ 'Foobar' matches '/^[a-z]+/' }}");
         templates.put("caseInsensitive.twig4j", "{{ 'Foobar' matches '/^[a-z]+/i' }}");
@@ -90,7 +90,7 @@ public class RenderLogicTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoIn() throws TwigException {
+    public void canDoIn() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("trueString.twig4j", "{{ 'foo' in 'foobar' }}");
         templates.put("trueArray.twig4j", "{{ 'foo' in ['foo', 'bar'] }}");
@@ -108,8 +108,8 @@ public class RenderLogicTests extends FunctionalTests {
         Assert.assertEquals("Can find if string is not present in array when is not", "true", environment.render("trueInverseArray.twig4j"));
     }
 
-    @Test(expected = TwigRuntimeException.class)
-    public void cantCompareDifferentTypesWithStrictTypesEnabled() throws TwigException {
+    @Test(expected = Twig4jRuntimeException.class)
+    public void cantCompareDifferentTypesWithStrictTypesEnabled() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ foo == 1 }}");
         setupEnvironment(templates);
@@ -122,7 +122,7 @@ public class RenderLogicTests extends FunctionalTests {
     }
 
     @Test
-    public void canRenderNotComparedBoolean() throws TwigException {
+    public void canRenderNotComparedBoolean() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ true != false }}");
         setupEnvironment(templates);
@@ -131,7 +131,7 @@ public class RenderLogicTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoOr() throws TwigException {
+    public void canDoOr() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ false or true }}");
         setupEnvironment(templates);
@@ -140,7 +140,7 @@ public class RenderLogicTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoAnd() throws TwigException {
+    public void canDoAnd() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ false and true }}");
         setupEnvironment(templates);
@@ -149,7 +149,7 @@ public class RenderLogicTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoLessThan() throws TwigException {
+    public void canDoLessThan() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("true.twig4j", "{{ 1 < 2 }}");
         templates.put("false.twig4j", "{{ 2 < 1 }}");
@@ -160,7 +160,7 @@ public class RenderLogicTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoGreaterThan() throws TwigException {
+    public void canDoGreaterThan() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("true.twig4j", "{{ 2 > 1 }}");
         templates.put("false.twig4j", "{{ 1 > 2 }}");
@@ -171,7 +171,7 @@ public class RenderLogicTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoGreaterThanOrEqual() throws TwigException {
+    public void canDoGreaterThanOrEqual() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("true.twig4j", "{{ 1 >= 1 }}");
         templates.put("false.twig4j", "{{ 1 >= 2 }}");
@@ -182,7 +182,7 @@ public class RenderLogicTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoLessThanOrEqual() throws TwigException {
+    public void canDoLessThanOrEqual() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("true.twig4j", "{{ 1 <= 1 }}");
         templates.put("false.twig4j", "{{ 2 <= 1 }}");

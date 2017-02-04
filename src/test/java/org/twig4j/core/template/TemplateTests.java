@@ -3,8 +3,8 @@ package org.twig4j.core.template;
 import org.junit.Assert;
 import org.junit.Test;
 import org.twig4j.core.Environment;
-import org.twig4j.core.exception.TwigException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 
 import static org.mockito.Mockito.*;
 
@@ -13,13 +13,13 @@ import java.util.Map;
 
 public class TemplateTests {
     @Test
-    public void testCanRenderString() throws TwigException {
+    public void testCanRenderString() throws Twig4jException {
         Template template = new TestStringTemplate();
         Assert.assertEquals("Rendered string should be returned", "foo", template.render());
     }
 
     @Test
-    public void testCanRenderVariable() throws TwigException {
+    public void testCanRenderVariable() throws Twig4jException {
         Context context = new Context();
         context.put("foo", "bar");
         Template template = new TestVariableTemplate();
@@ -27,8 +27,8 @@ public class TemplateTests {
         Assert.assertEquals("Rendered variable contents should be returned", "bar", template.render(context));
     }
 
-    @Test(expected = TwigRuntimeException.class)
-    public void testAccessUndefinedVariableThrowsRuntimeException() throws TwigException {
+    @Test(expected = Twig4jRuntimeException.class)
+    public void testAccessUndefinedVariableThrowsRuntimeException() throws Twig4jException {
         Template template = new TestVariableTemplate();
         Environment environment = mock(Environment.class);
 
@@ -40,7 +40,7 @@ public class TemplateTests {
     }
 
     @Test
-    public void canCallMethodOnContextObject() throws TwigException {
+    public void canCallMethodOnContextObject() throws Twig4jException {
         Context context = new Context();
         context.put("foo", new ClassWithBarMethod());
         Template template = new TestMethodCallTemplate();
@@ -53,12 +53,12 @@ public class TemplateTests {
     }
 
     @Test
-    public void canGetObjectProperty() throws TwigException {
+    public void canGetObjectProperty() throws Twig4jException {
 
     }
 
     @Test
-    public void canCompareDifferentConstants() throws TwigException {
+    public void canCompareDifferentConstants() throws Twig4jException {
         Template template = new TestCompareDifferentConstantsTemplate(new Environment());
 
         Assert.assertEquals(
@@ -69,7 +69,7 @@ public class TemplateTests {
     }
 
     @Test
-    public void canCompareEqualConstants() throws TwigException {
+    public void canCompareEqualConstants() throws Twig4jException {
         Template template = new TestCompareSameConstantsTemplate(new Environment());
 
         Assert.assertEquals(
@@ -79,8 +79,8 @@ public class TemplateTests {
         );
     }
 
-    @Test(expected = TwigRuntimeException.class)
-    public void throwsExceptionWhenComparingDifferentTypes() throws TwigException {
+    @Test(expected = Twig4jRuntimeException.class)
+    public void throwsExceptionWhenComparingDifferentTypes() throws Twig4jException {
         Environment environment = new Environment();
         environment.enableStrictTypes();
         Template template = new TestCompareDifferentTypesConstantsTemplate(environment);
@@ -89,7 +89,7 @@ public class TemplateTests {
     }
 
     @Test
-    public void failsSilentlyWhenComparingDifferentTypesWithStrictTypesDisabled() throws TwigException {
+    public void failsSilentlyWhenComparingDifferentTypesWithStrictTypesDisabled() throws Twig4jException {
         Environment environment = new Environment();
         environment.disableStrictTypes();
         Template template = new TestCompareDifferentTypesConstantsTemplate(environment);
@@ -102,7 +102,7 @@ public class TemplateTests {
     }
 
     @Test
-    public void canGetPropertyGetterIserHaser() throws TwigException {
+    public void canGetPropertyGetterIserHaser() throws Twig4jException {
         Context ctx = new Context();
         ctx.put("foo", new TestClassWithGettersAndProperty());
         Environment env = new Environment();
@@ -126,7 +126,7 @@ public class TemplateTests {
     }
 
     @Test
-    public void canLoadOtherTemplate() throws TwigException {
+    public void canLoadOtherTemplate() throws Twig4jException {
         Environment environment = mock(Environment.class);
         Template barTwig = new TestStringTemplate();
 
@@ -143,7 +143,7 @@ public class TemplateTests {
     }
 
     @Test
-    public void canDisplayBlock() throws TwigException {
+    public void canDisplayBlock() throws Twig4jException {
         Environment environment = mock(Environment.class);
         Template template = new TestDisplayBlockTemplate(environment);
 
@@ -155,7 +155,7 @@ public class TemplateTests {
     }
     protected class TestStringTemplate extends Template {
         @Override
-        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {
             return "foo";
         }
 
@@ -167,7 +167,7 @@ public class TemplateTests {
 
     protected class TestVariableTemplate extends Template {
         @Override
-        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {
             return getContext(context, "foo", false, 1).toString();
         }
 
@@ -179,7 +179,7 @@ public class TemplateTests {
 
     protected class TestMethodCallTemplate extends Template {
         @Override
-        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {
             return String.valueOf(getAttribute(context.get("foo"), "bar", Arrays.asList("some ", "argument"), "method"));
         }
 
@@ -196,12 +196,12 @@ public class TemplateTests {
     }
 
     protected class TestCompareDifferentConstantsTemplate extends Template {
-        public TestCompareDifferentConstantsTemplate(Environment environment) throws TwigException {
+        public TestCompareDifferentConstantsTemplate(Environment environment) throws Twig4jException {
             super(environment);
         }
 
         @Override
-        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {
             return String.valueOf(compare("foo", "bar"));
         }
 
@@ -212,12 +212,12 @@ public class TemplateTests {
     }
 
     protected class TestCompareSameConstantsTemplate extends Template {
-        public TestCompareSameConstantsTemplate(Environment environment) throws TwigException {
+        public TestCompareSameConstantsTemplate(Environment environment) throws Twig4jException {
             super(environment);
         }
 
         @Override
-        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {
             return String.valueOf(compare("foo", "foo"));
         }
 
@@ -228,12 +228,12 @@ public class TemplateTests {
     }
 
     protected class TestCompareDifferentTypesConstantsTemplate extends Template {
-        public TestCompareDifferentTypesConstantsTemplate(Environment environment) throws TwigException {
+        public TestCompareDifferentTypesConstantsTemplate(Environment environment) throws Twig4jException {
             super(environment);
         }
 
         @Override
-        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {
             return String.valueOf(compare("true", true));
         }
 
@@ -244,12 +244,12 @@ public class TemplateTests {
     }
 
     protected class TestGetFooPropertyTemplate extends Template {
-        public TestGetFooPropertyTemplate(Environment environment) throws TwigException {
+        public TestGetFooPropertyTemplate(Environment environment) throws Twig4jException {
             super(environment);
         }
 
         @Override
-        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {
             return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "foo", Arrays.asList(), "any"));
         }
 
@@ -260,12 +260,12 @@ public class TemplateTests {
     }
 
     protected class TestGetBarGetterTemplate extends Template {
-        public TestGetBarGetterTemplate(Environment environment) throws TwigException {
+        public TestGetBarGetterTemplate(Environment environment) throws Twig4jException {
             super(environment);
         }
 
         @Override
-        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {
             return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "bar", Arrays.asList(), "any"));
         }
 
@@ -276,12 +276,12 @@ public class TemplateTests {
     }
 
     protected class TestGetBazIserTemplate extends Template {
-        public TestGetBazIserTemplate(Environment environment) throws TwigException {
+        public TestGetBazIserTemplate(Environment environment) throws Twig4jException {
             super(environment);
         }
 
         @Override
-        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {
             return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "baz", Arrays.asList(), "any"));
         }
 
@@ -292,12 +292,12 @@ public class TemplateTests {
     }
 
     protected class TestGetQuxHaserTemplate extends Template {
-        public TestGetQuxHaserTemplate(Environment environment) throws TwigException {
+        public TestGetQuxHaserTemplate(Environment environment) throws Twig4jException {
             super(environment);
         }
 
         @Override
-        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {
             return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "qux", Arrays.asList(), "any"));
         }
 
@@ -308,12 +308,12 @@ public class TemplateTests {
     }
 
     protected class TestGetQuuxMethodTemplate extends Template {
-        public TestGetQuuxMethodTemplate(Environment environment) throws TwigException {
+        public TestGetQuuxMethodTemplate(Environment environment) throws Twig4jException {
             super(environment);
         }
 
         @Override
-        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {
             return String.valueOf(getAttribute(getContext(context, "foo", false, 1), "quux", Arrays.asList(), "any"));
         }
 
@@ -345,7 +345,7 @@ public class TemplateTests {
 
     protected class TestLoadTemplateTemplate extends Template {
         @Override
-        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {
             return loadTemplate("bar.twig4j", "bar.twig4j", 1, null).render();
         }
 
@@ -356,20 +356,20 @@ public class TemplateTests {
     }
 
     protected class TestDisplayBlockTemplate extends Template {
-        public TestDisplayBlockTemplate(Environment environment) throws TwigException {
+        public TestDisplayBlockTemplate(Environment environment) throws Twig4jException {
             try {
                 blocks.put("a", new TemplateBlockMethodSet(this, getClass().getMethod("block_a", Context.class, Map.class)));
             } catch (NoSuchMethodException e) {
-                throw new org.twig4j.core.exception.TwigRuntimeException("Could not find method for block.", getTemplateName(), -1, e);
+                throw new Twig4jRuntimeException("Could not find method for block.", getTemplateName(), -1, e);
             }
         }
 
         @Override
-        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {
             return displayBlock("a", context, blocks, true);
         }
 
-        public String block_a(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
+        public String block_a(Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {
             return "foo";
         }
 

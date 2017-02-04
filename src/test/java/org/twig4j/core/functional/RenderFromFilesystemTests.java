@@ -3,13 +3,13 @@ package org.twig4j.core.functional;
 import org.junit.Assert;
 import org.junit.Test;
 import org.twig4j.core.Environment;
-import org.twig4j.core.exception.TwigException;
+import org.twig4j.core.exception.Twig4jException;
 import org.twig4j.core.loader.FilesystemLoader;
 import org.twig4j.core.template.Context;
 
 public class RenderFromFilesystemTests {
     @Test
-    public void canLoadAndRenderTemplateFromFilesystem() throws TwigException {
+    public void canLoadAndRenderTemplateFromFilesystem() throws Twig4jException {
         FilesystemLoader loader = new FilesystemLoader();
         loader.addPath(getClass().getClassLoader().getResource("test-templates").getPath().toString());
         Environment environment = new Environment(loader);

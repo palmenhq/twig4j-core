@@ -4,7 +4,7 @@ import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.compiler.Compilable;
 import org.twig4j.core.compiler.LineAware;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 
 import java.util.*;
 
@@ -39,7 +39,7 @@ public class Node implements Compilable, LineAware {
      *
      * @param compiler The compiler
      */
-    public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
+    public void compile(ClassCompiler compiler) throws LoaderException, Twig4jRuntimeException {
         for (Node node : nodes) {
             node.compile(compiler);
         }
@@ -72,11 +72,11 @@ public class Node implements Compilable, LineAware {
      *
      * @return The attribute
      *
-     * @throws TwigRuntimeException If the node attribute does not exist
+     * @throws Twig4jRuntimeException If the node attribute does not exist
      */
-    public Object getAttribute(String name) throws TwigRuntimeException {
+    public Object getAttribute(String name) throws Twig4jRuntimeException {
         if (!attributes.containsKey(name)) {
-            throw TwigRuntimeException.nodeAttributeDoesNotExist(name, this, getLine());
+            throw Twig4jRuntimeException.nodeAttributeDoesNotExist(name, this, getLine());
         }
 
         return attributes.get(name);
@@ -128,11 +128,11 @@ public class Node implements Compilable, LineAware {
      *
      * @return The node
      *
-     * @throws TwigRuntimeException If the node cannot be found
+     * @throws Twig4jRuntimeException If the node cannot be found
      */
-    public Node getNode(Integer index) throws TwigRuntimeException {
+    public Node getNode(Integer index) throws Twig4jRuntimeException {
         if (!hasNode(index)) {
-            throw TwigRuntimeException.noNodeWithIndexExists(index, this);
+            throw Twig4jRuntimeException.noNodeWithIndexExists(index, this);
         }
 
         return nodes.get(index);

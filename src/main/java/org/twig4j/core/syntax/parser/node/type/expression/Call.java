@@ -2,7 +2,7 @@ package org.twig4j.core.syntax.parser.node.type.expression;
 
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.parser.node.Node;
 
 import java.lang.reflect.Method;
@@ -13,7 +13,7 @@ abstract public class Call extends Expression {
         super(line);
     }
 
-    protected void compileCallable(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
+    protected void compileCallable(ClassCompiler compiler) throws LoaderException, Twig4jRuntimeException {
         Method callable = ((Method)getAttribute("callable"));
 
         compiler
@@ -24,7 +24,7 @@ abstract public class Call extends Expression {
         compileArguments(compiler);
     }
 
-    protected void compileArguments(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
+    protected void compileArguments(ClassCompiler compiler) throws LoaderException, Twig4jRuntimeException {
         compiler.writeRaw("(");
         Boolean first = true;
 

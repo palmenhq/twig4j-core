@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.twig4j.core.Environment;
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.parser.node.type.Body;
 
 import java.util.HashMap;
@@ -14,7 +14,7 @@ import static org.mockito.Mockito.*;
 
 public class ModuleTests {
     @Test
-    public void canCompileHeaderAndFooter() throws LoaderException, TwigRuntimeException {
+    public void canCompileHeaderAndFooter() throws LoaderException, Twig4jRuntimeException {
         Environment environmentStub = mock(Environment.class);
         ClassCompiler classCompiler = new ClassCompiler(environmentStub);
 

@@ -1,14 +1,14 @@
 package org.twig4j.core.syntax.parser.tokenparser;
 
 import org.twig4j.core.exception.SyntaxErrorException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.Token;
 import org.twig4j.core.syntax.parser.node.Node;
 import org.twig4j.core.syntax.parser.node.type.expression.Expression;
 
 public class Include extends AbstractTokenParser {
     @Override
-    public Node parse(Token token) throws SyntaxErrorException, TwigRuntimeException {
+    public Node parse(Token token) throws SyntaxErrorException, Twig4jRuntimeException {
         Expression templateName = parser.getExpressionParser().parseExpression();
         Boolean ignoreMissing = false;
         Boolean only = false;

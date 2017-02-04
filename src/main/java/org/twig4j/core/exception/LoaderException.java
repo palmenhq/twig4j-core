@@ -3,7 +3,7 @@ package org.twig4j.core.exception;
 /**
  * Thrown by template loaders
  */
-public class LoaderException extends TwigException {
+public class LoaderException extends Twig4jException {
     public LoaderException(String rawMessage) {
         super(rawMessage);
     }

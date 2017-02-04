@@ -2,7 +2,7 @@ package org.twig4j.core.syntax.parser.node.type.expression;
 
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 
 /**
  * Get an attribute on an object in the context. Can be a "regular" method call (`object.method()`), direct access to a
@@ -28,7 +28,7 @@ public class GetAttr extends Expression {
     }
 
     @Override
-    public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
+    public void compile(ClassCompiler compiler) throws LoaderException, Twig4jRuntimeException {
         compiler
                 .writeRaw("getAttribute(")
                 .subCompile(getNode(0)) // The "name" node

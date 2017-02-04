@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.twig4j.core.Environment;
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.extension.CoreFilters;
 
 import static org.mockito.Mockito.*;
@@ -13,7 +13,7 @@ import static org.mockito.Mockito.*;
 public class FilterTests {
     @Test
     // {{ 'foo'|upper }}
-    public void canCompile() throws LoaderException, TwigRuntimeException, NoSuchMethodException {
+    public void canCompile() throws LoaderException, Twig4jRuntimeException, NoSuchMethodException {
         Environment environment = mock(Environment.class);
         ClassCompiler compiler = new ClassCompiler(environment);
 

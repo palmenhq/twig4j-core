@@ -4,11 +4,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.twig4j.core.Environment;
 import org.twig4j.core.compiler.ClassCompiler;
-import org.twig4j.core.exception.TwigException;
+import org.twig4j.core.exception.Twig4jException;
 
 public class GetAttrTests {
     @Test
-    public void canCompileMethod() throws TwigException {
+    public void canCompileMethod() throws Twig4jException {
         Expression node = new Name("foo", 1);
         Expression attribute = new Constant("bar", 1);;
         Expression arguments = new Array(1);

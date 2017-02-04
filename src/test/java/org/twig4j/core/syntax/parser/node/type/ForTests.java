@@ -5,14 +5,14 @@ import org.junit.Test;
 import org.twig4j.core.Environment;
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.parser.node.type.expression.BinaryRange;
 import org.twig4j.core.syntax.parser.node.type.expression.Constant;
 
 public class ForTests {
     @Test
     // {% for key, val in 1..3 if true %}foo{% else %}bar{% endfor %}
-    public void canCompile() throws LoaderException, TwigRuntimeException {
+    public void canCompile() throws LoaderException, Twig4jRuntimeException {
         ClassCompiler compiler = new ClassCompiler(new Environment());
         For.Settings settings = new For.Settings();
         settings

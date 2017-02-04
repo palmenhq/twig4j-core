@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.twig4j.core.Environment;
 import org.twig4j.core.exception.SyntaxErrorException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.Token;
 import org.twig4j.core.syntax.TokenStream;
 import org.twig4j.core.syntax.parser.Parser;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 
 public class BlockTests {
     @Test
-    public void canParseBlockReference() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseBlockReference() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = new TokenStream();
         // "a %}foo{% endblock %}"
         tokenStream.add(new Token(Token.Type.NAME, "a", 1));
@@ -48,7 +48,7 @@ public class BlockTests {
     }
 
     @Test
-    public void canParseBlockReferenceScopes() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseBlockReferenceScopes() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = new TokenStream();
         // "a %}foo{% endblock %}"
         tokenStream.add(new Token(Token.Type.NAME, "a", 1));

@@ -1,7 +1,7 @@
 package org.twig4j.core.compiler;
 
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 
 public interface Compilable {
     /**
@@ -10,7 +10,7 @@ public interface Compilable {
      * @param compiler The compiler to compile on
      *
      * @throws LoaderException If a file with the file name cannot be found by loader
-     * @throws TwigRuntimeException If runtime errors are encountered
+     * @throws Twig4jRuntimeException If runtime errors are encountered
      */
-    public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException;
+    public void compile(ClassCompiler compiler) throws LoaderException, Twig4jRuntimeException;
 }

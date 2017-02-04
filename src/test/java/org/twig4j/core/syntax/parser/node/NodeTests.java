@@ -4,13 +4,13 @@ import org.junit.Test;
 import org.twig4j.core.Environment;
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 
 import static org.mockito.Mockito.*;
 
 public class NodeTests {
     @Test
-    public void canCompileChildNodes() throws LoaderException, TwigRuntimeException {
+    public void canCompileChildNodes() throws LoaderException, Twig4jRuntimeException {
         Node node = new Node(1);
         Node childNode1 = mock(Node.class);
         Node childNode2 = mock(Node.class);

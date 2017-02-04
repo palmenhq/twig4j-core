@@ -2,7 +2,7 @@ package org.twig4j.core.syntax.parser.node.type;
 
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.parser.node.Node;
 import org.twig4j.core.syntax.parser.node.Output;
 
@@ -28,7 +28,7 @@ public class Include extends Node implements Output {
     }
 
     @Override
-    public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
+    public void compile(ClassCompiler compiler) throws LoaderException, Twig4jRuntimeException {
         compiler.addDebugInfo(this);
 
         if ((Boolean) getAttribute("ignore_missing")) {
@@ -80,7 +80,7 @@ public class Include extends Node implements Output {
         if ((Boolean) getAttribute("ignore_missing")) {
             compiler
                 .unIndent()
-                .writeLine("} catch (TwigException e) {")
+                .writeLine("} catch (Twig4jException e) {")
                 .indent()
                     .writeLine("// Ignore missing")
                 .unIndent()

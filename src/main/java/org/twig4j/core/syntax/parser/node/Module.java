@@ -3,7 +3,7 @@ package org.twig4j.core.syntax.parser.node;
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.compiler.Compilable;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.parser.node.type.Block;
 import org.twig4j.core.syntax.parser.node.type.expression.Constant;
 
@@ -28,7 +28,7 @@ public class Module implements Compilable {
     }
 
     @Override
-    public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
+    public void compile(ClassCompiler compiler) throws LoaderException, Twig4jRuntimeException {
         String className = compiler.getEnvironment().getTemplateClass(this.fileName);
 
         compileClassHeader(compiler, className);
@@ -47,7 +47,7 @@ public class Module implements Compilable {
 
         compiler
                 .writeLine("package " + compiler.getEnvironment().getTemplatePackage() + ";\n")
-                .writeLine("import org.twig4j.core.exception.TwigException;\n")
+                .writeLine("import org.twig4j.core.exception.Twig4jException;\n")
                 .writeLine("/**")
                 .writeLine(" * ".concat(this.fileName))
                 .writeLine(" */")
@@ -56,9 +56,9 @@ public class Module implements Compilable {
                 .indent();
     }
 
-    protected void compileConstructor(ClassCompiler compiler, String className) throws LoaderException, TwigRuntimeException {
+    protected void compileConstructor(ClassCompiler compiler, String className) throws LoaderException, Twig4jRuntimeException {
         compiler
-            .writeLine("public " + className + "(org.twig4j.core.Environment environment) throws TwigException {")
+            .writeLine("public " + className + "(org.twig4j.core.Environment environment) throws Twig4jException {")
             .indent()
                 .writeLine("this.environment = environment;\n");
 
@@ -75,7 +75,7 @@ public class Module implements Compilable {
                 .unIndent()
                 .writeLine("} catch (NoSuchMethodException e) {")
                 .indent()
-                .writeLine("throw new org.twig4j.core.exception.TwigRuntimeException(\"Could not find method for block (\\\"\" + e.getMessage() + \"\\\").\", getTemplateName(), -1, e);")
+                .writeLine("throw new org.twig4j.core.exception.Twig4jRuntimeException(\"Could not find method for block (\\\"\" + e.getMessage() + \"\\\").\", getTemplateName(), -1, e);")
                 .unIndent()
                 .writeLine("}")
                 .unIndent();
@@ -97,9 +97,9 @@ public class Module implements Compilable {
                 .writeLine("}");
     }
 
-    protected void compileDisplay(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
+    protected void compileDisplay(ClassCompiler compiler) throws LoaderException, Twig4jRuntimeException {
         compiler
-                .writeLine("protected String doDisplay(Context context, java.util.Map<String, TemplateBlockMethodSet> blocks) throws TwigException {")
+                .writeLine("protected String doDisplay(Context context, java.util.Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {")
                     .indent();
 
         if (parent != null) {
@@ -137,7 +137,7 @@ public class Module implements Compilable {
             .writeLine("}");
     }
 
-    protected void compileBlocks(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
+    protected void compileBlocks(ClassCompiler compiler) throws LoaderException, Twig4jRuntimeException {
         if (blocks == null) {
             return;
         }

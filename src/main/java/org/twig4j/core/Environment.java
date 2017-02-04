@@ -3,8 +3,8 @@ package org.twig4j.core;
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.compiler.RuntimeTemplateCompiler;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.extension.Core;
 import org.twig4j.core.extension.Extension;
 import org.twig4j.core.filter.Filter;
@@ -72,9 +72,9 @@ public class Environment {
      *
      * @return Rendered result
      *
-     * @throws TwigException If errors are encountered during any of the rendering phases
+     * @throws Twig4jException If errors are encountered during any of the rendering phases
      */
-    public String render(String name) throws TwigException {
+    public String render(String name) throws Twig4jException {
         return loadTemplate(name).render();
     }
 
@@ -88,9 +88,9 @@ public class Environment {
      *
      * @return The rendered contents as a string
      *
-     * @throws TwigException If errors are encountered during any of the rendering phases
+     * @throws Twig4jException If errors are encountered during any of the rendering phases
      */
-    public String render(String name, Context context) throws TwigException {
+    public String render(String name, Context context) throws Twig4jException {
         return loadTemplate(name).render(context);
     }
 
@@ -102,10 +102,10 @@ public class Environment {
      *
      * @return The template object
      *
-     * @throws TwigException If there are any errors resolving the template
+     * @throws Twig4jException If there are any errors resolving the template
      *
      */
-    public Template resolveTemplate(String templateName) throws TwigException {
+    public Template resolveTemplate(String templateName) throws Twig4jException {
         return resolveTemplate(Arrays.asList(templateName));
     }
 
@@ -116,9 +116,9 @@ public class Environment {
      *
      * @return The first resolved template in the list
      *
-     * @throws TwigException If there are any errors resolving the template
+     * @throws Twig4jException If there are any errors resolving the template
      */
-    public Template resolveTemplate(List<String> templates) throws TwigException {
+    public Template resolveTemplate(List<String> templates) throws Twig4jException {
         Integer templatesCount = templates.size();
 
         for (String template : templates) {
@@ -130,7 +130,7 @@ public class Environment {
                 if (templatesCount == 1) {
                     throw e;
                 }
-            } catch (TwigException e) {
+            } catch (Twig4jException e) {
                 // Always throw errors on other exceptions than loader exceptions;
                 throw e;
             }
@@ -152,9 +152,9 @@ public class Environment {
      *
      * @return The loaded template instance
      *
-     * @throws TwigException On any errors
+     * @throws Twig4jException On any errors
      */
-    public Template loadTemplate(String name) throws TwigException {
+    public Template loadTemplate(String name) throws Twig4jException {
         return loadTemplate(name, 0);
     }
 
@@ -166,9 +166,9 @@ public class Environment {
      *
      * @return The loaded template instance
      *
-     * @throws TwigException On any errors
+     * @throws Twig4jException On any errors
      */
-    public Template loadTemplate(String name, Integer index) throws TwigException {
+    public Template loadTemplate(String name, Integer index) throws Twig4jException {
         if (!hasInitedExtensions) {
             initExtensions();
         }
@@ -201,7 +201,7 @@ public class Environment {
 
             return template;
         } catch (Exception e) {
-            throw new TwigException(e.getMessage(), name, -1, e);
+            throw new Twig4jException(e.getMessage(), name, -1, e);
         }
     }
 
@@ -214,9 +214,9 @@ public class Environment {
      *
      * @return Compiled java code
      *
-     * @throws TwigException on syntax or loader errors
+     * @throws Twig4jException on syntax or loader errors
      */
-    public String compileSource(String templateSourceCode, String name) throws TwigException {
+    public String compileSource(String templateSourceCode, String name) throws Twig4jException {
         if (!hasInitedExtensions) {
             initExtensions();
         }
@@ -228,7 +228,7 @@ public class Environment {
             String compiledClassSourceCode = classCompiler.compile(module).getSourceCode();
 
             return compiledClassSourceCode;
-        } catch (TwigException e) {
+        } catch (Twig4jException e) {
             e.setTemplateName(name);
 
             throw e;
@@ -297,9 +297,9 @@ public class Environment {
      *
      * @return this
      *
-     * @throws TwigRuntimeException If any of the extensions errors during initialization
+     * @throws Twig4jRuntimeException If any of the extensions errors during initialization
      */
-    protected Environment initExtensions() throws TwigRuntimeException {
+    protected Environment initExtensions() throws Twig4jRuntimeException {
         if (hasInitedExtensions) {
             return this;
         }
@@ -318,9 +318,9 @@ public class Environment {
      *
      * @param extension The extension to init
      *
-     * @throws TwigRuntimeException If errors are encountered during initialization
+     * @throws Twig4jRuntimeException If errors are encountered during initialization
      */
-    protected void initExtension(Extension extension) throws TwigRuntimeException {
+    protected void initExtension(Extension extension) throws Twig4jRuntimeException {
 
         // Operators
         this.unaryOperators.putAll(extension.getUnaryOperators());
@@ -516,9 +516,9 @@ public class Environment {
      *
      * @return All binary operators
      *
-     * @throws TwigRuntimeException If any of the extensions fails to initialize
+     * @throws Twig4jRuntimeException If any of the extensions fails to initialize
      */
-    public LinkedHashMap<String, Operator> getBinaryOperators() throws TwigRuntimeException {
+    public LinkedHashMap<String, Operator> getBinaryOperators() throws Twig4jRuntimeException {
         if (!hasInitedExtensions) {
             initExtensions();
         }
@@ -545,9 +545,9 @@ public class Environment {
      *
      * @return The unary operators
      *
-     * @throws TwigRuntimeException If any of the extensions fails to initialize
+     * @throws Twig4jRuntimeException If any of the extensions fails to initialize
      */
-    public LinkedHashMap<String, Operator> getUnaryOperators() throws TwigRuntimeException {
+    public LinkedHashMap<String, Operator> getUnaryOperators() throws Twig4jRuntimeException {
         if (!hasInitedExtensions) {
             initExtensions();
         }

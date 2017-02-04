@@ -2,7 +2,7 @@ package org.twig4j.core.syntax.parser.node.type.expression;
 
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.parser.node.Node;
 
 abstract public class Binary extends Expression {
@@ -14,7 +14,7 @@ abstract public class Binary extends Expression {
     }
 
     @Override
-    public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
+    public void compile(ClassCompiler compiler) throws LoaderException, Twig4jRuntimeException {
         compiler
                 .writeRaw("(")
                 .subCompile(getLeftNode())
@@ -40,13 +40,13 @@ abstract public class Binary extends Expression {
      *
      * @return The node
      *
-     * @throws TwigRuntimeException When trying to access a node that doesn't exist
+     * @throws Twig4jRuntimeException When trying to access a node that doesn't exist
      */
-    public Node getLeftNode() throws TwigRuntimeException {
+    public Node getLeftNode() throws Twig4jRuntimeException {
         try {
             return getNode(0);
-        } catch (TwigRuntimeException e) {
-            throw new TwigRuntimeException("Trying to access left node when not set", e);
+        } catch (Twig4jRuntimeException e) {
+            throw new Twig4jRuntimeException("Trying to access left node when not set", e);
         }
     }
 
@@ -55,13 +55,13 @@ abstract public class Binary extends Expression {
      *
      * @return The node
      *
-     * @throws TwigRuntimeException When trying to access a node that doesn't exist
+     * @throws Twig4jRuntimeException When trying to access a node that doesn't exist
      */
-    public Node getRightNode() throws TwigRuntimeException {
+    public Node getRightNode() throws Twig4jRuntimeException {
         try {
             return getNode(1);
-        } catch (TwigRuntimeException e) {
-            throw new TwigRuntimeException("Trying to access right node when not set", e);
+        } catch (Twig4jRuntimeException e) {
+            throw new Twig4jRuntimeException("Trying to access right node when not set", e);
         }
     }
 }

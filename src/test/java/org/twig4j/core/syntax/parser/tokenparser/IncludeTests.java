@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.twig4j.core.Environment;
 import org.twig4j.core.exception.SyntaxErrorException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.Token;
 import org.twig4j.core.syntax.TokenStream;
 import org.twig4j.core.syntax.parser.Parser;
@@ -14,7 +14,7 @@ import org.twig4j.core.syntax.parser.node.type.expression.Hash;
 
 public class IncludeTests {
     @Test
-    public void canParseSimpleInclude() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseSimpleInclude() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = new TokenStream();
         // "include('foo.twig4j') %}"
         tokenStream.add(new Token(Token.Type.PUNCTUATION, "(", 1));
@@ -35,7 +35,7 @@ public class IncludeTests {
     }
 
     @Test
-    public void canParseIncludeWithIgnoreMissing() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseIncludeWithIgnoreMissing() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = new TokenStream();
         // "include('foo.twig4j') %}"
         tokenStream.add(new Token(Token.Type.PUNCTUATION, "(", 1));
@@ -56,7 +56,7 @@ public class IncludeTests {
     }
 
     @Test
-    public void canParseIncludeWithWith() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseIncludeWithWith() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = new TokenStream();
         // "include('foo.twig4j') %}"
         tokenStream.add(new Token(Token.Type.PUNCTUATION, "(", 1));
@@ -82,7 +82,7 @@ public class IncludeTests {
     }
 
     @Test
-    public void canParseIncludeWithWithOnly() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseIncludeWithWithOnly() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = new TokenStream();
         // "include('foo.twig4j') %}"
         tokenStream.add(new Token(Token.Type.PUNCTUATION, "(", 1));

@@ -6,12 +6,12 @@ import org.twig4j.core.Environment;
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
 import org.twig4j.core.exception.SyntaxErrorException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.parser.node.type.expression.StringConstant;
 
 public class IncludeTests {
     @Test
-    public void canCompile() throws SyntaxErrorException, LoaderException, TwigRuntimeException {
+    public void canCompile() throws SyntaxErrorException, LoaderException, Twig4jRuntimeException {
         Environment environment = new Environment();
         ClassCompiler compiler = new ClassCompiler(environment);
 

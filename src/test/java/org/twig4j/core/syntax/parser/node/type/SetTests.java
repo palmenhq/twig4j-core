@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.twig4j.core.Environment;
 import org.twig4j.core.compiler.ClassCompiler;
-import org.twig4j.core.exception.TwigException;
+import org.twig4j.core.exception.Twig4jException;
 import org.twig4j.core.syntax.parser.node.Node;
 import org.twig4j.core.syntax.parser.node.type.expression.Constant;
 
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class SetTests {
     @Test
-    public void canCompileSimple() throws TwigException {
+    public void canCompileSimple() throws Twig4jException {
         ClassCompiler classCompiler = new ClassCompiler(new Environment());
 
         List<String> names = Arrays.asList("foo");
@@ -36,7 +36,7 @@ public class SetTests {
     }
 
     @Test
-    public void canCompileMultipleAssignment() throws TwigException {
+    public void canCompileMultipleAssignment() throws Twig4jException {
         ClassCompiler classCompiler = new ClassCompiler(new Environment());
 
         List<String> names = Arrays.asList("foo", "bar");

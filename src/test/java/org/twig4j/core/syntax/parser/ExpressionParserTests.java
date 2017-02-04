@@ -4,8 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.twig4j.core.Environment;
 import org.twig4j.core.exception.SyntaxErrorException;
-import org.twig4j.core.exception.TwigException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.Token;
 import org.twig4j.core.syntax.TokenStream;
 import org.twig4j.core.syntax.operator.UnaryNot;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 
 public class ExpressionParserTests {
     @Test
-    public void testParsePrimaryExpressionBool() throws SyntaxErrorException, TwigRuntimeException {
+    public void testParsePrimaryExpressionBool() throws SyntaxErrorException, Twig4jRuntimeException {
         Token trueToken = new Token(Token.Type.NAME, "true", 1);
         TokenStream tokenStream = new TokenStream();
         tokenStream.add(trueToken);
@@ -51,7 +51,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void testParsePrimaryExpressionNull() throws SyntaxErrorException, TwigRuntimeException {
+    public void testParsePrimaryExpressionNull() throws SyntaxErrorException, Twig4jRuntimeException {
         Token nullToken = new Token(Token.Type.NAME, "null", 1);
         TokenStream tokenStream = new TokenStream();
         tokenStream.add(nullToken);
@@ -77,7 +77,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void testParseSimpleString() throws SyntaxErrorException, TwigRuntimeException {
+    public void testParseSimpleString() throws SyntaxErrorException, Twig4jRuntimeException {
         ArrayList<Token> tokens = new ArrayList<>();
         tokens.add(new Token(Token.Type.STRING, "foo", 1));
         tokens.add(new Token(Token.Type.EOF, null, 1));
@@ -106,7 +106,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void testParseInterpolatedString() throws SyntaxErrorException, TwigRuntimeException {
+    public void testParseInterpolatedString() throws SyntaxErrorException, Twig4jRuntimeException {
         ArrayList<Token> tokens = new ArrayList<>();
         // Token stream for "foo#{"bar"}"
         //tokens.add(new Token(Token.Type.VAR_START, null, 1));
@@ -155,7 +155,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void testParsePrimaryExpressionString() throws SyntaxErrorException, TwigRuntimeException {
+    public void testParsePrimaryExpressionString() throws SyntaxErrorException, Twig4jRuntimeException {
         ArrayList<Token> tokens = new ArrayList<>();
         tokens.add(new Token(Token.Type.STRING, "foo", 1));
         tokens.add(new Token(Token.Type.EOF, null, 1));
@@ -183,7 +183,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void testParsePrimaryExpressionVariable() throws SyntaxErrorException, TwigRuntimeException {
+    public void testParsePrimaryExpressionVariable() throws SyntaxErrorException, Twig4jRuntimeException {
         ArrayList<Token> tokens = new ArrayList<>();
         tokens.add(new Token(Token.Type.NAME, "foo", 1));
         tokens.add(new Token(Token.Type.EOF, null, 1));
@@ -211,7 +211,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void testParsePrimaryExpressionInverseBool() throws SyntaxErrorException, TwigRuntimeException {
+    public void testParsePrimaryExpressionInverseBool() throws SyntaxErrorException, Twig4jRuntimeException {
         ArrayList<Token> tokens = new ArrayList<>();
         tokens.add(new Token(Token.Type.NAME, "not", 1));
         tokens.add(new Token(Token.Type.NAME, "true", 1));
@@ -240,7 +240,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void canParseAddition() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseAddition() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = new TokenStream("aFile");
         tokenStream.add(new Token(Token.Type.VAR_START, null, 1));
         tokenStream.add(new Token(Token.Type.NUMBER, "1", 1));
@@ -275,7 +275,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void canParseMathsWithParenthesis() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseMathsWithParenthesis() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = new TokenStream("aFile");
         tokenStream.add(new Token(Token.Type.VAR_START, null, 1));
         tokenStream.add(new Token(Token.Type.PUNCTUATION, "(", 1));
@@ -309,7 +309,7 @@ public class ExpressionParserTests {
     }
 
     @Test(expected = SyntaxErrorException.class)
-    public void cantParseUnclosedParenthesis() throws SyntaxErrorException, TwigRuntimeException {
+    public void cantParseUnclosedParenthesis() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = new TokenStream("aFile");
         tokenStream.add(new Token(Token.Type.VAR_START, null, 1));
         tokenStream.add(new Token(Token.Type.PUNCTUATION, "(", 1));
@@ -322,7 +322,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void canParseArguments() throws TwigException {
+    public void canParseArguments() throws Twig4jException {
         TokenStream tokenStream = new TokenStream("aFile");
         tokenStream.add(new Token(Token.Type.PUNCTUATION, "(", 1));
         tokenStream.add(new Token(Token.Type.NAME, "foo", 1));
@@ -359,7 +359,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void canParseMethod() throws TwigException {
+    public void canParseMethod() throws Twig4jException {
         TokenStream tokenStream = new TokenStream("aFile");
         tokenStream.add(new Token(Token.Type.NAME, "foo", 1));
         tokenStream.add(new Token(Token.Type.PUNCTUATION, ".", 1));
@@ -413,7 +413,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void canParseArray() throws TwigException {
+    public void canParseArray() throws Twig4jException {
         TokenStream tokenStream = new TokenStream("aFile");
         tokenStream.add(new Token(Token.Type.PUNCTUATION, "[", 1));
         tokenStream.add(new Token(Token.Type.STRING, "foo", 1));
@@ -447,7 +447,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void canParseArraySubscript() throws TwigException {
+    public void canParseArraySubscript() throws Twig4jException {
         TokenStream tokenStream = new TokenStream("aFile");
         tokenStream.add(new Token(Token.Type.PUNCTUATION, "[", 1));
         tokenStream.add(new Token(Token.Type.STRING, "foo", 1));
@@ -485,7 +485,7 @@ public class ExpressionParserTests {
 
 
     @Test
-    public void canParseHash() throws TwigException {
+    public void canParseHash() throws Twig4jException {
         TokenStream tokenStream = new TokenStream("aFile");
         tokenStream.add(new Token(Token.Type.PUNCTUATION, "{", 1));
         tokenStream.add(new Token(Token.Type.NAME, "foo", 1));
@@ -523,7 +523,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void testParseAssignments() throws SyntaxErrorException, TwigRuntimeException {
+    public void testParseAssignments() throws SyntaxErrorException, Twig4jRuntimeException {
         ArrayList<Token> tokens = new ArrayList<>();
         tokens.add(new Token(Token.Type.NAME, "foo", 1));
         tokens.add(new Token(Token.Type.PUNCTUATION, ",", 1));
@@ -544,7 +544,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void testParseMultitargetStrings() throws SyntaxErrorException, TwigRuntimeException {
+    public void testParseMultitargetStrings() throws SyntaxErrorException, Twig4jRuntimeException {
         ArrayList<Token> tokens = new ArrayList<>();
         tokens.add(new Token(Token.Type.STRING, "foo", 1));
         tokens.add(new Token(Token.Type.PUNCTUATION, ",", 1));
@@ -565,7 +565,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void testParseMultitargetString() throws SyntaxErrorException, TwigRuntimeException {
+    public void testParseMultitargetString() throws SyntaxErrorException, Twig4jRuntimeException {
         ArrayList<Token> tokens = new ArrayList<>();
         tokens.add(new Token(Token.Type.STRING, "foo", 1));
         tokens.add(new Token(Token.Type.EOF, null, 1));
@@ -583,7 +583,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void canParseFilters() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseFilters() throws SyntaxErrorException, Twig4jRuntimeException {
         ArrayList<Token> tokens = new ArrayList<>();
         tokens.add(new Token(Token.Type.PUNCTUATION, "|", 1));
         tokens.add(new Token(Token.Type.NAME, "upper", 1));
@@ -615,7 +615,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void canParseParentFunction() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseParentFunction() throws SyntaxErrorException, Twig4jRuntimeException {
         ArrayList<Token> tokens = new ArrayList<>();
         tokens.add(new Token(Token.Type.NAME, "parent", 1));
         tokens.add(new Token(Token.Type.PUNCTUATION, "(", 1));
@@ -637,7 +637,7 @@ public class ExpressionParserTests {
     }
 
     @Test
-    public void canParseBlockFunction() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseBlockFunction() throws SyntaxErrorException, Twig4jRuntimeException {
         ArrayList<Token> tokens = new ArrayList<>();
         tokens.add(new Token(Token.Type.NAME, "block", 1));
         tokens.add(new Token(Token.Type.PUNCTUATION, "(", 1));

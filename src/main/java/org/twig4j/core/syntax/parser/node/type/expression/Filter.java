@@ -2,7 +2,7 @@ package org.twig4j.core.syntax.parser.node.type.expression;
 
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.parser.node.Node;
 
 public class Filter extends Call {
@@ -15,7 +15,7 @@ public class Filter extends Call {
         addNode(arguments); // 2 = arguments
     }
 
-    public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
+    public void compile(ClassCompiler compiler) throws LoaderException, Twig4jRuntimeException {
         org.twig4j.core.filter.Filter filter = compiler.getEnvironment().getFilter(((String)getNode(1).getAttribute("data")));
         putAttribute("name", filter.getName());
         putAttribute("type", "filter");

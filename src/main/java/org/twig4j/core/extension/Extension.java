@@ -1,6 +1,6 @@
 package org.twig4j.core.extension;
 
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.filter.Filter;
 import org.twig4j.core.syntax.operator.Operator;
 import org.twig4j.core.syntax.parser.tokenparser.AbstractTokenParser;
@@ -35,9 +35,9 @@ public interface Extension {
      *
      * @return The filters
      *
-     * @throws TwigRuntimeException From reflection when a filter method does not exist
+     * @throws Twig4jRuntimeException From reflection when a filter method does not exist
      */
-    public Map<String, Filter> getFilters() throws TwigRuntimeException;
+    public Map<String, Filter> getFilters() throws Twig4jRuntimeException;
 
     /**
      * Get the name of the extension

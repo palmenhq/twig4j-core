@@ -1,6 +1,6 @@
 package org.twig4j.core.exception;
 
-public class TwigException extends Exception {
+public class Twig4jException extends Exception {
     private String rawMessage;
     private Integer lineNumber;
     private String templateName;
@@ -9,7 +9,7 @@ public class TwigException extends Exception {
      * Create a twig4j exception without any template info
      * @param rawMessage The error message
      */
-    public TwigException(String rawMessage) {
+    public Twig4jException(String rawMessage) {
         this.rawMessage = rawMessage;
     }
 
@@ -18,7 +18,7 @@ public class TwigException extends Exception {
      * @param rawMessage The error message
      * @param cause The exception that previously followed this one
      */
-    public TwigException(String rawMessage, Throwable cause) {
+    public Twig4jException(String rawMessage, Throwable cause) {
         this.rawMessage = rawMessage;
         initCause(cause);
     }
@@ -28,7 +28,7 @@ public class TwigException extends Exception {
      * @param rawMessage The error message
      * @param templateName The filename the error occurred in
      */
-    public TwigException(String rawMessage, String templateName) {
+    public Twig4jException(String rawMessage, String templateName) {
         this.rawMessage = rawMessage;
         this.templateName = templateName;
     }
@@ -39,7 +39,7 @@ public class TwigException extends Exception {
      * @param templateName The filename the error occurred in
      * @param lineNumber The line number the error occurred at
      */
-    public TwigException(String rawMessage, String templateName, Integer lineNumber) {
+    public Twig4jException(String rawMessage, String templateName, Integer lineNumber) {
         this.rawMessage = rawMessage;
         this.templateName = templateName;
         this.lineNumber = lineNumber;
@@ -52,7 +52,7 @@ public class TwigException extends Exception {
      * @param lineNumber The line number the error occurred at
      * @param cause The exception that previously followed this one
      */
-    public TwigException(String rawMessage, String templateName, Integer lineNumber, Throwable cause) {
+    public Twig4jException(String rawMessage, String templateName, Integer lineNumber, Throwable cause) {
         this.rawMessage = rawMessage;
         this.lineNumber = lineNumber;
         this.templateName = templateName;

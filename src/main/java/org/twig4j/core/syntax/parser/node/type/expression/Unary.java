@@ -2,7 +2,7 @@ package org.twig4j.core.syntax.parser.node.type.expression;
 
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.parser.node.Node;
 
 abstract public class Unary extends Expression {
@@ -13,7 +13,7 @@ abstract public class Unary extends Expression {
     }
 
     @Override
-    public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
+    public void compile(ClassCompiler compiler) throws LoaderException, Twig4jRuntimeException {
         compiler.writeRaw(" ");
         compileOperator(compiler);
         compiler.subCompile(getNode(0));

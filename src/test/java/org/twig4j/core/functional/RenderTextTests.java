@@ -2,14 +2,14 @@ package org.twig4j.core.functional;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.twig4j.core.exception.TwigException;
+import org.twig4j.core.exception.Twig4jException;
 import org.twig4j.core.template.Context;
 
 import java.util.HashMap;
 
 public class RenderTextTests extends FunctionalTests {
     @Test
-    public void canRenderText() throws TwigException {
+    public void canRenderText() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "bar");
         setupEnvironment(templates);
@@ -18,7 +18,7 @@ public class RenderTextTests extends FunctionalTests {
     }
 
     @Test
-    public void canRenderBasicPrintStatement() throws TwigException {
+    public void canRenderBasicPrintStatement() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ 'bar' }}");
         setupEnvironment(templates);
@@ -27,7 +27,7 @@ public class RenderTextTests extends FunctionalTests {
     }
 
     @Test
-    public void canRenderVariables() throws TwigException {
+    public void canRenderVariables() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ bar }}");
         setupEnvironment(templates);
@@ -39,7 +39,7 @@ public class RenderTextTests extends FunctionalTests {
     }
 
     @Test
-    public void canRenderInterpolatedString() throws TwigException {
+    public void canRenderInterpolatedString() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ \"interpolated #{bar}\" }}");
         templates.put("bar.twig4j", "{{ 'not interpolated #{string}' }}");
@@ -61,7 +61,7 @@ public class RenderTextTests extends FunctionalTests {
     }
 
     @Test
-    public void canRenderConcat() throws TwigException {
+    public void canRenderConcat() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("concatStrings.twig4j", "{{ 'foo' ~ 'bar' }}");
         templates.put("concatNumbers.twig4j", "{{ 1 ~ 2 }}");

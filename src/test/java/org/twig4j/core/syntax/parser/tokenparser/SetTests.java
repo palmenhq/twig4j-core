@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.twig4j.core.Environment;
 import org.twig4j.core.exception.SyntaxErrorException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.Token;
 import org.twig4j.core.syntax.TokenStream;
 import org.twig4j.core.syntax.parser.Parser;
@@ -12,7 +12,7 @@ import org.twig4j.core.syntax.parser.node.Node;
 
 public class SetTests {
     @Test
-    public void canParseSimpleSet() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseSimpleSet() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = new TokenStream();
         tokenStream.add(new Token(Token.Type.NAME, "foo", 1));
         tokenStream.add(new Token(Token.Type.OPERATOR, "=", 1));

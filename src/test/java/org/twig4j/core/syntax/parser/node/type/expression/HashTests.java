@@ -6,11 +6,11 @@ import org.junit.Test;
 import org.twig4j.core.Environment;
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 
 public class HashTests {
     @Test
-    public void canCompile() throws LoaderException, TwigRuntimeException {
+    public void canCompile() throws LoaderException, Twig4jRuntimeException {
         ClassCompiler compiler = new ClassCompiler(new Environment());
 
         Hash hash = new Hash(1);

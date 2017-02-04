@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.twig4j.core.Environment;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.parser.node.Node;
 
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public class ClassCompilerTests {
     }
 
     @Test
-    public void canSubCompile() throws LoaderException, TwigRuntimeException {
+    public void canSubCompile() throws LoaderException, Twig4jRuntimeException {
         ClassCompiler classCompiler = new ClassCompiler(new Environment());
         Node nodeStub = mock(Node.class);
 
@@ -69,7 +69,7 @@ public class ClassCompilerTests {
     }
 
     @Test
-    public void canCompile() throws LoaderException, TwigRuntimeException {
+    public void canCompile() throws LoaderException, Twig4jRuntimeException {
         ClassCompiler classCompiler = new ClassCompiler(new Environment());
         Node nodeStub = mock(Node.class);
         classCompiler.compile(nodeStub);

@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.twig4j.core.Environment;
 import org.twig4j.core.compiler.ClassCompiler;
-import org.twig4j.core.exception.TwigException;
+import org.twig4j.core.exception.Twig4jException;
 import org.twig4j.core.syntax.parser.node.Node;
 import org.twig4j.core.syntax.parser.node.type.Text;
 import org.twig4j.core.syntax.parser.node.type.expression.Constant;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class IfStatementTests {
     @Test
-    public void canCompile() throws TwigException {
+    public void canCompile() throws Twig4jException {
         ArrayList<Node> contents = new ArrayList<>();
         contents.add(new IfBody(new Constant(true, 1), new Text("foo", 1), 1));
         contents.add(new ElseIfBody(new Constant(false, 2), new Text("bar", 2), 2));

@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.twig4j.core.Environment;
 import org.twig4j.core.exception.SyntaxErrorException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.Token;
 import org.twig4j.core.syntax.TokenStream;
 import org.twig4j.core.syntax.parser.Parser;
@@ -13,7 +13,7 @@ import org.twig4j.core.syntax.parser.node.type.control.*;
 
 public class IfTests {
     @Test
-    public void canParseIf() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseIf() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = new TokenStream();
         tokenStream.add(new Token(Token.Type.NAME, "true", 1));
         tokenStream.add(new Token(Token.Type.BLOCK_END, null, 1));
@@ -33,7 +33,7 @@ public class IfTests {
         Assert.assertEquals("First if statement node should be an if statement body", IfBody.class, ifStatement.getNode(0).getClass());
     }
     @Test
-    public void canParseElseAndElse() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseElseAndElse() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = new TokenStream();
         tokenStream.add(new Token(Token.Type.NAME, "true", 1));
         tokenStream.add(new Token(Token.Type.BLOCK_END, null, 1));

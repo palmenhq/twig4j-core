@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.twig4j.core.Environment;
 import org.twig4j.core.exception.SyntaxErrorException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.Token;
 import org.twig4j.core.syntax.TokenStream;
 import org.twig4j.core.syntax.parser.Parser;
@@ -13,7 +13,7 @@ import org.twig4j.core.syntax.parser.node.type.expression.BinaryRange;
 
 public class ForTests {
     @Test
-    public void canParseFor() throws SyntaxErrorException, TwigRuntimeException {
+    public void canParseFor() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = new TokenStream();
         // Parser has already parsed "{% for"
         tokenStream.add(new Token(Token.Type.NAME, "key", 1));

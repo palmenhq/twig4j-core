@@ -2,7 +2,7 @@ package org.twig4j.core.syntax.parser.node.type;
 
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.parser.node.Node;
 import org.twig4j.core.syntax.parser.node.type.control.IfBody;
 import org.twig4j.core.syntax.parser.node.type.control.IfStatement;
@@ -40,7 +40,7 @@ public class For extends Node {
     }
 
     @Override
-    public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
+    public void compile(ClassCompiler compiler) throws LoaderException, Twig4jRuntimeException {
         compiler.addDebugInfo(this)
                 .writeLine(putInContext("_parent", "context.clone()"))
                 .write("context.put(\"_seq\", org.twig4j.core.extension.Core.ensureIterable(");
@@ -137,9 +137,9 @@ public class For extends Node {
      * @param compiler The compiler
      * @param valueVariableName The value variable name (needed as we're randomising the loop variable name)
      *
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    protected void compileKeyValueTarget(ClassCompiler compiler, String valueVariableName) throws TwigRuntimeException {
+    protected void compileKeyValueTarget(ClassCompiler compiler, String valueVariableName) throws Twig4jRuntimeException {
 
         compiler
                 .writeLine("if (context.get(\"_seq\") instanceof java.util.List) {")

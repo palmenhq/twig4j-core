@@ -2,13 +2,13 @@ package org.twig4j.core.functional;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.twig4j.core.exception.TwigException;
+import org.twig4j.core.exception.Twig4jException;
 
 import java.util.HashMap;
 
 public class RenderMathsTests extends FunctionalTests {
     @Test
-    public void canRenderNumber() throws TwigException {
+    public void canRenderNumber() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ 1134.12341 }}");
         setupEnvironment(templates);
@@ -17,7 +17,7 @@ public class RenderMathsTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoAddition() throws TwigException {
+    public void canDoAddition() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("addition.twig4j", "{{ 1 + 1 }}");
         templates.put("multiple-addition.twig4j", "{{ 1 + 2+3+4 }}");
@@ -28,7 +28,7 @@ public class RenderMathsTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoSubtraction() throws TwigException {
+    public void canDoSubtraction() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("subtraction.twig4j", "{{ 2 - 1 }}");
         templates.put("multiple-subtraction.twig4j", "{{ 4 - 3 - 2-1 }}");
@@ -39,7 +39,7 @@ public class RenderMathsTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoMultiplication() throws TwigException {
+    public void canDoMultiplication() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("multiplication.twig4j", "{{ 2 * 5}}");
         setupEnvironment(templates);
@@ -48,7 +48,7 @@ public class RenderMathsTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoOddDivision() throws TwigException {
+    public void canDoOddDivision() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("division.twig4j", "{{ 5 / 2 }}");
         setupEnvironment(templates);
@@ -57,7 +57,7 @@ public class RenderMathsTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoEvenDivision() throws TwigException {
+    public void canDoEvenDivision() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("division.twig4j", "{{ 10 / 2 }}");
         setupEnvironment(templates);
@@ -68,7 +68,7 @@ public class RenderMathsTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoAdditionAndSubtractionAndMultiplication() throws TwigException {
+    public void canDoAdditionAndSubtractionAndMultiplication() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("maths.twig4j", "{{ 1 + 2 * 5 - 2 / 2 }}");
         setupEnvironment(templates);
@@ -81,7 +81,7 @@ public class RenderMathsTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoMathsWithParenthesises() throws TwigException {
+    public void canDoMathsWithParenthesises() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("maths.twig4j", "{{ (1 + 2) * (5 - 2) / 3 }}");
         setupEnvironment(templates);
@@ -94,7 +94,7 @@ public class RenderMathsTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoFloor() throws TwigException {
+    public void canDoFloor() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("floor.twig4j", "{{ 3 // 2 }}");
         setupEnvironment(templates);
@@ -107,7 +107,7 @@ public class RenderMathsTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoModulo() throws TwigException {
+    public void canDoModulo() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("mod.twig4j", "{{ 3 % 2 }}");
         setupEnvironment(templates);
@@ -120,7 +120,7 @@ public class RenderMathsTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoPowerOf() throws TwigException {
+    public void canDoPowerOf() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("powerOf.twig4j", "{{ 3 ** 3 }}");
         setupEnvironment(templates);

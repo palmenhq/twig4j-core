@@ -2,14 +2,14 @@ package org.twig4j.core.functional.controlstructures;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.twig4j.core.exception.TwigException;
+import org.twig4j.core.exception.Twig4jException;
 import org.twig4j.core.functional.FunctionalTests;
 
 import java.util.HashMap;
 
 public class ForTests extends FunctionalTests {
     @Test
-    public void canRenderForInRange() throws TwigException {
+    public void canRenderForInRange() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig4j",
@@ -27,7 +27,7 @@ public class ForTests extends FunctionalTests {
     }
 
     @Test
-    public void canRenderArray() throws TwigException {
+    public void canRenderArray() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig4j",
@@ -43,7 +43,7 @@ public class ForTests extends FunctionalTests {
     }
 
     @Test
-    public void canRenderArrayWithKeys() throws TwigException {
+    public void canRenderArrayWithKeys() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig4j",
@@ -60,7 +60,7 @@ public class ForTests extends FunctionalTests {
     }
 
     @Test
-    public void canUseLoopVariable() throws TwigException {
+    public void canUseLoopVariable() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig4j",
@@ -79,7 +79,7 @@ public class ForTests extends FunctionalTests {
     }
 
     @Test
-    public void canDoLoopInsideLoop() throws TwigException {
+    public void canDoLoopInsideLoop() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig4j",
@@ -110,7 +110,7 @@ public class ForTests extends FunctionalTests {
     }
 
     @Test
-    public void canLoopHashMaps() throws TwigException {
+    public void canLoopHashMaps() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig4j",
@@ -129,7 +129,7 @@ public class ForTests extends FunctionalTests {
     }
 
     @Test
-    public void canLoopWithIf() throws TwigException {
+    public void canLoopWithIf() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig4j",
@@ -147,7 +147,7 @@ public class ForTests extends FunctionalTests {
     }
 
     @Test
-    public void canUseElseBody() throws TwigException {
+    public void canUseElseBody() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig4j",
@@ -167,7 +167,7 @@ public class ForTests extends FunctionalTests {
     }
 
     @Test
-    public void doesNotTriggerElseBodyWhenIterated() throws TwigException {
+    public void doesNotTriggerElseBodyWhenIterated() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig4j",

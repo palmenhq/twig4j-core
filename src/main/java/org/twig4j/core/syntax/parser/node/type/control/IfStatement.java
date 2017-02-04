@@ -2,7 +2,7 @@ package org.twig4j.core.syntax.parser.node.type.control;
 
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.parser.node.Node;
 
 import java.util.HashMap;
@@ -14,7 +14,7 @@ public class IfStatement extends Node {
     }
 
     @Override
-    public void compile(ClassCompiler compiler) throws LoaderException, TwigRuntimeException {
+    public void compile(ClassCompiler compiler) throws LoaderException, Twig4jRuntimeException {
         compiler.addDebugInfo(this);
 
         for (Node node : nodes) {
@@ -35,7 +35,7 @@ public class IfStatement extends Node {
                         .write("} else {\n")
                         .subCompile(node.getNode(0));
             } else {
-                throw new TwigRuntimeException("Invalid node of type \"" + node.getClass().toString() + "\" passed to if statement" +
+                throw new Twig4jRuntimeException("Invalid node of type \"" + node.getClass().toString() + "\" passed to if statement" +
                         "(expected " + IfBody.class.toString() + ", " + ElseIfBody.class.toString() + " or " + ElseBody.class.toString() + ").", null, line);
             }
         }

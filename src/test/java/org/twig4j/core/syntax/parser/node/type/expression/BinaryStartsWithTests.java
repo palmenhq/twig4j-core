@@ -5,12 +5,12 @@ import org.junit.Test;
 import org.twig4j.core.Environment;
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.parser.node.Node;
 
 public class BinaryStartsWithTests {
     @Test
-    public void testCompile() throws LoaderException, TwigRuntimeException {
+    public void testCompile() throws LoaderException, Twig4jRuntimeException {
         ClassCompiler compiler = new ClassCompiler(new Environment());
         Node left = new StringConstant("foobar", 1);
         Node right = new StringConstant("foo", 1);

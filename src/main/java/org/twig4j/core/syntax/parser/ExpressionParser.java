@@ -2,7 +2,7 @@ package org.twig4j.core.syntax.parser;
 
 import org.twig4j.core.Environment;
 import org.twig4j.core.exception.SyntaxErrorException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.Token;
 import org.twig4j.core.syntax.TokenStream;
 import org.twig4j.core.syntax.operator.Operator;
@@ -41,9 +41,9 @@ public class ExpressionParser {
      * @return The node for the parsed expression
      *
      * @throws SyntaxErrorException On syntax errors
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public Expression parseExpression() throws SyntaxErrorException, TwigRuntimeException {
+    public Expression parseExpression() throws SyntaxErrorException, Twig4jRuntimeException {
         return parseExpression(0);
     }
 
@@ -55,9 +55,9 @@ public class ExpressionParser {
      * @return The node for the parsed expression
      *
      * @throws SyntaxErrorException On syntax errors
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public Expression parseExpression(Integer precedence) throws SyntaxErrorException, TwigRuntimeException {
+    public Expression parseExpression(Integer precedence) throws SyntaxErrorException, Twig4jRuntimeException {
         Expression expr = getPrimary();
         Token token = parser.getCurrentToken();
 
@@ -78,7 +78,7 @@ public class ExpressionParser {
                     .getConstructor(Node.class, Node.class, Integer.class)
                     .newInstance(expr, expr2, token.getLine());
             } catch (Exception e) {
-                throw TwigRuntimeException.badOperatorFailedNode(operatorToken.getValue(), parser.getFilename(), operatorToken.getLine(), e);
+                throw Twig4jRuntimeException.badOperatorFailedNode(operatorToken.getValue(), parser.getFilename(), operatorToken.getLine(), e);
             }
 
             token = parser.getCurrentToken();
@@ -93,9 +93,9 @@ public class ExpressionParser {
      * @return The node for this expression
      *
      * @throws SyntaxErrorException On syntax errors
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    protected Expression getPrimary() throws SyntaxErrorException, TwigRuntimeException {
+    protected Expression getPrimary() throws SyntaxErrorException, Twig4jRuntimeException {
         Token token = parser.getCurrentToken();
 
         if (isUnary(token.getValue())) {
@@ -107,7 +107,7 @@ public class ExpressionParser {
                 Constructor operatorConstructor = operator.getNodeClass().getConstructor(Node.class, Integer.class);
                 return parsePostfixExpression((Expression) operatorConstructor.newInstance(expression, token.getLine()));
             } catch (Exception e) {
-                throw new TwigRuntimeException(
+                throw new Twig4jRuntimeException(
                     "Missing or misconfigured constructor or class for operator \"" + operator.getNodeClass().getName() + "\"",
                     parser.getFilename(),
                     token.getLine(),
@@ -132,9 +132,9 @@ public class ExpressionParser {
      * @return A node for the expression
      *
      * @throws SyntaxErrorException On syntax errors
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public Expression parsePrimaryExpression() throws SyntaxErrorException, TwigRuntimeException {
+    public Expression parsePrimaryExpression() throws SyntaxErrorException, Twig4jRuntimeException {
         Token token = parser.getCurrentToken();
         Expression node = null;
 
@@ -162,7 +162,7 @@ public class ExpressionParser {
                 if (scalarValue.getClass().equals(Integer.class) || scalarValue.getClass().equals(Double.class)) {
                     node = new Constant(scalarValue, token.getLine());
                 } else {
-                    throw new TwigRuntimeException("Error parsing number of value \"" + token.getValue() + "\"", parser.getFilename(), token.getLine());
+                    throw new Twig4jRuntimeException("Error parsing number of value \"" + token.getValue() + "\"", parser.getFilename(), token.getLine());
                 }
                 break;
 
@@ -181,9 +181,9 @@ public class ExpressionParser {
                 } else if (isUnary(token.getValue())) {
                     Class operatorClass = getUnaryOperator(token.getValue()).getNodeClass();
                     // TODO neg/pos unary operators check thing
-                    throw new TwigRuntimeException("Pos and neg operators are not yet implemented in this version of twig4j", parser.getFilename(), token.getLine());
+                    throw new Twig4jRuntimeException("Pos and neg operators are not yet implemented in this version of twig4j", parser.getFilename(), token.getLine());
                 } else {
-                    throw new TwigRuntimeException("An unknown operator was passed to the expression parser", parser.getFilename(), token.getLine());
+                    throw new Twig4jRuntimeException("An unknown operator was passed to the expression parser", parser.getFilename(), token.getLine());
                 }
                 break;
 
@@ -206,9 +206,9 @@ public class ExpressionParser {
      * @return The nodes that represents the string expression
      *
      * @throws SyntaxErrorException On syntax errors
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public Expression parseStringExpression() throws SyntaxErrorException, TwigRuntimeException {
+    public Expression parseStringExpression() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream stream = parser.getTokenStream();
         ArrayList<Node> nodes = new ArrayList<>();
 
@@ -244,9 +244,9 @@ public class ExpressionParser {
      * @return The array expression
      *
      * @throws SyntaxErrorException If not followed by comma or if not closed
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public Expression parseArrayExpression() throws SyntaxErrorException, TwigRuntimeException {
+    public Expression parseArrayExpression() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = parser.getTokenStream();
         tokenStream.expect(Token.Type.PUNCTUATION, "[", "An array element was expected");
 
@@ -278,9 +278,9 @@ public class ExpressionParser {
      * @return The hash expression
      *
      * @throws SyntaxErrorException On syntax errors
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public Expression parseHashExpression() throws SyntaxErrorException, TwigRuntimeException {
+    public Expression parseHashExpression() throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = parser.getTokenStream();
         tokenStream.expect(Token.Type.PUNCTUATION, "{", "A hash element was expected");
 
@@ -338,9 +338,9 @@ public class ExpressionParser {
      * @return The parsed node, i.e. a filter or method call
      *
      * @throws SyntaxErrorException On syntax errors
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public Expression parsePostfixExpression(Expression node) throws SyntaxErrorException, TwigRuntimeException {
+    public Expression parsePostfixExpression(Expression node) throws SyntaxErrorException, Twig4jRuntimeException {
         while (true) {
             Token token = parser.getCurrentToken();
 
@@ -368,9 +368,9 @@ public class ExpressionParser {
      * @return The method/function/whatever node
      *
      * @throws SyntaxErrorException On syntax errors
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public Expression parseSubscriptExpression(Expression node) throws SyntaxErrorException, TwigRuntimeException {
+    public Expression parseSubscriptExpression(Expression node) throws SyntaxErrorException, Twig4jRuntimeException {
         TokenStream tokenStream = parser.getTokenStream();
         Token token = tokenStream.next();
         Array arguments = new Array(token.getLine());
@@ -417,15 +417,15 @@ public class ExpressionParser {
      * @return The filter node
      *
      * @throws SyntaxErrorException On syntax errors
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public Expression parseFilterExpression(Expression node) throws SyntaxErrorException, TwigRuntimeException {
+    public Expression parseFilterExpression(Expression node) throws SyntaxErrorException, Twig4jRuntimeException {
         parser.getTokenStream().next();
 
         return parseFilterExpressionRaw(node);
     }
 
-    public Expression parseFilterExpressionRaw(Expression node) throws SyntaxErrorException, TwigRuntimeException {
+    public Expression parseFilterExpressionRaw(Expression node) throws SyntaxErrorException, Twig4jRuntimeException {
         while (true) {
             Token token = parser.getTokenStream().expect(Token.Type.NAME);
             Constant name = new Constant(token.getValue(), token.getLine());
@@ -440,7 +440,7 @@ public class ExpressionParser {
                 Constructor filterNodeClassConstructor = filterNodeClass.getConstructor(Node.class, Constant.class, Node.class, Integer.class, String.class);
                 node = (Expression) filterNodeClassConstructor.newInstance(node, name, arguments, token.getLine(), null);
             } catch (Exception e) {
-                throw new TwigRuntimeException("Incorrectly declared filter class node \"" + filterNodeClass.getName() + "\".", parser.getFilename(), token.getLine(), e);
+                throw new Twig4jRuntimeException("Incorrectly declared filter class node \"" + filterNodeClass.getName() + "\".", parser.getFilename(), token.getLine(), e);
             }
 
             // Chained filters
@@ -485,9 +485,9 @@ public class ExpressionParser {
      * @return The argument nodes
      *
      * @throws SyntaxErrorException On syntax errors
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public Node parseArguments() throws SyntaxErrorException, TwigRuntimeException {
+    public Node parseArguments() throws SyntaxErrorException, Twig4jRuntimeException {
         return parseArguments(false, false);
     }
 
@@ -500,9 +500,9 @@ public class ExpressionParser {
      * @return The argument nodes
      *
      * @throws SyntaxErrorException On syntax errors
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public Node parseArguments(boolean useNamedArguments) throws SyntaxErrorException, TwigRuntimeException {
+    public Node parseArguments(boolean useNamedArguments) throws SyntaxErrorException, Twig4jRuntimeException {
         return parseArguments(useNamedArguments, false);
     }
 
@@ -515,9 +515,9 @@ public class ExpressionParser {
      * @return The arguments
      *
      * @throws SyntaxErrorException On syntax errors
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public Node parseArguments(boolean useNamedArguments, boolean isFunctionDefinition) throws SyntaxErrorException, TwigRuntimeException {
+    public Node parseArguments(boolean useNamedArguments, boolean isFunctionDefinition) throws SyntaxErrorException, Twig4jRuntimeException {
         ArrayList<Node> arguments = new ArrayList<>();
         TokenStream stream = parser.getTokenStream();
 
@@ -549,9 +549,9 @@ public class ExpressionParser {
      * @return A list with the names
      *
      * @throws SyntaxErrorException On syntax errors (can't assign value to something non-assignable)
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public List<String> parseAssignmentExpression() throws SyntaxErrorException, TwigRuntimeException {
+    public List<String> parseAssignmentExpression() throws SyntaxErrorException, Twig4jRuntimeException {
         List<String> names = new ArrayList<>();
 
         while (true) {
@@ -579,9 +579,9 @@ public class ExpressionParser {
      * @return A node with the expressions
      *
      * @throws SyntaxErrorException On syntax errors
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public Node parseMultitargetExpression() throws SyntaxErrorException, TwigRuntimeException {
+    public Node parseMultitargetExpression() throws SyntaxErrorException, Twig4jRuntimeException {
         List<Node> expressions = new ArrayList<>();
 
         while (true) {
@@ -606,9 +606,9 @@ public class ExpressionParser {
      * @return The function node
      *
      * @throws SyntaxErrorException On syntax errors
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    protected Expression getFunctionNode(String name, Integer line) throws SyntaxErrorException, TwigRuntimeException {
+    protected Expression getFunctionNode(String name, Integer line) throws SyntaxErrorException, Twig4jRuntimeException {
         switch (name) {
             case "parent":
                 parseArguments(false, false);
@@ -641,9 +641,9 @@ public class ExpressionParser {
      *
      * @return Whether this is a binary operator
      *
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public boolean isBinary(String operator) throws TwigRuntimeException {
+    public boolean isBinary(String operator) throws Twig4jRuntimeException {
         return this.parser.getEnvironment().getBinaryOperators().containsKey(operator);
     }
 
@@ -654,9 +654,9 @@ public class ExpressionParser {
      *
      * @return The binary operator
      *
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public Operator getBinaryOperator(String operator) throws TwigRuntimeException {
+    public Operator getBinaryOperator(String operator) throws Twig4jRuntimeException {
         return this.parser.getEnvironment().getBinaryOperators().get(operator);
     }
 
@@ -667,9 +667,9 @@ public class ExpressionParser {
      *
      * @return Whether it's a unary operator
      *
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public boolean isUnary(String operator) throws TwigRuntimeException {
+    public boolean isUnary(String operator) throws Twig4jRuntimeException {
         return this.parser.getEnvironment().getUnaryOperators().containsKey(operator);
     }
 
@@ -680,9 +680,9 @@ public class ExpressionParser {
      *
      * @return The unary operator
      *
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public Operator getUnaryOperator(String operator) throws TwigRuntimeException {
+    public Operator getUnaryOperator(String operator) throws Twig4jRuntimeException {
         return this.parser.getEnvironment().getUnaryOperators().get(operator);
     }
 

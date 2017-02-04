@@ -1,8 +1,8 @@
 package org.twig4j.core.template;
 
 import org.twig4j.core.Environment;
-import org.twig4j.core.exception.TwigException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -20,7 +20,7 @@ abstract public class Template {
     public Template() {
     }
 
-    public Template(Environment environment) throws TwigException {
+    public Template(Environment environment) throws Twig4jException {
         this.environment = environment;
     }
 
@@ -30,9 +30,9 @@ abstract public class Template {
      *
      * @return Rendered html (or whatever content-type you're rendering)
      *
-     * @throws TwigException If there are any errors, i.e. accessing a variable that is not in the context.
+     * @throws Twig4jException If there are any errors, i.e. accessing a variable that is not in the context.
      */
-    public String render() throws TwigException {
+    public String render() throws Twig4jException {
         return render(new Context());
     }
 
@@ -43,9 +43,9 @@ abstract public class Template {
      *
      * @return Rendered html (or whatever content-type you're rendering)
      *
-     * @throws TwigException If there are any errors, i.e. accessing a variable that is not in the context.
+     * @throws Twig4jException If there are any errors, i.e. accessing a variable that is not in the context.
      */
-    public String render(Context context) throws TwigException {
+    public String render(Context context) throws Twig4jException {
         return display(context, blocks);
     }
 
@@ -57,9 +57,9 @@ abstract public class Template {
      *
      * @return The rendered result
      *
-     * @throws TwigException On errors rendering
+     * @throws Twig4jException On errors rendering
      */
-    public String display(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
+    public String display(Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {
         Map<String, TemplateBlockMethodSet> mergedBlocks = new HashMap<>();
         mergedBlocks.putAll(this.blocks);
         mergedBlocks.putAll(blocks);
@@ -75,9 +75,9 @@ abstract public class Template {
      *
      * @return Rendered result
      *
-     * @throws TwigRuntimeException On runtime errors (i.e. using a null var)
+     * @throws Twig4jRuntimeException On runtime errors (i.e. using a null var)
      */
-    abstract protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException;
+    abstract protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException;
 
     /**
      * Get the template file name
@@ -96,14 +96,14 @@ abstract public class Template {
      *
      * @return Thing from the context
      *
-     * @throws TwigRuntimeException If the varible does not exist and strict variables are enabled
+     * @throws Twig4jRuntimeException If the varible does not exist and strict variables are enabled
      */
-    protected Object getContext(Map<String, ?> context, String item, boolean ignoreStrictChecks, Integer line) throws TwigRuntimeException {
+    protected Object getContext(Map<String, ?> context, String item, boolean ignoreStrictChecks, Integer line) throws Twig4jRuntimeException {
         if (!context.containsKey(item)) {
             if (ignoreStrictChecks || !environment.isStrictVariables()) {
                 return "";
             } else {
-                throw TwigRuntimeException.variableDoesNotExist(item, getTemplateName(), line);
+                throw Twig4jRuntimeException.variableDoesNotExist(item, getTemplateName(), line);
             }
         }
 
@@ -121,9 +121,9 @@ abstract public class Template {
      * @param type Whether it's an array or an actual object
      *
      * @return The value
-     * @throws TwigRuntimeException If the item/property can not be accessed
+     * @throws Twig4jRuntimeException If the item/property can not be accessed
      */
-    protected Object getAttribute(Object object, Object item, List<Object> arguments, String type) throws TwigRuntimeException {
+    protected Object getAttribute(Object object, Object item, List<Object> arguments, String type) throws Twig4jRuntimeException {
         return getAttribute(object, item, arguments, type, false, false);
     }
 
@@ -139,9 +139,9 @@ abstract public class Template {
      * @param ignoreStrictChecks Throw exceptions if property can't be accessed if set to false, just return null if set to true
      *
      * @return The value
-     * @throws TwigRuntimeException If the item/property can not be accessed
+     * @throws Twig4jRuntimeException If the item/property can not be accessed
      */
-    protected Object getAttribute(Object object, Object item, List<Object> arguments, String type, boolean isDefinedTest, boolean ignoreStrictChecks) throws TwigRuntimeException {
+    protected Object getAttribute(Object object, Object item, List<Object> arguments, String type, boolean isDefinedTest, boolean ignoreStrictChecks) throws Twig4jRuntimeException {
         if (!type.equals("method")) {
 
             // If this is a regular array list
@@ -188,7 +188,7 @@ abstract public class Template {
                     }
                 }
 
-                throw new TwigRuntimeException(message, getTemplateName(), -1);
+                throw new Twig4jRuntimeException(message, getTemplateName(), -1);
             }
         }
 
@@ -197,7 +197,7 @@ abstract public class Template {
             if (ignoreStrictChecks || !environment.isStrictVariables() ) {
                 return null;
             } else {
-                throw new TwigRuntimeException("Impossible to invoke a method (\"" + String.valueOf(item) + "\") on a null variable", getTemplateName(), -1);
+                throw new Twig4jRuntimeException("Impossible to invoke a method (\"" + String.valueOf(item) + "\") on a null variable", getTemplateName(), -1);
             }
         }
 
@@ -212,7 +212,7 @@ abstract public class Template {
             if (ignoreStrictChecks || !environment.isStrictVariables()) {
                 return null;
             } else {
-                throw new TwigRuntimeException("Impossible to invoke a method (\"" + String.valueOf(item) + "\") on a " + object.getClass().getName() + " variable", getTemplateName(), -1);
+                throw new Twig4jRuntimeException("Impossible to invoke a method (\"" + String.valueOf(item) + "\") on a " + object.getClass().getName() + " variable", getTemplateName(), -1);
             }
         }
 
@@ -268,37 +268,37 @@ abstract public class Template {
                         return methodToInvoke.invoke(object);
                     } catch (NoSuchMethodException haserException) {
                         // Property was not a map attribute, class  field, method, getter, haser or iser - we have nothing more to try
-                        throw new TwigRuntimeException(
+                        throw new Twig4jRuntimeException(
                                 "No such method \"" + String.valueOf(item) + "\" on object of type \"" + object.getClass().getName() + "\"",
                                 getTemplateName(),
                                 -1,
                                 e
                         );
                     } catch (IllegalAccessException haserException) {
-                        throw TwigRuntimeException.illegalAccessToMethod("has" + propertyNameWithUpperFirst, object.getClass().getName(), getTemplateName(), haserException);
+                        throw Twig4jRuntimeException.illegalAccessToMethod("has" + propertyNameWithUpperFirst, object.getClass().getName(), getTemplateName(), haserException);
                     } catch (InvocationTargetException haserException) {
-                        throw TwigRuntimeException.invocationTargetException("has" + propertyNameWithUpperFirst, object.getClass().getName(), getTemplateName(), haserException);
+                        throw Twig4jRuntimeException.invocationTargetException("has" + propertyNameWithUpperFirst, object.getClass().getName(), getTemplateName(), haserException);
                     }
 
                 // is
                 } catch (IllegalAccessException iserException) {
-                    throw TwigRuntimeException.illegalAccessToMethod("is" + propertyNameWithUpperFirst, object.getClass().getName(), getTemplateName(), iserException);
+                    throw Twig4jRuntimeException.illegalAccessToMethod("is" + propertyNameWithUpperFirst, object.getClass().getName(), getTemplateName(), iserException);
                 } catch (InvocationTargetException iserException) {
-                    throw TwigRuntimeException.invocationTargetException("is" + propertyNameWithUpperFirst, object.getClass().getName(), getTemplateName(), iserException);
+                    throw Twig4jRuntimeException.invocationTargetException("is" + propertyNameWithUpperFirst, object.getClass().getName(), getTemplateName(), iserException);
                 }
 
             // get
             } catch (IllegalAccessException getterException) {
-                throw TwigRuntimeException.illegalAccessToMethod("get" + propertyNameWithUpperFirst, object.getClass().getName(), getTemplateName(), getterException);
+                throw Twig4jRuntimeException.illegalAccessToMethod("get" + propertyNameWithUpperFirst, object.getClass().getName(), getTemplateName(), getterException);
             } catch (InvocationTargetException getterException) {
-                throw TwigRuntimeException.invocationTargetException("get" + propertyNameWithUpperFirst, object.getClass().getName(), getTemplateName(), getterException);
+                throw Twig4jRuntimeException.invocationTargetException("get" + propertyNameWithUpperFirst, object.getClass().getName(), getTemplateName(), getterException);
             }
 
         // The method
         } catch (IllegalAccessException e) {
-            throw TwigRuntimeException.illegalAccessToMethod(String.valueOf(item), object.getClass().getName(), getTemplateName(), e);
+            throw Twig4jRuntimeException.illegalAccessToMethod(String.valueOf(item), object.getClass().getName(), getTemplateName(), e);
         } catch (InvocationTargetException e) {
-            throw TwigRuntimeException.invocationTargetException(String.valueOf(item), object.getClass().getName(), getTemplateName(), e);
+            throw Twig4jRuntimeException.invocationTargetException(String.valueOf(item), object.getClass().getName(), getTemplateName(), e);
         }
     }
 
@@ -310,12 +310,12 @@ abstract public class Template {
      *
      * @return Whether they are equal
      *
-     * @throws TwigRuntimeException On type errors if strict types are enabled
+     * @throws Twig4jRuntimeException On type errors if strict types are enabled
      */
-    protected boolean compare(Object a, Object b) throws TwigRuntimeException {
+    protected boolean compare(Object a, Object b) throws Twig4jRuntimeException {
         if (!a.getClass().equals(b.getClass())) {
             if (environment.isStrictTypes()) {
-                throw new TwigRuntimeException(
+                throw new Twig4jRuntimeException(
                         String.format("Cannot compare different types (tried to compare \"%s\" with \"%s\")", a.getClass().getName(), b.getClass().getName()),
                         getTemplateName(),
                         -1
@@ -339,12 +339,12 @@ abstract public class Template {
      *
      * @return The loaded template
      *
-     * @throws TwigException If the included template throws any errors or isn't found
+     * @throws Twig4jException If the included template throws any errors or isn't found
      */
-    protected Template loadTemplate(String template, String requestingTemplateName, Integer line, Integer index) throws TwigException {
+    protected Template loadTemplate(String template, String requestingTemplateName, Integer line, Integer index) throws Twig4jException {
         try {
             return environment.resolveTemplate(template);
-        } catch (TwigException e) {
+        } catch (Twig4jException e) {
             if (e.getTemplateName() == null) {
                 e.setTemplateName(requestingTemplateName == null ? getTemplateName() : requestingTemplateName);
             }
@@ -367,16 +367,16 @@ abstract public class Template {
      *
      * @return The rendered result
      *
-     * @throws TwigException On errors rendering
+     * @throws Twig4jException On errors rendering
      */
-    protected String displayParentBlock(String name, Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
+    protected String displayParentBlock(String name, Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {
         // TODO check for traits
 
         // TODO use getParent() instead
         if (parent != null) {
             return parent.displayBlock(name, context, blocks, false);
         } else {
-            throw new TwigRuntimeException(
+            throw new Twig4jRuntimeException(
                 String.format("The template has no parent and no traits defining the \"%s\" block", name),
                 getTemplateName(),
                 -1
@@ -394,9 +394,9 @@ abstract public class Template {
      *
      * @return Generated source code
      *
-     * @throws TwigException On any errors
+     * @throws Twig4jException On any errors
      */
-    protected String displayBlock(String name, Context context, Map<String, TemplateBlockMethodSet> blocks, boolean useBlocks) throws TwigException {
+    protected String displayBlock(String name, Context context, Map<String, TemplateBlockMethodSet> blocks, boolean useBlocks) throws Twig4jException {
         if (!useBlocks) {
             blocks = this.blocks;
         }
@@ -407,7 +407,7 @@ abstract public class Template {
 
         try {
             return blocks.get(name).invoke(name, context, blocks);
-        } catch (TwigException e) {
+        } catch (Twig4jException e) {
             if (e.getTemplateName() == null) {
                 e.setTemplateName(getTemplateName());
             }
@@ -421,7 +421,7 @@ abstract public class Template {
 
             throw e;
         } catch (Exception e) {
-            throw new TwigRuntimeException(
+            throw new Twig4jRuntimeException(
                 String.format("An exception has been thrown during the rendering of a template (\"%s\").", e.getMessage()),
                 getTemplateName(),
                 -1,
@@ -460,13 +460,13 @@ abstract public class Template {
          *
          * @return The rendered result
          *
-         * @throws TwigRuntimeException On any errors
+         * @throws Twig4jRuntimeException On any errors
          */
-        public String invoke(String name, Context context, java.util.Map<String, TemplateBlockMethodSet> blocks) throws TwigRuntimeException {
+        public String invoke(String name, Context context, java.util.Map<String, TemplateBlockMethodSet> blocks) throws Twig4jRuntimeException {
             try {
                 return (String)method.invoke(template, context, blocks);
             } catch (ReflectiveOperationException e) {
-                throw new TwigRuntimeException("Failed displaying block \"" + name + "\" (\"" + e.getMessage() + "\")", getTemplateName(), -1, e);
+                throw new Twig4jRuntimeException("Failed displaying block \"" + name + "\" (\"" + e.getMessage() + "\")", getTemplateName(), -1, e);
             }
 
         }

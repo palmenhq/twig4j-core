@@ -3,15 +3,15 @@ package org.twig4j.core.functional;
 import org.junit.Assert;
 import org.junit.Test;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.template.Context;
 
 import java.util.HashMap;
 
 public class IncludeTests extends FunctionalTests {
     @Test
-    public void canIncludeTemplate() throws TwigException {
+    public void canIncludeTemplate() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "foo {% include('bar.twig4j') %}");
         templates.put("bar.twig4j", "bar");
@@ -25,7 +25,7 @@ public class IncludeTests extends FunctionalTests {
     }
 
     @Test
-    public void canIncludeTemplateWithContext() throws TwigException {
+    public void canIncludeTemplateWithContext() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "foo {% include('bar.twig4j') %}");
         templates.put("bar.twig4j", "{{ bar }}");
@@ -42,7 +42,7 @@ public class IncludeTests extends FunctionalTests {
     }
 
     @Test
-    public void canIncludeTemplateWithContextAndWith() throws TwigException {
+    public void canIncludeTemplateWithContextAndWith() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "foo {% include('bar.twig4j') with { qux: 'quux' } %}");
         templates.put("bar.twig4j", "{{ bar }} {{ qux }}");
@@ -58,8 +58,8 @@ public class IncludeTests extends FunctionalTests {
         );
     }
 
-    @Test(expected = TwigRuntimeException.class)
-    public void includeWithOnlyThrowsErrorOnAccessToParentContext() throws TwigException {
+    @Test(expected = Twig4jRuntimeException.class)
+    public void includeWithOnlyThrowsErrorOnAccessToParentContext() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "foo {% include('bar.twig4j') with { qux: 'quux' } only %}");
         templates.put("bar.twig4j", "{{ bar }}");
@@ -72,7 +72,7 @@ public class IncludeTests extends FunctionalTests {
     }
 
     @Test(expected = LoaderException.class)
-    public void cantIncludeNonExistingTemplate() throws TwigException {
+    public void cantIncludeNonExistingTemplate() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{% include('nonExistingTemplate') %}");
         setupEnvironment(templates);
@@ -81,7 +81,7 @@ public class IncludeTests extends FunctionalTests {
     }
 
     @Test
-    public void ignoresMissing() throws TwigException {
+    public void ignoresMissing() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "foo {% include('nonExisting.twig4j') ignore missing %}");
         setupEnvironment(templates);

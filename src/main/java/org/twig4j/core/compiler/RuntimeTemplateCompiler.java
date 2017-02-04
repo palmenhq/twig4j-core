@@ -3,8 +3,8 @@ package org.twig4j.core.compiler;
 import net.openhft.compiler.CachedCompiler;
 import net.openhft.compiler.CompilerUtils;
 import org.twig4j.core.Environment;
-import org.twig4j.core.exception.TwigException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.template.Template;
 
 public class RuntimeTemplateCompiler {
@@ -32,9 +32,9 @@ public class RuntimeTemplateCompiler {
      *
      * @return The compiled template
      *
-     * @throws TwigException If something goes wrong, probably (but hopefully not) because of java syntax error
+     * @throws Twig4jException If something goes wrong, probably (but hopefully not) because of java syntax error
      */
-    public Template compile(String sourceCode, String name) throws TwigException {
+    public Template compile(String sourceCode, String name) throws Twig4jException {
         try {
             if (environment.isDebug()) {
                 System.out.println("Compiling template " + name);
@@ -54,13 +54,13 @@ public class RuntimeTemplateCompiler {
                 return template;
             }
         } catch (ClassNotFoundException e) {
-            throw new TwigRuntimeException("Failed to find compiled class " + name + ". Maybe it failed to compile?", e);
+            throw new Twig4jRuntimeException("Failed to find compiled class " + name + ". Maybe it failed to compile?", e);
         } catch (Exception e) {
-            if (e.getCause() instanceof TwigException) {
-                throw (TwigException)e.getCause();
+            if (e.getCause() instanceof Twig4jException) {
+                throw (Twig4jException)e.getCause();
             }
 
-            throw new TwigRuntimeException("Exception " + e.toString() + " thrown by compiler when compiling template " + name + ".", e);
+            throw new Twig4jRuntimeException("Exception " + e.toString() + " thrown by compiler when compiling template " + name + ".", e);
         }
     }
 

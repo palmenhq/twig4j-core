@@ -2,12 +2,11 @@ package org.twig4j.core;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.twig4j.core.Environment;
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.compiler.RuntimeTemplateCompiler;
 import org.twig4j.core.exception.LoaderException;
-import org.twig4j.core.exception.TwigException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.loader.HashMapLoader;
 import org.twig4j.core.loader.Loader;
 import org.twig4j.core.syntax.Lexer;
@@ -50,7 +49,7 @@ public class EnvironmentTests {
     }
 
     @Test
-    public void testCanCompileSource() throws TwigException {
+    public void testCanCompileSource() throws Twig4jException {
         Loader loaderStub = mock(HashMapLoader.class);
         Environment environment = new Environment(loaderStub);
         Lexer lexerStub = mock(Lexer.class);
@@ -80,7 +79,7 @@ public class EnvironmentTests {
     }
 
     @Test
-    public void testCanLoadTemplate() throws TwigException {
+    public void testCanLoadTemplate() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo", "bar");
         Environment environment = new Environment(new HashMapLoader(templates));
@@ -90,7 +89,7 @@ public class EnvironmentTests {
     }
 
     @Test
-    public void testCanRenderTemplate() throws TwigException {
+    public void testCanRenderTemplate() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo", "bar");
         Environment environment = new Environment(new HashMapLoader(templates));
@@ -100,7 +99,7 @@ public class EnvironmentTests {
         Assert.assertEquals("Rendered result should be template contents", "bar", result);
     }
 
-    public void testCanResolveTemplate() throws TwigException {
+    public void testCanResolveTemplate() throws Twig4jException {
         Loader loaderStub = mock(HashMapLoader.class);
         Environment environment = new Environment(loaderStub);
 
@@ -127,7 +126,7 @@ public class EnvironmentTests {
         );
     }
 
-    public void testCanResolveTemplateFromList() throws TwigException {
+    public void testCanResolveTemplateFromList() throws Twig4jException {
         Loader loaderStub = mock(HashMapLoader.class);
         Environment environment = new Environment(loaderStub);
 
@@ -158,7 +157,7 @@ public class EnvironmentTests {
 
     protected class Template_Test_0 extends Template {
         @Override
-        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigRuntimeException {
+        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jRuntimeException {
             return "foobar";
         }
 

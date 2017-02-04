@@ -2,15 +2,15 @@ package org.twig4j.core.functional;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.twig4j.core.exception.TwigException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.template.Context;
 
 import java.util.HashMap;
 
 public class RenderMethodsTests extends FunctionalTests {
     @Test
-    public void canRenderContextObjectMethods() throws TwigException {
+    public void canRenderContextObjectMethods() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ foo.getSomething() }}");
         setupEnvironment(templates);
@@ -22,7 +22,7 @@ public class RenderMethodsTests extends FunctionalTests {
     }
 
     @Test
-    public void canRenderMethodWithoutParenthesises() throws TwigException {
+    public void canRenderMethodWithoutParenthesises() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ foo.getSomething }}");
         setupEnvironment(templates);
@@ -34,7 +34,7 @@ public class RenderMethodsTests extends FunctionalTests {
     }
 
     @Test
-    public void canRenderGetterFromPropertyName() throws TwigException {
+    public void canRenderGetterFromPropertyName() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ foo.something }}");
         setupEnvironment(templates);
@@ -46,7 +46,7 @@ public class RenderMethodsTests extends FunctionalTests {
     }
 
     @Test
-    public void canGetHashMapContents() throws TwigException {
+    public void canGetHashMapContents() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ foo.something }}");
         setupEnvironment(templates);
@@ -59,8 +59,8 @@ public class RenderMethodsTests extends FunctionalTests {
         Assert.assertEquals("Hashmap's contents should be rendered", "foo", environment.render("foo.twig4j", ctx));
     }
 
-    @Test(expected = TwigRuntimeException.class)
-    public void renderMethodOnNullVariableThrowsException() throws TwigException {
+    @Test(expected = Twig4jRuntimeException.class)
+    public void renderMethodOnNullVariableThrowsException() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ foo.getSomething() }}");
         setupEnvironment(templates);
@@ -68,8 +68,8 @@ public class RenderMethodsTests extends FunctionalTests {
         environment.render("foo.twig4j");
     }
 
-    @Test(expected = TwigRuntimeException.class)
-    public void renderNonExistingMethodThrowsException() throws TwigException {
+    @Test(expected = Twig4jRuntimeException.class)
+    public void renderNonExistingMethodThrowsException() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ foo.nonExistingMethod() }}");
         setupEnvironment(templates);
@@ -80,8 +80,8 @@ public class RenderMethodsTests extends FunctionalTests {
         environment.render("foo.twig4j", ctx);
     }
 
-    @Test(expected = TwigRuntimeException.class)
-    public void renderPrivateMethodThrowsException() throws TwigException {
+    @Test(expected = Twig4jRuntimeException.class)
+    public void renderPrivateMethodThrowsException() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ foo.privateMethod() }}");
         setupEnvironment(templates);
@@ -92,8 +92,8 @@ public class RenderMethodsTests extends FunctionalTests {
         environment.render("foo.twig4j", ctx);
     }
 
-    @Test(expected = TwigRuntimeException.class)
-    public void renderMethodThatThrowsExceptionThrowsException() throws TwigException {
+    @Test(expected = Twig4jRuntimeException.class)
+    public void renderMethodThatThrowsExceptionThrowsException() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put("foo.twig4j", "{{ foo.methodThatThrowsException() }}");
         setupEnvironment(templates);

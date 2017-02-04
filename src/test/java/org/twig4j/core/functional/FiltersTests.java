@@ -2,13 +2,13 @@ package org.twig4j.core.functional;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.twig4j.core.exception.TwigException;
+import org.twig4j.core.exception.Twig4jException;
 
 import java.util.HashMap;
 
 public class FiltersTests extends FunctionalTests {
     @Test
-    public void canApplyBasicFilters() throws TwigException {
+    public void canApplyBasicFilters() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig4j",
@@ -20,7 +20,7 @@ public class FiltersTests extends FunctionalTests {
     }
 
     @Test
-    public void canApplyMultipleFilters() throws TwigException {
+    public void canApplyMultipleFilters() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig4j",
@@ -32,7 +32,7 @@ public class FiltersTests extends FunctionalTests {
     }
 
     @Test
-    public void canApplyFiltersWithArguments() throws TwigException {
+    public void canApplyFiltersWithArguments() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig4j",

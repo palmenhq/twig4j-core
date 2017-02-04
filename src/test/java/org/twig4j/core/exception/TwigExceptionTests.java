@@ -6,21 +6,21 @@ import org.junit.Test;
 public class TwigExceptionTests {
     @Test
     public void canCreateWithPlainMessage() {
-        TwigException e = new TwigException("error");
+        Twig4jException e = new Twig4jException("error");
 
         Assert.assertEquals(e.getMessage(), "error");
     }
 
     @Test
     public void canCreateWithTemplateNameAndLineNumberAndTrailingDot() {
-        TwigException e = new TwigException("Error.", "foo.html.twig4j", 1337);
+        Twig4jException e = new Twig4jException("Error.", "foo.html.twig4j", 1337);
 
         Assert.assertEquals(e.getMessage(), "Error in \"foo.html.twig4j\" at line 1337.");
     }
 
     @Test
     public void canCreateWithTemplateNameAndLineNumberAndTrailingQuestionMark() {
-        TwigException e = new TwigException("Error?", "foo.html.twig4j", 1337);
+        Twig4jException e = new Twig4jException("Error?", "foo.html.twig4j", 1337);
 
         Assert.assertEquals(e.getMessage(), "Error in \"foo.html.twig4j\" at line 1337?");
     }

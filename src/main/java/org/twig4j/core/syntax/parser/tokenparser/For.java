@@ -1,7 +1,7 @@
 package org.twig4j.core.syntax.parser.tokenparser;
 
 import org.twig4j.core.exception.SyntaxErrorException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.Token;
 import org.twig4j.core.syntax.TokenStream;
 import org.twig4j.core.syntax.parser.node.Node;
@@ -11,7 +11,7 @@ import java.util.List;
 
 public class For extends AbstractTokenParser {
     @Override
-    public Node parse(Token token) throws SyntaxErrorException, TwigRuntimeException {
+    public Node parse(Token token) throws SyntaxErrorException, Twig4jRuntimeException {
         Integer line = token.getLine();
         TokenStream tokenStream = parser.getTokenStream();
         List<String> targets = parser.getExpressionParser().parseAssignmentExpression();

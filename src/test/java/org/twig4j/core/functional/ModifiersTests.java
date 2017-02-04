@@ -2,13 +2,13 @@ package org.twig4j.core.functional;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.twig4j.core.exception.TwigException;
+import org.twig4j.core.exception.Twig4jException;
 
 import java.util.HashMap;
 
 public class ModifiersTests extends FunctionalTests {
     @Test
-    public void canMakeSimpleAssignments() throws TwigException {
+    public void canMakeSimpleAssignments() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig4j",
@@ -21,7 +21,7 @@ public class ModifiersTests extends FunctionalTests {
     }
 
     @Test
-    public void canMakeComplexAssignments() throws TwigException {
+    public void canMakeComplexAssignments() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig4j",
@@ -34,7 +34,7 @@ public class ModifiersTests extends FunctionalTests {
     }
 
     @Test
-    public void canMakeMultipleAssignments() throws TwigException {
+    public void canMakeMultipleAssignments() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
                 "foo.twig4j",
@@ -48,7 +48,7 @@ public class ModifiersTests extends FunctionalTests {
 
 //  TODO capture assignments
 //    @Test
-//    public void canMakeCaptureAssignment() throws TwigException {
+//    public void canMakeCaptureAssignment() throws Twig4jException {
 //        HashMap<String, String> templates = new HashMap<>();
 //        templates.put(
 //                "foo.twig4j",

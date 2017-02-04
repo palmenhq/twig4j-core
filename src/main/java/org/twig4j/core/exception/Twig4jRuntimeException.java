@@ -5,17 +5,17 @@ import org.twig4j.core.syntax.parser.node.Node;
 /**
  * Throws i.e. when failing to compile java code
  */
-public class TwigRuntimeException extends TwigException {
-    public TwigRuntimeException(String rawMessage, String templateName, Integer lineNumber) {
+public class Twig4jRuntimeException extends Twig4jException {
+    public Twig4jRuntimeException(String rawMessage, String templateName, Integer lineNumber) {
         super(rawMessage, templateName, lineNumber);
     }
 
-    public TwigRuntimeException(String rawMessage, String templateName, Integer lineNumber, Throwable e) {
+    public Twig4jRuntimeException(String rawMessage, String templateName, Integer lineNumber, Throwable e) {
         super(rawMessage, templateName, lineNumber);
         this.initCause(e);
     }
 
-    public TwigRuntimeException(String rawMessage, Throwable cause) {
+    public Twig4jRuntimeException(String rawMessage, Throwable cause) {
         super(rawMessage);
         this.initCause(cause);
     }
@@ -29,8 +29,8 @@ public class TwigRuntimeException extends TwigException {
      *
      * @return The exception
      */
-    public static TwigRuntimeException variableDoesNotExist(String variable, String templateName, Integer lineNumber) {
-        return new TwigRuntimeException("Variable " + variable +  " does not exist.", templateName, lineNumber);
+    public static Twig4jRuntimeException variableDoesNotExist(String variable, String templateName, Integer lineNumber) {
+        return new Twig4jRuntimeException("Variable " + variable +  " does not exist.", templateName, lineNumber);
     }
 
     /**
@@ -42,8 +42,8 @@ public class TwigRuntimeException extends TwigException {
      *
      * @return The exception
      */
-    public static TwigRuntimeException nodeAttributeDoesNotExist(String attribute, Node node, Integer lineNumber) {
-        return new TwigRuntimeException(
+    public static Twig4jRuntimeException nodeAttributeDoesNotExist(String attribute, Node node, Integer lineNumber) {
+        return new Twig4jRuntimeException(
                 String.format("Attribute \"%s\" does not exist for Node \"%s\".", attribute, node.getClass().getName()),
                 null,
                 lineNumber
@@ -58,8 +58,8 @@ public class TwigRuntimeException extends TwigException {
      *
      * @return The exception
      */
-    public static TwigRuntimeException noNodeWithIndexExists(Integer index, Node node) {
-        return new TwigRuntimeException(
+    public static Twig4jRuntimeException noNodeWithIndexExists(Integer index, Node node) {
+        return new Twig4jRuntimeException(
                 String.format("Node \"%d\" does not exist for Node \"%s\".", index, node.getClass().getName()),
                 null,
                 node.getLine()
@@ -76,8 +76,8 @@ public class TwigRuntimeException extends TwigException {
      *
      * @return The exception
      */
-    public static TwigRuntimeException badOperatorFailedNode(String operator, String templateName, Integer line, Throwable cause) {
-        TwigRuntimeException e = new TwigRuntimeException(
+    public static Twig4jRuntimeException badOperatorFailedNode(String operator, String templateName, Integer line, Throwable cause) {
+        Twig4jRuntimeException e = new Twig4jRuntimeException(
                 "Bad operator \"" + operator + "\" (failed to instantiate binary node).",
                 templateName,
                 line
@@ -95,8 +95,8 @@ public class TwigRuntimeException extends TwigException {
      *
      * @return The exception
      */
-    public static TwigRuntimeException popStateWithoutState(String templateName, Integer lineNumber) {
-        return new TwigRuntimeException("Cannot pop state without a previous state", templateName, lineNumber);
+    public static Twig4jRuntimeException popStateWithoutState(String templateName, Integer lineNumber) {
+        return new Twig4jRuntimeException("Cannot pop state without a previous state", templateName, lineNumber);
     }
 
     /**
@@ -109,8 +109,8 @@ public class TwigRuntimeException extends TwigException {
      *
      * @return The exception
      */
-    public static TwigRuntimeException illegalAccessToMethod(String method, String className, String templateName, Throwable e) {
-        return new TwigRuntimeException(
+    public static Twig4jRuntimeException illegalAccessToMethod(String method, String className, String templateName, Throwable e) {
+        return new Twig4jRuntimeException(
                 "Call to inaccessible method \"" + method + "\" on object of type \"" + className + "\"",
                 templateName,
                 -1,
@@ -128,8 +128,8 @@ public class TwigRuntimeException extends TwigException {
      *
      * @return The exception
      */
-    public static TwigRuntimeException invocationTargetException(String method, String className, String templateName, Throwable e) {
-        return new TwigRuntimeException(
+    public static Twig4jRuntimeException invocationTargetException(String method, String className, String templateName, Throwable e) {
+        return new Twig4jRuntimeException(
                 "Method \"" + className + "#" + method + "()\" threw exception " + e.getCause().getClass().getName() + " \"" + e.getCause().getMessage() + "\"",
                 templateName,
                 -1,

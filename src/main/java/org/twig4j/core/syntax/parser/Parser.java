@@ -2,7 +2,7 @@ package org.twig4j.core.syntax.parser;
 
 import org.twig4j.core.Environment;
 import org.twig4j.core.exception.SyntaxErrorException;
-import org.twig4j.core.exception.TwigRuntimeException;
+import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.Token;
 import org.twig4j.core.syntax.TokenStream;
 import org.twig4j.core.syntax.parser.node.Module;
@@ -46,9 +46,9 @@ public class Parser {
      * @return The Module node (which represents a twig4j file)
      *
      * @throws SyntaxErrorException On syntax errors
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    public Module parse(TokenStream tokenStream) throws SyntaxErrorException, TwigRuntimeException {
+    public Module parse(TokenStream tokenStream) throws SyntaxErrorException, Twig4jRuntimeException {
         // TODO: Find out wth line 64-82 does
 
         this.handlers.putAll(environment.getTokenParsers());
@@ -98,9 +98,9 @@ public class Parser {
      * @return The parsed node
      *
      * @throws SyntaxErrorException On syntax errors
-     * @throws TwigRuntimeException On any other errors
+     * @throws Twig4jRuntimeException On any other errors
      */
-    public Node subparse() throws SyntaxErrorException, TwigRuntimeException {
+    public Node subparse() throws SyntaxErrorException, Twig4jRuntimeException {
         return subparse(null, null, false);
     }
 
@@ -114,9 +114,9 @@ public class Parser {
      * @return The body nodes
      *
      * @throws SyntaxErrorException On syntax errors
-     * @throws TwigRuntimeException On any other errors
+     * @throws Twig4jRuntimeException On any other errors
      */
-    public Node subparse(Function<Token, Boolean> test, String subparserTag, Boolean dropNeedle) throws SyntaxErrorException, TwigRuntimeException {
+    public Node subparse(Function<Token, Boolean> test, String subparserTag, Boolean dropNeedle) throws SyntaxErrorException, Twig4jRuntimeException {
         Integer lineno = tokenStream.getCurrent().getLine();
         ArrayList<Node> rv = new ArrayList<>();
 
@@ -210,9 +210,9 @@ public class Parser {
      * @return A more clean node
      *
      * @throws SyntaxErrorException If this node (or one of it's child nodes) contains actual output
-     * @throws TwigRuntimeException On runtime errors
+     * @throws Twig4jRuntimeException On runtime errors
      */
-    protected Node filterBodyNodes(Node body) throws SyntaxErrorException, TwigRuntimeException {
+    protected Node filterBodyNodes(Node body) throws SyntaxErrorException, Twig4jRuntimeException {
         // Check that the body does not contain non-empty output nodes
         // TODO check for file "bom"
         if ((body instanceof Output && !(body instanceof BlockReference) && !(body instanceof Text)) || (body instanceof Text && !((String)body.getAttribute("data")).matches("^[\\s\\n]+$"))) {
