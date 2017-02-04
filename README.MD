@@ -1,12 +1,11 @@
-[![Build Status](https://travis-ci.org/palmfjord/twig-java.svg?branch=master)](https://travis-ci.org/palmfjord/twig-java)
+[![Build Status](https://travis-ci.org/palmfjord/twig4j-core.svg?branch=master)](https://travis-ci.org/palmfjord/twig4j-core)
 
 # Twig for Java
 
 This is a Java implementation of the [Twig templating engine](http://twig.sensiolabs.org).
 
 ## About the project
-The project is still under heavy development and only a few things work as expected. To see what currently works my
- suggestion is that you look at
+The project is still under heavy development. To see what currently works my please look at
  [the functional tests (src/tests/java/org/twig/functional)](https://github.com/palmfjord/twigjava/tree/master/src/test/java/org/twigjava/functional)
  as that's where all functionality (such as render variables, maths, method calls, etc.) is tested.
 
@@ -22,5 +21,6 @@ If you want to contribute or have feedback of any kind feel free to drop an emai
 ### To do/upcoming
 Not everything is listed here but this is what's prioritized currently:
  - User-defined functions (that aren't "hard-coded" in the parser)
- - Use tags: `{% use 'foo.twig' %}`
+ - Gloabal variables
+ - Use tags/traitable blocks: `{% use 'foo.twig' %}`
  - Macros
