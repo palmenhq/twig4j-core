@@ -1,5 +1,7 @@
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'signing'
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -9,9 +11,76 @@ repositories {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+group = 'org.twig4j'
+archivesBaseName = 'core'
+version = "0.2.0"
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
 jar {
-    baseName = 'twig4j-core'
-    version = '0.1.0'
+    baseName = 'core'
+    version = '0.2.0'
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name "Twig4j"
+                packaging 'jar'
+                // optionally artifactId can be defined here
+                description 'Java implementation of the Twig templating engine.'
+                url 'https://github.com/palmfjord/twig4j-core'
+
+                scm {
+                    connection 'scm:git:https://github.com/palmfjord/twig4j-core.git'
+                    developerConnection 'scm:git:https://github.com/palmfjord/twig4j-core.git'
+                    url 'https://github.com/palmfjord/twig4j-core'
+                }
+
+                licenses {
+                    license {
+                        name 'BSD'
+                        url 'https://github.com/palmfjord/twig4j-core/blob/v0.2.0/LICENSE'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'palmfjord'
+                        name 'Johan Palmfjord'
+                        email 'johan.palmfjord@gmail.com'
+                    }
+                }
+            }
+        }
+    }
 }
 
 // In this section you declare the dependencies for your production and test code
@@ -20,5 +89,5 @@ dependencies {
     compile 'com.caucho:quercus:4.0.45'
 
     testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:1.+'
+    testCompile 'org.mockito:mockito-core:1.10.19'
 }
