@@ -43,6 +43,7 @@ public class Core implements Extension {
         operators.put(">", new BinaryGreaterThan());
         operators.put("==", new BinaryEquals());
         operators.put("!=", new BinaryNotEquals());
+        operators.put("??", new BinaryNullCoalesce());
         operators.put("in", new BinaryIn());
         operators.put("not in", new BinaryNotIn());
         operators.put("starts with", new BinaryStartsWith());

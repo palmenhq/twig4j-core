@@ -20,7 +20,7 @@ public class BinaryGreaterThanTests {
 
         Assert.assertEquals(
                 "Complied source should be greater than",
-                "(5 > 2)",
+                "(Double.valueOf(5) > Double.valueOf(2))",
                 compiler.getSourceCode()
         );
     }
