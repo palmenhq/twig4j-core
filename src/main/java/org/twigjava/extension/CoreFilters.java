@@ -6,8 +6,9 @@ public class CoreFilters {
     /**
      * Uppercase a string
      *
-     * @param string
-     * @return
+     * @param string The string to uppercase
+     *
+     * @return The upper-cased string
      */
     public static String upper(String string) {
         return string.toUpperCase();
@@ -16,8 +17,9 @@ public class CoreFilters {
     /**
      * Lowercase a string
      *
-     * @param string
-     * @return
+     * @param string The string to lowercase
+     *
+     * @return The lower-cased string
      */
     public static String lower(String string) {
         return string.toLowerCase();
@@ -28,7 +30,8 @@ public class CoreFilters {
      *
      * @param array The array to join
      * @param glue The "glue"
-     * @return
+     *
+     * @return The joined string
      */
     public static String join(List<String> array, String glue) {
         return String.join(glue, array);

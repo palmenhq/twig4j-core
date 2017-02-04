@@ -120,7 +120,7 @@ public class LexerRegexes {
 
     /**
      * Get all the operators' regexes
-     * @return
+     * @return The operators' regexes
      */
     public Pattern getOperators() {
         StringBuilder pattern = new StringBuilder();

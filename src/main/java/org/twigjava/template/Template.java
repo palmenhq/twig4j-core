@@ -25,9 +25,12 @@ abstract public class Template {
     }
 
     /**
-     * @see this#render(Context)
-     *
      * Defaults Context to empty context
+     * @see #render(Context)
+     *
+     * @return Rendered html (or whatever content-type you're rendering)
+     *
+     * @throws TwigException If there are any errors, i.e. accessing a variable that is not in the context.
      */
     public String render() throws TwigException {
         return render(new Context());
@@ -37,8 +40,10 @@ abstract public class Template {
      * Returns a string of the rendered template
      *
      * @param context The context - a Map that contains all variables to make available in the template
+     *
      * @return Rendered html (or whatever content-type you're rendering)
-     * @throws TwigRuntimeException If there are any errors, i.e. accessing a variable that is not in the context.
+     *
+     * @throws TwigException If there are any errors, i.e. accessing a variable that is not in the context.
      */
     public String render(Context context) throws TwigException {
         return display(context, blocks);
@@ -46,10 +51,13 @@ abstract public class Template {
 
     /**
      * The actual rendering of the template. Composes blocks and then runs the actual template render method.
+     *
      * @param context The context to render
      * @param blocks The blocks (or empty map if none)
+     *
      * @return The rendered result
-     * @throws TwigException
+     *
+     * @throws TwigException On errors rendering
      */
     public String display(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
         Map<String, TemplateBlockMethodSet> mergedBlocks = new HashMap<>();
@@ -63,8 +71,11 @@ abstract public class Template {
      * The actual rendering of the template, done in the runtime compiled template classes
      *
      * @param context The context that contains all variables
-     * @return
-     * @throws TwigRuntimeException
+     * @param blocks A merged map of blocks
+     *
+     * @return Rendered result
+     *
+     * @throws TwigRuntimeException On runtime errors (i.e. using a null var)
      */
     abstract protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException;
 
@@ -81,7 +92,11 @@ abstract public class Template {
      * @param context The context to get the variable from
      * @param item The variable name
      * @param ignoreStrictChecks Whether to throw an error or just fail silently and return empty string
-     * @return
+     * @param line The line the variable is on
+     *
+     * @return Thing from the context
+     *
+     * @throws TwigRuntimeException If the varible does not exist and strict variables are enabled
      */
     protected Object getContext(Map<String, ?> context, String item, boolean ignoreStrictChecks, Integer line) throws TwigRuntimeException {
         if (!context.containsKey(item)) {
@@ -96,7 +111,7 @@ abstract public class Template {
     }
 
     /**
-     * @see this#getAttribute(Object, Object, List, String, boolean, boolean)
+     * @see #getAttribute(Object, Object, List, String, boolean, boolean)
      *
      * Defaults to strict checks (which means exceptions are thrown when not able to access the property)
      *
@@ -113,7 +128,7 @@ abstract public class Template {
     }
 
     /**
-     * Gets an attribute from an object or array. Object can be a Map<String|Integer|Boolean>, object with the property passed as `item`,
+     * Gets an attribute from an object or array. Object can be a Map&lt;String|Integer|Boolean&gt;, object with the property passed as `item`,
      * an object that has one of the methods `get(Item)`, `is(Item)` or `has(Item)` where (Item) is the string passed to `item`.
      *
      * @param object The object or array (hopefully) to get the attribute on
@@ -292,8 +307,10 @@ abstract public class Template {
      *
      * @param a Object 1
      * @param b Object 2
+     *
      * @return Whether they are equal
-     * @throws TwigRuntimeException On type errors
+     *
+     * @throws TwigRuntimeException On type errors if strict types are enabled
      */
     protected boolean compare(Object a, Object b) throws TwigRuntimeException {
         if (!a.getClass().equals(b.getClass())) {
@@ -319,7 +336,9 @@ abstract public class Template {
      * @param requestingTemplateName Whoever requested as template
      * @param line The line it's requested on
      * @param index The template index TODO implement this
+     *
      * @return The loaded template
+     *
      * @throws TwigException If the included template throws any errors or isn't found
      */
     protected Template loadTemplate(String template, String requestingTemplateName, Integer line, Integer index) throws TwigException {
@@ -339,6 +358,17 @@ abstract public class Template {
         }
     }
 
+    /**
+     * Displays parent block's block
+     *
+     * @param name The block name
+     * @param context This context
+     * @param blocks Map of avialable blocks
+     *
+     * @return The rendered result
+     *
+     * @throws TwigException On errors rendering
+     */
     protected String displayParentBlock(String name, Context context, Map<String, TemplateBlockMethodSet> blocks) throws TwigException {
         // TODO check for traits
 
@@ -360,12 +390,13 @@ abstract public class Template {
      * @param name The name of the block (i.e. "a")
      * @param context The context
      * @param blocks A collection of available blocks
+     * @param useBlocks Whether to use blocks provided or the blocks from this specific template
+     *
      * @return Generated source code
+     *
      * @throws TwigException On any errors
      */
     protected String displayBlock(String name, Context context, Map<String, TemplateBlockMethodSet> blocks, boolean useBlocks) throws TwigException {
-        // TODO find out what the displayBlock and useBlocks is for
-
         if (!useBlocks) {
             blocks = this.blocks;
         }
@@ -401,6 +432,7 @@ abstract public class Template {
 
     /**
      * Set the environment
+     *
      * @param environment The environment
      */
     public void setEnvironment(Environment environment) {
@@ -419,6 +451,17 @@ abstract public class Template {
             this.method = method;
         }
 
+        /**
+         * Invoke the provided method
+         *
+         * @param name The block name (used for error message)
+         * @param context The context to provid to the block
+         * @param blocks Merged map of blocks available
+         *
+         * @return The rendered result
+         *
+         * @throws TwigRuntimeException On any errors
+         */
         public String invoke(String name, Context context, java.util.Map<String, TemplateBlockMethodSet> blocks) throws TwigRuntimeException {
             try {
                 return (String)method.invoke(template, context, blocks);
@@ -428,19 +471,43 @@ abstract public class Template {
 
         }
 
+        /**
+         * Get the template
+         *
+         * @return The template
+         */
         public Template getTemplate() {
             return template;
         }
 
+        /**
+         * Set the template
+         *
+         * @param template The template
+         *
+         * @return this
+         */
         public TemplateBlockMethodSet setTemplate(Template template) {
             this.template = template;
             return this;
         }
 
+        /**
+         * Get the method to invoke
+         *
+         * @return The method
+         */
         public Method getMethod() {
             return method;
         }
 
+        /**
+         * Set the method to invoke
+         *
+         * @param method The method to invoke
+         *
+         * @return this
+         */
         public TemplateBlockMethodSet setMethod(Method method) {
             this.method = method;
             return this;

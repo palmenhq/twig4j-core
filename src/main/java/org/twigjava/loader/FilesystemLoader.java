@@ -42,7 +42,7 @@ public class FilesystemLoader implements Loader {
     }
 
     /**
-     * @see this#findTemplate(String, boolean) - Defaults throwExceptionWhenNotFound to true
+     * @see #findTemplate(String, boolean) - Defaults throwExceptionWhenNotFound to true
      */
     private String findTemplate(String name) throws LoaderException {
         return findTemplate(name, true);
@@ -53,8 +53,10 @@ public class FilesystemLoader implements Loader {
      *
      * @param name The template name to find
      * @param throwExceptionWhenNotFound Whether to throw an exception if the template is not found
+     *
+     * @return The template source
+     *
      * @throws LoaderException If throwExceptionWhenNotFound is true and the template is not found
-     * @return
      */
     private String findTemplate(String name, boolean throwExceptionWhenNotFound) throws LoaderException {
         name = normalizeName(name);
@@ -110,7 +112,9 @@ public class FilesystemLoader implements Loader {
 
     /**
      * Fix multiple slashes or backslashes as DS'es
+     *
      * @param name The template name
+     *
      * @return The normalized template name
      */
     private String normalizeName(String name) {
@@ -119,7 +123,8 @@ public class FilesystemLoader implements Loader {
 
     /**
      * Prevents null byte attacks and that we're not accessing templates outside of the configured dir
-     * @param name
+     *
+     * @param name The name to validate
      */
     private void validateName(String name) throws LoaderException {
         // Prevent null byte injections
@@ -148,7 +153,8 @@ public class FilesystemLoader implements Loader {
      * Gets the namespace (or default if none is set)
      *
      * @param name The template name
-     * @return
+     *
+     * @return The namespace name
      */
     private String getNamespaceFromTemplateName(String name) throws LoaderException {
         if (name.matches("^@.*")) {
@@ -170,7 +176,8 @@ public class FilesystemLoader implements Loader {
      * Get a template name without namespace
      *
      * @param name The full template name
-     * @return
+     *
+     * @return The shortname
      */
     private String getShortNameFromTemplateName(String name) throws LoaderException {
         if (name.matches("^@.*")) {
@@ -192,8 +199,10 @@ public class FilesystemLoader implements Loader {
      * Add a directory path to the main namespace
      *
      * @param path The directory path to add
+     *
      * @return this
-     * @throws LoaderException
+     *
+     * @throws LoaderException If the path doesn't exist
      */
     public FilesystemLoader addPath(String path) throws LoaderException {
         addPath(path, MAIN_NAMESPACE);
@@ -206,7 +215,9 @@ public class FilesystemLoader implements Loader {
      *
      * @param path The directory path to add
      * @param namespace The namespace to add the directory path to
+     *
      * @return this
+     *
      * @throws LoaderException If the directory path is not an existing directory
      */
     public FilesystemLoader addPath(String path, String namespace) throws LoaderException {
@@ -227,8 +238,10 @@ public class FilesystemLoader implements Loader {
      * Add a directory path to the top of the main namespace
      *
      * @param path The directory path to add
+     *
      * @return this
-     * @throws LoaderException
+     *
+     * @throws LoaderException If the path doesn't exist
      */
     public FilesystemLoader prependPath(String path) throws LoaderException {
         prependPath(path, MAIN_NAMESPACE);
@@ -241,7 +254,9 @@ public class FilesystemLoader implements Loader {
      *
      * @param path The directory path to add
      * @param namespace The namespace to add the directory path to
+     *
      * @return this
+     *
      * @throws LoaderException If the directory path is not an existing directory
      */
     public FilesystemLoader prependPath(String path, String namespace) throws LoaderException {
@@ -271,6 +286,7 @@ public class FilesystemLoader implements Loader {
      * Get all directory paths within a namespace
      *
      * @param namespace The namespace to get directory paths from
+     *
      * @return The paths
      */
     public List<String> getPaths(String namespace) {
@@ -281,6 +297,7 @@ public class FilesystemLoader implements Loader {
      * Set the whole path map (including namespaces)
      *
      * @param paths The path map
+     *
      * @return this
      */
     public FilesystemLoader setPaths(Map<String, List<String>> paths) {

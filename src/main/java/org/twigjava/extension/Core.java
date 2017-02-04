@@ -85,7 +85,8 @@ public class Core implements Extension {
      * Make sure it's possible to iterate over the passed object, otherwise return an empty list
      *
      * @param object The object to ensure iterable
-     * @return
+     *
+     * @return An iterable object
      */
     public static Iterable<?> ensureIterable(Object object) {
         if (object instanceof Object && object.getClass().isArray()) {

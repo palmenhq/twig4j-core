@@ -6,7 +6,8 @@ public class HashMap extends java.util.LinkedHashMap<String, Object> {
      *
      * @param key The entity key
      * @param value The entity
-     * @return
+     *
+     * @return This
      */
     public HashMap put(String key, Object value) {
         super.put(key, value);

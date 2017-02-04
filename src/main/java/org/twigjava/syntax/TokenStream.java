@@ -45,24 +45,42 @@ public class TokenStream {
     }
 
     /**
-     * @see TokenStream#expect(Token.Type, String, String)
+     * @see #expect(Token.Type, String, String)
+     *
+     * @param type The token type to expect
+     *
+     * @return The current token
+     *
+     * @throws SyntaxErrorException If the expectation is incorrect
      */
     public Token expect(Token.Type type) throws SyntaxErrorException {
         return expect(type, null, null);
     }
 
     /**
-     * @see TokenStream#expect(Token.Type, String, String)
+     * @see #expect(Token.Type, String, String)
+     *
+     * @param type The token type to expect
+     * @param value The token value to expect
+     *
+     * @return The current token
+     *
+     * @throws SyntaxErrorException If the expectation is incorrect
      */
     public Token expect(Token.Type type, String value) throws SyntaxErrorException {
         return expect(type, value, null);
     }
 
     /**
-     * Tests a token and returns it or throws a syntax error.
+     * Tests a token, moves on and returns the first one, or throws a syntax error if expectation fails.
      *
-     * @return
-     * @throws SyntaxErrorException
+     * @param type The token type to expect
+     * @param value The token value to expect
+     * @param message What to say if the expectation fails
+     *
+     * @return The current token
+     *
+     * @throws SyntaxErrorException If the expectation is incorrect
      */
     public Token expect(Token.Type type, String value, String message) throws SyntaxErrorException {
         Token token = tokens.get(current);
@@ -97,8 +115,9 @@ public class TokenStream {
     /**
      * Sets the pointer to the next token and returns the old one.
      *
-     * @return
-     * @throws SyntaxErrorException
+     * @return The token before nexting
+     *
+     * @throws SyntaxErrorException If there is no next token (= eof is here)
      */
     public Token next() throws SyntaxErrorException {
         try {
@@ -113,6 +132,7 @@ public class TokenStream {
      * Check whether the next token type is of the provided type
      *
      * @param type The type to check
+     *
      * @return Whether the next token type is the same as the provided one
      */
     public boolean nextIs(Token.Type type) {
@@ -128,6 +148,7 @@ public class TokenStream {
      *
      * @param type The type to check
      * @param value The contents to check
+     *
      * @return Whether the next token type is the same as the provided one
      */
     public boolean nextIs(Token.Type type, String value) {
@@ -140,7 +161,9 @@ public class TokenStream {
 
     /**
      * Sneak peak at the next token
+     *
      * @return The found token
+     *
      * @throws SyntaxErrorException If the next token doesn't exist
      */
     public Token look() throws SyntaxErrorException {
@@ -153,8 +176,11 @@ public class TokenStream {
 
     /**
      * Sneak peak at a token at some specific index
+     *
      * @param index The index to look at
+     *
      * @return The found token
+     *
      * @throws SyntaxErrorException If the requested token doesn't exist
      */
     public Token look(Integer index) throws SyntaxErrorException {
@@ -167,6 +193,7 @@ public class TokenStream {
 
     /**
      * Returns the current token
+     *
      * @return The token
      */
     public Token getCurrent() {
@@ -175,6 +202,7 @@ public class TokenStream {
 
     /**
      * Returns whether is at the end of the file
+     *
      * @return Whether current token is EOF
      */
     public Boolean isEOF() {
@@ -183,6 +211,7 @@ public class TokenStream {
 
     /**
      * Adds a new token
+     *
      * @param token The token to add
      */
     public void add(Token token) {
@@ -191,6 +220,7 @@ public class TokenStream {
 
     /**
      * Get all tokens (not recommended to use)
+     *
      * @return All tokens
      */
     public List<Token> getTokens() {
@@ -199,6 +229,7 @@ public class TokenStream {
 
     /**
      * Set all tokens
+     *
      * @param tokens All tokens
      */
     public void setTokens(List<Token> tokens) {
@@ -207,6 +238,7 @@ public class TokenStream {
 
     /**
      * Get the template name
+     *
      * @return filename The name of the template which the tokens are associated with
      */
     public String getFilename() {
@@ -215,6 +247,7 @@ public class TokenStream {
 
     /**
      * Set the template name
+     *
      * @param filename The name of the template which the tokens are associated with
      */
     public void setFilename(String filename) {

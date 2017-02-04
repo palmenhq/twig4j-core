@@ -20,7 +20,11 @@ public class ClassCompiler {
      * Add an indention and compile the passed node
      *
      * @param node The node to compile
-     * @return Itself
+     *
+     * @return this
+     *
+     * @throws LoaderException If failing to find a template
+     * @throws TwigRuntimeException On runtime errors
      */
     public ClassCompiler subCompile(Compilable node) throws LoaderException, TwigRuntimeException {
         indent();
@@ -34,9 +38,13 @@ public class ClassCompiler {
 
     /**
      * Compiles the passed node
+     *
      * @param node The node to compile
-     * @return Itself
-     * @throws LoaderException
+     *
+     * @return this
+     *
+     * @throws LoaderException If a template can't be loaded
+     * @throws TwigRuntimeException On runtime errors
      */
     public ClassCompiler compile(Compilable node) throws LoaderException, TwigRuntimeException {
         // Reset compiler
@@ -49,9 +57,10 @@ public class ClassCompiler {
     }
 
     /**
-     * Write source code with a trailing line break
+     * Write indented source code with a trailing line break
      *
      * @param code The code to write
+     *
      * @return this
      */
     public ClassCompiler writeLine(String code) {
@@ -64,10 +73,11 @@ public class ClassCompiler {
     }
 
     /**
-     * Write source code
+     * Write indented source code without trailing line break
      *
-     * @param code The code to write
-     * @return
+     * @param code The code
+     *
+     * @return Write with
      */
     public ClassCompiler write(String code) {
         this.writeIndent();
@@ -91,9 +101,10 @@ public class ClassCompiler {
     }
 
     /**
-     * Adds a raw string to the compiled code.
+     * Adds a raw string to the compiled code. (without indention)
      *
      * @param value Something to write
+     *
      * @return this
      */
     public ClassCompiler writeRaw(String value) {
@@ -104,7 +115,9 @@ public class ClassCompiler {
 
     /**
      * Write the provided string as native java or a string (ie. true instead of "true", but "aoeu" not aoeu)
+     *
      * @param value The value to write
+     *
      * @return this
      */
     public ClassCompiler representValue(Object value) {
@@ -136,6 +149,7 @@ public class ClassCompiler {
      * Write a string
      *
      * @param text The string to write
+     *
      * @return this
      */
     public ClassCompiler writeString(String text) {
@@ -147,7 +161,8 @@ public class ClassCompiler {
     /**
      * Escapes the provided string to work in java string
      *
-     * @param text The stirng to escape
+     * @param text The string to escape
+     *
      * @return The escaped string
      */
     private String escapeString(String text) {
@@ -156,6 +171,13 @@ public class ClassCompiler {
                 .replace("\"", "\\\"");
     }
 
+    /**
+     * Add a comment telling which line the node is on
+     *
+     * @param node The node to get debug info from
+     *
+     * @return this
+     */
     public ClassCompiler addDebugInfo(LineAware node) {
         writeLine("// line " + node.getLine());
 
@@ -164,6 +186,7 @@ public class ClassCompiler {
 
     /**
      * Increase the number of indents
+     *
      * @return this
      */
     public ClassCompiler indent() {
@@ -204,6 +227,8 @@ public class ClassCompiler {
 
     /**
      * @param environment The Twig environment
+     *
+     * @return this
      */
     public ClassCompiler setEnvironment(Environment environment) {
         this.environment = environment;

@@ -44,7 +44,7 @@ public class LexerOptions {
     /**
      * Set the comment closing tag to something other than default
      *
-     * @param commentOpen The new comment closing tag
+     * @param commentClose The new comment closing tag
      */
     public void setCommentClose(String commentClose) {
         this.commentClose = commentClose;
@@ -62,7 +62,7 @@ public class LexerOptions {
     /**
      * Set the block opening tag to something other than default
      *
-     * @param commentOpen The new block opening tag
+     * @param blockOpen The new block opening tag
      */
     public void setBlockOpen(String blockOpen) {
         this.blockOpen = blockOpen;
@@ -80,7 +80,7 @@ public class LexerOptions {
     /**
      * Set the block closing tag to something other than default
      *
-     * @param commentOpen The new block closing tag
+     * @param blockClose The new block closing tag
      */
     public void setBlockClose(String blockClose) {
         this.blockClose = blockClose;
@@ -98,7 +98,7 @@ public class LexerOptions {
     /**
      * Set the variable opening tag to something other than default
      *
-     * @param commentOpen The new variable opening tag
+     * @param variableOpen The new variable opening tag
      */
     public void setVariableOpen(String variableOpen) {
         this.variableOpen = variableOpen;
@@ -116,7 +116,7 @@ public class LexerOptions {
     /**
      * Set the variable closing tag to something other than default
      *
-     * @param commentOpen The new variable closing tag
+     * @param variableClose The new variable closing tag
      */
     public void setVariableClose(String variableClose) {
         this.variableClose = variableClose;
@@ -134,7 +134,7 @@ public class LexerOptions {
     /**
      * Set the whitespace trim to something other than default
      *
-     * @param commentOpen The new whitespace trim
+     * @param whitespaceTrim The new whitespace trim
      */
     public void setWhitespaceTrim(String whitespaceTrim) {
         this.whitespaceTrim = whitespaceTrim;
@@ -152,7 +152,7 @@ public class LexerOptions {
     /**
      * Set the string interpolation opening tag to something other than default
      *
-     * @param commentOpen The new string interpolation opening tag
+     * @param interpolationOpen The new string interpolation opening tag
      */
     public void setInterpolationOpen(String interpolationOpen) {
         this.interpolationOpen = interpolationOpen;
@@ -170,7 +170,7 @@ public class LexerOptions {
     /**
      * Set the string interpolation closing tag to something other than default
      *
-     * @param commentOpen The new string interpolation closing tag
+     * @param interpolationClose The new string interpolation closing tag
      */
     public void setInterpolationClose(String interpolationClose) {
         this.interpolationClose = interpolationClose;

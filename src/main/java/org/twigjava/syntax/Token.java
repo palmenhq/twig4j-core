@@ -29,7 +29,9 @@ public class Token {
 
     /**
      * Tests the token for a type
+     *
      * @param type The token type to test
+     *
      * @return Whether the provided type equals the current token type
      */
     public Boolean test(Type type) {
@@ -38,8 +40,10 @@ public class Token {
 
     /**
      * Tests the token for a type and value
+     *
      * @param type The token type to test
      * @param value The token value to test
+     *
      * @return Whether the provided type and value equals the current token
      */
     public Boolean test(Type type, String value) {
@@ -51,7 +55,8 @@ public class Token {
      *
      * @param type The token type
      * @return Human readable token type
-     * @throws Exception
+     *
+     * @throws RuntimeException If the token type does not exist - which is impossible since it's an enum.
      */
     public static String typeToEnglish(Type type) {
         switch (type) {
@@ -91,7 +96,8 @@ public class Token {
      * Check whether the token is the same type as provided type
      *
      * @param type The type to test
-     * @return
+     *
+     * @return Whether the token is of the some type
      */
     public boolean is(Type type) {
         return this.type == type;
@@ -102,7 +108,8 @@ public class Token {
      *
      * @param type The type to test
      * @param value The value to test
-     * @return
+     *
+     * @return Whether the token is of the same type and value
      */
     public boolean is(Type type, String value) {
         return this.type == type && this.value.equals(value);

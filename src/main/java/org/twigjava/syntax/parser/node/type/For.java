@@ -133,7 +133,11 @@ public class For extends Node {
 
     /**
      * Set the key and value variables
-     * @param compiler
+     *
+     * @param compiler The compiler
+     * @param valueVariableName The value variable name (needed as we're randomising the loop variable name)
+     *
+     * @throws TwigRuntimeException On runtime errors
      */
     protected void compileKeyValueTarget(ClassCompiler compiler, String valueVariableName) throws TwigRuntimeException {
 
@@ -158,8 +162,10 @@ public class For extends Node {
 
     /**
      * Make an assignment to the context
+     *
      * @param key The key to put in, always a string
      * @param value The value variable name to put in
+     *
      * @return The put statement
      */
     protected String putInContext(String key, String value) {
@@ -168,7 +174,8 @@ public class For extends Node {
 
     /**
      * Creates a 15 character long variable name
-     * @return
+     *
+     * @return The variable name
      */
     protected String getRandomVariableName() {
         String characters = "abcdefghijklmnopqrstuvwxyz";
@@ -206,6 +213,7 @@ public class For extends Node {
          * Set the target variable for the current key in the loop
          *
          * @param keyTarget The target variable
+         *
          * @return this
          */
         public Settings setKeyTarget(String keyTarget) {
@@ -226,6 +234,7 @@ public class For extends Node {
          * Set the target variable for the current value in the loop
          *
          * @param valueTarget The target variable
+         *
          * @return this
          */
         public Settings setValueTarget(String valueTarget) {
@@ -236,7 +245,7 @@ public class For extends Node {
         /**
          * Get thing to iterate over
          *
-         * @return
+         * @return The thing to iterate over
          */
         public Expression getSeq() {
             return seq;
@@ -246,6 +255,7 @@ public class For extends Node {
          * Set thing to iterate over
          *
          * @param seq The thing
+         *
          * @return this
          */
         public Settings setSeq(Expression seq) {
@@ -266,6 +276,7 @@ public class For extends Node {
          * Set the if expression that helps filtering the loop
          *
          * @param ifExpr The expression
+         *
          * @return this
          */
         public Settings setIfExpr(Expression ifExpr) {
@@ -286,6 +297,7 @@ public class For extends Node {
          * Set the loop body
          *
          * @param body The body
+         *
          * @return this
          */
         public Settings setBody(Node body) {
@@ -296,7 +308,7 @@ public class For extends Node {
         /**
          * Get the else body (used if the loop is empty)
          *
-         * @return
+         * @return The else body node
          */
         public Node getElseBody() {
             return elseBody;
@@ -306,6 +318,7 @@ public class For extends Node {
          * Set the else body (usid if th eloop is empty)
          *
          * @param elseBody The else body
+         *
          * @return this
          */
         public Settings setElseBody(Node elseBody) {

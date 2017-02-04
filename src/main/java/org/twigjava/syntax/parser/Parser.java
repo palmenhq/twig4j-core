@@ -42,8 +42,11 @@ public class Parser {
      * Parses a template
      *
      * @param tokenStream The token stream to parse
+     *
      * @return The Module node (which represents a twigjava file)
-     * @throws SyntaxErrorException
+     *
+     * @throws SyntaxErrorException On syntax errors
+     * @throws TwigRuntimeException On runtime errors
      */
     public Module parse(TokenStream tokenStream) throws SyntaxErrorException, TwigRuntimeException {
         // TODO: Find out wth line 64-82 does
@@ -90,7 +93,10 @@ public class Parser {
 
     /**
      * Does the hard work parsing, but defaults test to null and dropNeedle to false
+     * @see #subparse(Function, String, Boolean)
+     *
      * @return The parsed node
+     *
      * @throws SyntaxErrorException On syntax errors
      * @throws TwigRuntimeException On any other errors
      */
@@ -104,7 +110,9 @@ public class Parser {
      * @param test Function that checks for end tags
      * @param subparserTag The name of the token parser calling this method, or null
      * @param dropNeedle Nexts if the `test` function is applied
+     *
      * @return The body nodes
+     *
      * @throws SyntaxErrorException On syntax errors
      * @throws TwigRuntimeException On any other errors
      */
@@ -194,6 +202,16 @@ public class Parser {
         return new Node(rv, new HashMap<>(), lineno, null);
     }
 
+    /**
+     * Recursively removes empty output nodes (including space-only output nodes).
+     *
+     * @param body The node to remove empty nodes from
+     *
+     * @return A more clean node
+     *
+     * @throws SyntaxErrorException If this node (or one of it's child nodes) contains actual output
+     * @throws TwigRuntimeException On runtime errors
+     */
     protected Node filterBodyNodes(Node body) throws SyntaxErrorException, TwigRuntimeException {
         // Check that the body does not contain non-empty output nodes
         // TODO check for file "bom"
@@ -234,7 +252,7 @@ public class Parser {
     /**
      * Check whether we're in the global scope
      *
-     * @return
+     * @return Whether we're in the global scope
      */
     public Boolean isMainScope() {
         // TODO check something here
@@ -250,30 +268,66 @@ public class Parser {
         return tokenStream.getFilename();
     }
 
+    /**
+     * Get the token stream
+     *
+     * @return The token stream
+     */
     public TokenStream getTokenStream() {
         return tokenStream;
     }
 
+    /**
+     * Set the token stream
+     *
+     * @param tokenStream The token stream to set
+     *
+     * @return this
+     */
     public Parser setTokenStream(TokenStream tokenStream) {
         this.tokenStream = tokenStream;
 
         return this;
     }
 
+    /**
+     * Get the expression parser
+     *
+     * @return An expression parser
+     */
     public ExpressionParser getExpressionParser() {
         return expressionParser;
     }
 
+    /**
+     * Set the expression parser
+     *
+     * @param expressionParser An expression parser
+     *
+     * @return This
+     */
     public Parser setExpressionParser(ExpressionParser expressionParser) {
         this.expressionParser = expressionParser;
 
         return this;
     }
 
+    /**
+     * Get the environment
+     *
+     * @return The environment
+     */
     public Environment getEnvironment() {
         return environment;
     }
 
+    /**
+     * Set the environment
+     *
+     * @param environment The environment
+     *
+     * @return this
+     */
     public Parser setEnvironment(Environment environment) {
         this.environment = environment;
 
@@ -285,6 +339,7 @@ public class Parser {
      *
      * @param key The name (ie "if")
      * @param handler The token parser
+     *
      * @return this
      */
     public Parser addHandler(String key, AbstractTokenParser handler) {
@@ -293,6 +348,13 @@ public class Parser {
         return this;
     }
 
+    /**
+     * Set all handlers
+
+     * @param handlers The handlers
+     *
+     * @return this
+     */
     public Parser setHandlers(HashMap<String, AbstractTokenParser> handlers) {
         this.handlers = handlers;
 
@@ -302,7 +364,7 @@ public class Parser {
     /**
      * Get the parent template name
      *
-     * @return
+     * @return The parent template name
      */
     public Expression getParent() {
         return parent;
@@ -312,6 +374,7 @@ public class Parser {
      * Set the parent template name
      *
      * @param parent The parent template name
+     *
      * @return this
      */
     public Parser setParent(Expression parent) {
@@ -322,7 +385,8 @@ public class Parser {
 
     /**
      * Get the blocks in the current template
-     * @return
+     *
+     * @return Blocks
      */
     public Map<String, Block> getBlocks() {
         return blocks;
@@ -332,6 +396,7 @@ public class Parser {
      * Set all blocks in the current template
      *
      * @param blocks Blocks to set
+     *
      * @return this
      */
     public Parser setBlocks(Map<String, Block> blocks) {
@@ -351,8 +416,9 @@ public class Parser {
     /**
      * Set the whole block stack
      *
-     * @param blockStack
-     * @return
+     * @param blockStack The block stack
+     *
+     * @return This
      */
     public Parser setBlockStack(Stack<String> blockStack) {
         this.blockStack = blockStack;

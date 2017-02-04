@@ -59,8 +59,9 @@ public class For extends AbstractTokenParser {
     /**
      * Return whether the token is an else or a for tag
      *
-     * @param token
-     * @return
+     * @param token The token to test
+     *
+     * @return Whether this is a fork (or end) tag
      */
     public boolean decideForFork(Token token) {
         return token.is(Token.Type.NAME, "else") || token.is(Token.Type.NAME, "endfor");
@@ -69,8 +70,9 @@ public class For extends AbstractTokenParser {
     /**
      * Return whether the token is an endfor tag
      *
-     * @param token
-     * @return
+     * @param token The token to test
+     *
+     * @return Whether this is the end of a for tag
      */
     public boolean decideForEnd(Token token) {
         return token.is(Token.Type.NAME, "endfor");

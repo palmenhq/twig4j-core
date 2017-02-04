@@ -25,7 +25,9 @@ public class TwigRuntimeException extends TwigException {
      *
      * @param variable The variable name
      * @param templateName The template name
-     * @return
+     * @param lineNumber The line number
+     *
+     * @return The exception
      */
     public static TwigRuntimeException variableDoesNotExist(String variable, String templateName, Integer lineNumber) {
         return new TwigRuntimeException("Variable " + variable +  " does not exist.", templateName, lineNumber);
@@ -34,11 +36,11 @@ public class TwigRuntimeException extends TwigException {
     /**
      * Throw when trying to access an attribute that does not exist in a node
      *
-     * @param attribute
-     * @param node
-     * @param template
-     * @param lineNumber
-     * @return
+     * @param attribute The attribute name
+     * @param node The node
+     * @param lineNumber The line number
+     *
+     * @return The exception
      */
     public static TwigRuntimeException nodeAttributeDoesNotExist(String attribute, Node node, Integer lineNumber) {
         return new TwigRuntimeException(
@@ -51,9 +53,10 @@ public class TwigRuntimeException extends TwigException {
     /**
      * When trying to get a node from another node when a node with that index does not exist
      *
-     * @param index
-     * @param node
-     * @return
+     * @param index The node index
+     * @param node The node trying to get a node from
+     *
+     * @return The exception
      */
     public static TwigRuntimeException noNodeWithIndexExists(Integer index, Node node) {
         return new TwigRuntimeException(
@@ -66,11 +69,12 @@ public class TwigRuntimeException extends TwigException {
     /**
      * Throw when failing to instantiate an operator class (i.e. the class is badly configured)
      *
-     * @param operator
-     * @param templateName
-     * @param line
-     * @param cause
-     * @return
+     * @param operator The operator name
+     * @param templateName The template name
+     * @param line The line the exception is thrown on
+     * @param cause The cause of the exception
+     *
+     * @return The exception
      */
     public static TwigRuntimeException badOperatorFailedNode(String operator, String templateName, Integer line, Throwable cause) {
         TwigRuntimeException e = new TwigRuntimeException(
@@ -86,9 +90,10 @@ public class TwigRuntimeException extends TwigException {
     /**
      * When trying to pop a state without a previous state
      *
-     * @param templateName
-     * @param lineNumber
-     * @return
+     * @param templateName The template name
+     * @param lineNumber The line number
+     *
+     * @return The exception
      */
     public static TwigRuntimeException popStateWithoutState(String templateName, Integer lineNumber) {
         return new TwigRuntimeException("Cannot pop state without a previous state", templateName, lineNumber);
@@ -100,8 +105,9 @@ public class TwigRuntimeException extends TwigException {
      * @param method The method name
      * @param className The class on which the method is called
      * @param templateName The template
-     * @param e Previous excpetion
-     * @return
+     * @param e Previous exception
+     *
+     * @return The exception
      */
     public static TwigRuntimeException illegalAccessToMethod(String method, String className, String templateName, Throwable e) {
         return new TwigRuntimeException(
@@ -119,7 +125,8 @@ public class TwigRuntimeException extends TwigException {
      * @param className The class the method belongs to
      * @param templateName The template
      * @param e Previous exception
-     * @return
+     *
+     * @return The exception
      */
     public static TwigRuntimeException invocationTargetException(String method, String className, String templateName, Throwable e) {
         return new TwigRuntimeException(

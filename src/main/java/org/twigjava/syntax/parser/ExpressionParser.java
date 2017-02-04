@@ -21,18 +21,27 @@ import java.util.regex.Matcher;
  * This parser implements a "Precedence climbing" algorithm.
  * </p>
  *
- * see http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm
- * see http://en.wikipedia.org/wiki/Operator-precedence_parser
+ * @see <a href="http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm">Expression parsing</a>
+ * @see <a href="http://en.wikipedia.org/wiki/Operator-precedence_parser">Precedence parser operator</a>
  */
 public class ExpressionParser {
     private Parser parser;
 
+    /**
+     * Constructor
+     * @param parser The parser
+     */
     public ExpressionParser(Parser parser) {
         this.parser = parser;
     }
 
     /**
-     * @see ExpressionParser#parseExpression(Integer) - defaults to 0
+     * @see #parseExpression(Integer) - defaults to 0
+     *
+     * @return The node for the parsed expression
+     *
+     * @throws SyntaxErrorException On syntax errors
+     * @throws TwigRuntimeException On runtime errors
      */
     public Expression parseExpression() throws SyntaxErrorException, TwigRuntimeException {
         return parseExpression(0);
@@ -42,7 +51,11 @@ public class ExpressionParser {
      * Parse an expression
      *
      * @param precedence TODO find out what this thing is
+     *
      * @return The node for the parsed expression
+     *
+     * @throws SyntaxErrorException On syntax errors
+     * @throws TwigRuntimeException On runtime errors
      */
     public Expression parseExpression(Integer precedence) throws SyntaxErrorException, TwigRuntimeException {
         Expression expr = getPrimary();
@@ -75,10 +88,12 @@ public class ExpressionParser {
     }
 
     /**
-     * TODO find a good doscription of this method
+     * Gets the first "part" of the expression and adds up other things (such as postfix or subscript) if needed
      *
      * @return The node for this expression
+     *
      * @throws SyntaxErrorException On syntax errors
+     * @throws TwigRuntimeException On runtime errors
      */
     protected Expression getPrimary() throws SyntaxErrorException, TwigRuntimeException {
         Token token = parser.getCurrentToken();
@@ -112,10 +127,12 @@ public class ExpressionParser {
     }
 
     /**
-     * TODO find a good description of this method
+     * Parses the primary expression, meaning it's the first step in the expression parsing.
      *
      * @return A node for the expression
+     *
      * @throws SyntaxErrorException On syntax errors
+     * @throws TwigRuntimeException On runtime errors
      */
     public Expression parsePrimaryExpression() throws SyntaxErrorException, TwigRuntimeException {
         Token token = parser.getCurrentToken();
@@ -187,7 +204,9 @@ public class ExpressionParser {
      * Parse a string expression (a regular string or a string interpolation)
      *
      * @return The nodes that represents the string expression
-     * @throws SyntaxErrorException
+     *
+     * @throws SyntaxErrorException On syntax errors
+     * @throws TwigRuntimeException On runtime errors
      */
     public Expression parseStringExpression() throws SyntaxErrorException, TwigRuntimeException {
         TokenStream stream = parser.getTokenStream();
@@ -223,8 +242,9 @@ public class ExpressionParser {
      * Parse an array
      *
      * @return The array expression
+     *
      * @throws SyntaxErrorException If not followed by comma or if not closed
-     * @throws TwigRuntimeException
+     * @throws TwigRuntimeException On runtime errors
      */
     public Expression parseArrayExpression() throws SyntaxErrorException, TwigRuntimeException {
         TokenStream tokenStream = parser.getTokenStream();
@@ -253,11 +273,12 @@ public class ExpressionParser {
     }
 
     /**
-     * Parse a hash expression (hashmap, ie {foo: bar})
+     * Parse a hash expression (map, ie {foo: bar})
      *
      * @return The hash expression
-     * @throws SyntaxErrorException
-     * @throws TwigRuntimeException
+     *
+     * @throws SyntaxErrorException On syntax errors
+     * @throws TwigRuntimeException On runtime errors
      */
     public Expression parseHashExpression() throws SyntaxErrorException, TwigRuntimeException {
         TokenStream tokenStream = parser.getTokenStream();
@@ -313,8 +334,11 @@ public class ExpressionParser {
      * Parse something that comes after a NAME
      *
      * @param node The node that's has something post it
-     * @return
-     * @throws SyntaxErrorException
+     *
+     * @return The parsed node, i.e. a filter or method call
+     *
+     * @throws SyntaxErrorException On syntax errors
+     * @throws TwigRuntimeException On runtime errors
      */
     public Expression parsePostfixExpression(Expression node) throws SyntaxErrorException, TwigRuntimeException {
         while (true) {
@@ -339,9 +363,12 @@ public class ExpressionParser {
     /**
      * Parse if this is a method/function call or fetching something from an array
      *
-     * @param node
-     * @return
-     * @throws SyntaxErrorException
+     * @param node The object to do subscript on
+     *
+     * @return The method/function/whatever node
+     *
+     * @throws SyntaxErrorException On syntax errors
+     * @throws TwigRuntimeException On runtime errors
      */
     public Expression parseSubscriptExpression(Expression node) throws SyntaxErrorException, TwigRuntimeException {
         TokenStream tokenStream = parser.getTokenStream();
@@ -382,6 +409,16 @@ public class ExpressionParser {
         return new GetAttr(node, arg, arguments, type, token.getLine());
     }
 
+    /**
+     * Parser a filter expression
+     *
+     * @param node The node to apply the filter on
+     *
+     * @return The filter node
+     *
+     * @throws SyntaxErrorException On syntax errors
+     * @throws TwigRuntimeException On runtime errors
+     */
     public Expression parseFilterExpression(Expression node) throws SyntaxErrorException, TwigRuntimeException {
         parser.getTokenStream().next();
 
@@ -417,6 +454,16 @@ public class ExpressionParser {
         return node;
     }
 
+    /**
+     * Get a filter node
+     *
+     * @param name The name of the filter
+     * @param line What line it's on
+     *
+     * @return The filter node
+     *
+     * @throws SyntaxErrorException On unknown
+     */
     private Class getFilterNodeClass(String name, Integer line) throws SyntaxErrorException {
         Environment environment = parser.getEnvironment();
         org.twigjava.filter.Filter filter = environment.getFilter(name);
@@ -432,21 +479,28 @@ public class ExpressionParser {
     }
 
     /**
-     * @return The argument nodes
-     * @throws SyntaxErrorException
-     * @see static#parseArguments(boolean, boolean)
      * Defaults both parameters to false
+     * @see #parseArguments(boolean, boolean)
+     *
+     * @return The argument nodes
+     *
+     * @throws SyntaxErrorException On syntax errors
+     * @throws TwigRuntimeException On runtime errors
      */
     public Node parseArguments() throws SyntaxErrorException, TwigRuntimeException {
         return parseArguments(false, false);
     }
 
     /**
-     * @param useNamedArguments Whether to use named arguments
-     * @return The argument nodes
-     * @throws SyntaxErrorException
-     * @see static#parseArguments(boolean, boolean)
      * Defaults isFunctionDefinition to false
+     * @see #parseArguments(boolean, boolean)
+     *
+     * @param useNamedArguments Whether to use named arguments
+     *
+     * @return The argument nodes
+     *
+     * @throws SyntaxErrorException On syntax errors
+     * @throws TwigRuntimeException On runtime errors
      */
     public Node parseArguments(boolean useNamedArguments) throws SyntaxErrorException, TwigRuntimeException {
         return parseArguments(useNamedArguments, false);
@@ -457,8 +511,11 @@ public class ExpressionParser {
      *
      * @param useNamedArguments    Whether to use named arguments
      * @param isFunctionDefinition Whether these arguments are for a function definition or a call
-     * @return
-     * @throws SyntaxErrorException
+     *
+     * @return The arguments
+     *
+     * @throws SyntaxErrorException On syntax errors
+     * @throws TwigRuntimeException On runtime errors
      */
     public Node parseArguments(boolean useNamedArguments, boolean isFunctionDefinition) throws SyntaxErrorException, TwigRuntimeException {
         ArrayList<Node> arguments = new ArrayList<>();
@@ -490,8 +547,9 @@ public class ExpressionParser {
      * Parse names for an assignment. IMPORTANT - this method's return value differs from Twig for php
      *
      * @return A list with the names
-     * @throws SyntaxErrorException
-     * @throws TwigRuntimeException
+     *
+     * @throws SyntaxErrorException On syntax errors (can't assign value to something non-assignable)
+     * @throws TwigRuntimeException On runtime errors
      */
     public List<String> parseAssignmentExpression() throws SyntaxErrorException, TwigRuntimeException {
         List<String> names = new ArrayList<>();
@@ -519,8 +577,9 @@ public class ExpressionParser {
      * Parse multiple expressions separated by comma
      *
      * @return A node with the expressions
-     * @throws SyntaxErrorException
-     * @throws TwigRuntimeException
+     *
+     * @throws SyntaxErrorException On syntax errors
+     * @throws TwigRuntimeException On runtime errors
      */
     public Node parseMultitargetExpression() throws SyntaxErrorException, TwigRuntimeException {
         List<Node> expressions = new ArrayList<>();
@@ -543,7 +602,11 @@ public class ExpressionParser {
      *
      * @param name The name of the function
      * @param line The line the function is on
+     *
      * @return The function node
+     *
+     * @throws SyntaxErrorException On syntax errors
+     * @throws TwigRuntimeException On runtime errors
      */
     protected Expression getFunctionNode(String name, Integer line) throws SyntaxErrorException, TwigRuntimeException {
         switch (name) {
@@ -575,7 +638,10 @@ public class ExpressionParser {
      * Check whether the operator is in the binary operators map in the env
      *
      * @param operator The operator to check for
-     * @return
+     *
+     * @return Whether this is a binary operator
+     *
+     * @throws TwigRuntimeException On runtime errors
      */
     public boolean isBinary(String operator) throws TwigRuntimeException {
         return this.parser.getEnvironment().getBinaryOperators().containsKey(operator);
@@ -585,7 +651,10 @@ public class ExpressionParser {
      * Get an operator from the twigjava environment by the name
      *
      * @param operator The operator name
-     * @return
+     *
+     * @return The binary operator
+     *
+     * @throws TwigRuntimeException On runtime errors
      */
     public Operator getBinaryOperator(String operator) throws TwigRuntimeException {
         return this.parser.getEnvironment().getBinaryOperators().get(operator);
@@ -595,7 +664,10 @@ public class ExpressionParser {
      * Check whether the operator is in the unary operators map in the env
      *
      * @param operator The operator to check for
-     * @return
+     *
+     * @return Whether it's a unary operator
+     *
+     * @throws TwigRuntimeException On runtime errors
      */
     public boolean isUnary(String operator) throws TwigRuntimeException {
         return this.parser.getEnvironment().getUnaryOperators().containsKey(operator);
@@ -605,7 +677,10 @@ public class ExpressionParser {
      * Get an operator from the twigjava environment by the name
      *
      * @param operator The operator name
-     * @return
+     *
+     * @return The unary operator
+     *
+     * @throws TwigRuntimeException On runtime errors
      */
     public Operator getUnaryOperator(String operator) throws TwigRuntimeException {
         return this.parser.getEnvironment().getUnaryOperators().get(operator);
@@ -615,7 +690,8 @@ public class ExpressionParser {
      * Get a scalar value, i.e. true, 1 or "foo"
      *
      * @param token The token to get the value from
-     * @return
+     *
+     * @return The value
      */
     protected Object getScalarValue(Token token) {
         switch (token.getValue()) {

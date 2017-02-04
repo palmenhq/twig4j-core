@@ -13,7 +13,11 @@ abstract public class AbstractTokenParser {
      * Subparse something
      *
      * @param token The token to parse
+     *
      * @return The parsed node
+     *
+     * @throws SyntaxErrorException On syntax errors
+     * @throws TwigRuntimeException On runtime errors
      */
     abstract public Node parse(Token token) throws SyntaxErrorException, TwigRuntimeException;
 
@@ -37,6 +41,7 @@ abstract public class AbstractTokenParser {
      * Set the main parser
      *
      * @param parser The parser
+     *
      * @return this
      */
     public AbstractTokenParser setParser(Parser parser) {

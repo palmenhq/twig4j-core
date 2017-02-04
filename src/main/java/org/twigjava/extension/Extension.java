@@ -11,30 +11,37 @@ import java.util.Map;
 public interface Extension {
     /**
      * Get all token parsers
-     * @return A hashmap of token parsers
+     *
+     * @return A map of token parsers
      */
     public List<AbstractTokenParser> getTokenParsers();
 
     /**
      * Get unary operators of this extension
-     * @return A hashmap of operators indexed by their operator string
+     *
+     * @return A map of operators indexed by their operator string
      */
     public Map<String, Operator> getUnaryOperators();
 
     /**
      * Get binary operators of this extension
-     * @return A hashmap of operators indexed by their operator string
+     *
+     * @return A map of operators indexed by their operator string
      */
     public Map<String, Operator> getBinaryOperators();
 
     /**
-     * Get the filters beloning to this extension
+     * Get the filters belonging to this extension
+     *
      * @return The filters
+     *
+     * @throws TwigRuntimeException From reflection when a filter method does not exist
      */
     public Map<String, Filter> getFilters() throws TwigRuntimeException;
 
     /**
      * Get the name of the extension
+     *
      * @return The name
      */
     public String getName();

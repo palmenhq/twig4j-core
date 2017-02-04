@@ -100,6 +100,9 @@ public class Lexer {
      * Constructor with custom configuration and environment
      *
      * @param options The options to use
+     * @param environment The twig environment
+     *
+     * @throws TwigRuntimeException If the environment fails to initialize
      */
     public Lexer(LexerOptions options, Environment environment) throws TwigRuntimeException {
         this.options = options;
@@ -112,8 +115,11 @@ public class Lexer {
      *
      * @param code     The code to tokenize
      * @param filename The source file (used for error messages)
+     *
      * @return The stream of tokens from the source
+     *
      * @throws SyntaxErrorException If we can't keep on tokenizing for some reason (i.e. missing closing tag)
+     * @throws TwigRuntimeException On runtime exceptions, i.e. if environment fails to initialize
      */
     public TokenStream tokenize(String code, String filename) throws SyntaxErrorException, TwigRuntimeException {
         this.code = code;
@@ -243,6 +249,7 @@ public class Lexer {
      * Lexes a variable expression "{{ aVar }}"
      *
      * @throws SyntaxErrorException If we can't keep on tokenizing for some reason (i.e. missing closing tag)
+     * @throws TwigRuntimeException On runtime exceptions, i.e. if environment fails to initialize
      */
     protected void lexVariable() throws SyntaxErrorException, TwigRuntimeException {
         Matcher endVarTagMatcher = this.regexes.getLexVariableEnd().matcher(this.code.substring(this.cursor));
@@ -258,6 +265,12 @@ public class Lexer {
         }
     }
 
+    /**
+     * Lexes a block/tag "{% foo %}"
+     *
+     * @throws SyntaxErrorException On syntax errors, i.e. unclosed block
+     * @throws TwigRuntimeException On runtime exceptions, i.e. if environment fails to initialize
+     */
     protected void lexBlock() throws SyntaxErrorException, TwigRuntimeException {
         Matcher endBlockTagMatcher = this.regexes.getLexBlockEnd().matcher(this.code.substring(this.cursor));
 
@@ -377,6 +390,7 @@ public class Lexer {
      * Move past comment blocks
      *
      * @throws SyntaxErrorException On any unclosed comments
+     * @throws TwigRuntimeException On runtime exceptions, i.e. if environment fails to initialize
      */
     protected void lexComment() throws SyntaxErrorException, TwigRuntimeException {
         Matcher endCommentTagMatcher = this.regexes.getLexCommentEnd().matcher(this.code.substring(this.cursor));
@@ -394,6 +408,7 @@ public class Lexer {
      * Lexes a string's contenst
      *
      * @throws SyntaxErrorException On unclosed strings
+     * @throws TwigRuntimeException On runtime exceptions, i.e. if environment fails to initialize
      */
     protected void lexString() throws SyntaxErrorException, TwigRuntimeException {
         String codeAfterCursor = this.code.substring(this.cursor);
@@ -441,6 +456,7 @@ public class Lexer {
      * Lexes a string interpolation and it's expressions
      *
      * @throws SyntaxErrorException If lexExpression() throws any syntax errors
+     * @throws TwigRuntimeException On runtime exceptions, i.e. if environment fails to initialize
      */
     protected void lexInterpolation() throws SyntaxErrorException, TwigRuntimeException {
         Bracket currentBracket = this.brackets.get(this.brackets.size() - 1);
@@ -502,6 +518,8 @@ public class Lexer {
 
     /**
      * Resets the state to the previous state
+     *
+     * @throws TwigRuntimeException If poping state without having a previous state
      */
     protected void popState() throws TwigRuntimeException {
         if (states.size() == 0) {
@@ -527,6 +545,7 @@ public class Lexer {
      * Finds the number of line breaks in the provided text
      *
      * @param text The text to find line breaks in
+     *
      * @return The number of line endings
      */
     protected Integer findNumberOfLineEndingsInText(String text) {
@@ -555,7 +574,8 @@ public class Lexer {
     /**
      * Set the environment
      *
-     * @param environment
+     * @param environment The environment
+     *
      * @return this
      */
     public Lexer setEnvironment(Environment environment) {
@@ -567,7 +587,7 @@ public class Lexer {
     /**
      * Set the options
      *
-     * @param options
+     * @param options The options
      * @return this
      */
     public Lexer setOptions(LexerOptions options) {
@@ -579,7 +599,7 @@ public class Lexer {
     /**
      * Get the regexes
      *
-     * @return
+     * @return The regexes
      */
     public LexerRegexes getRegexes() {
         return regexes;

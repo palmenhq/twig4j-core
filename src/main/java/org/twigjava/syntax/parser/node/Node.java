@@ -69,7 +69,10 @@ public class Node implements Compilable, LineAware {
      * Get an attribute by its name
      *
      * @param name The name of the attribute
+     *
      * @return The attribute
+     *
+     * @throws TwigRuntimeException If the node attribute does not exist
      */
     public Object getAttribute(String name) throws TwigRuntimeException {
         if (!attributes.containsKey(name)) {
@@ -91,7 +94,7 @@ public class Node implements Compilable, LineAware {
     /**
      * Add a node at a specific index
      *
-     * @param name The name of the node
+     * @param index The index of the node
      * @param node The node
      */
     public void addNode(Integer index, Node node) {
@@ -110,7 +113,8 @@ public class Node implements Compilable, LineAware {
     /**
      * Returns true if the node with the given index exists
      *
-     * @param name The index of the node
+     * @param index The index of the node
+     *
      * @return Whether the node exists or not
      */
     public Boolean hasNode(Integer index) {
@@ -121,7 +125,10 @@ public class Node implements Compilable, LineAware {
      * Get a node by its name
      *
      * @param index The index of the node
+     *
      * @return The node
+     *
+     * @throws TwigRuntimeException If the node cannot be found
      */
     public Node getNode(Integer index) throws TwigRuntimeException {
         if (!hasNode(index)) {
@@ -133,6 +140,7 @@ public class Node implements Compilable, LineAware {
 
     /**
      * Get all child nodes
+     *
      * @return All child nodes
      */
     public List<Node> getNodes() {

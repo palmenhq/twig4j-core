@@ -26,9 +26,13 @@ public class RuntimeTemplateCompiler {
 
     /**
      * Compile a template class from java source code
+     *
      * @param sourceCode The java code to compile
      * @param name The name of the template class INCLUDING package name (ie org.twigjava.template.02ntueh0k2b20rckb9940ntqb_0)
-     * @return
+     *
+     * @return The compiled template
+     *
+     * @throws TwigException If something goes wrong, probably (but hopefully not) because of java syntax error
      */
     public Template compile(String sourceCode, String name) throws TwigException {
         try {
@@ -60,16 +64,35 @@ public class RuntimeTemplateCompiler {
         }
     }
 
+    /**
+     * Get the actual compiler
+     *
+     * @return The compiler
+     */
     public CachedCompiler getCachedCompiler() {
         return cachedCompiler;
     }
 
+    /**
+     * Set the actual compiler
+     *
+     * @param cachedCompiler The compiler
+     *
+     * @return this
+     */
     public RuntimeTemplateCompiler setCachedCompiler(CachedCompiler cachedCompiler) {
         this.cachedCompiler = cachedCompiler;
 
         return this;
     }
 
+    /**
+     * Set the twig environment
+     *
+     * @param environment The twig environment
+     *
+     * @return this
+     */
     public RuntimeTemplateCompiler setEnvironment(Environment environment) {
         this.environment = environment;
 

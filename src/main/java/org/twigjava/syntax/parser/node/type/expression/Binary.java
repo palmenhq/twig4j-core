@@ -37,7 +37,10 @@ abstract public class Binary extends Expression {
 
     /**
      * Get the node on the left
+     *
      * @return The node
+     *
+     * @throws TwigRuntimeException When trying to access a node that doesn't exist
      */
     public Node getLeftNode() throws TwigRuntimeException {
         try {
@@ -49,7 +52,10 @@ abstract public class Binary extends Expression {
 
     /**
      * Get the node on the left
+     *
      * @return The node
+     *
+     * @throws TwigRuntimeException When trying to access a node that doesn't exist
      */
     public Node getRightNode() throws TwigRuntimeException {
         try {
