@@ -10,7 +10,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 jar {
-    baseName = 'twigjava-core'
+    baseName = 'twig4j-core'
     version = '0.1.0'
 }
 
