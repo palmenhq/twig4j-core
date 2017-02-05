@@ -108,19 +108,6 @@ public class RenderLogicTests extends FunctionalTests {
         Assert.assertEquals("Can find if string is not present in array when is not", "true", environment.render("trueInverseArray.twig4j"));
     }
 
-    @Test(expected = Twig4jRuntimeException.class)
-    public void cantCompareDifferentTypesWithStrictTypesEnabled() throws Twig4jException {
-        HashMap<String, String> templates = new HashMap<>();
-        templates.put("foo.twig4j", "{{ foo == 1 }}");
-        setupEnvironment(templates);
-        environment.enableStrictTypes();
-
-        Context ctx = new Context();
-        ctx.put("foo", "1");
-
-        environment.render("foo.twig4j", ctx);
-    }
-
     @Test
     public void canRenderNotComparedBoolean() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();

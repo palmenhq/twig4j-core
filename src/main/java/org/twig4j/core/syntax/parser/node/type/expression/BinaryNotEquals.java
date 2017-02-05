@@ -13,11 +13,11 @@ public class BinaryNotEquals extends Binary {
     @Override
     public void compile(ClassCompiler compiler) throws LoaderException, Twig4jRuntimeException {
         compiler
-            .write("(!compare(")
+            .writeRaw("(!(new org.twig4j.core.typesystem.DynamicType(")
             .subCompile(getLeftNode())
-            .writeRaw(", ")
+            .writeRaw(")).equals((new org.twig4j.core.typesystem.DynamicType(")
             .subCompile(getRightNode())
-            .writeRaw("))");
+            .writeRaw("))))");
     }
 
     @Override

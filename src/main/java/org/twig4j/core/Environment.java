@@ -29,7 +29,6 @@ public class Environment {
     private String templateClassPrefix = "Template_";
     private String templateBaseClass = "org.twig4j.core.template.Template";
     private boolean strictVariables = false;
-    private boolean strictTypes = true;
     private boolean debug = false;
 
     private LinkedHashMap<String, Operator> binaryOperators = new LinkedHashMap<>();
@@ -444,38 +443,6 @@ public class Environment {
      */
     public Environment disableStrictVariables() {
         strictVariables = false;
-
-        return this;
-    }
-
-    /**
-     * Whether to throw exceptions on typing errors (i.e. comparing bool to string) or just return false silently.
-     * Enabled by default.
-     *
-     * @return Whether to use strict types
-     */
-    public boolean isStrictTypes() {
-        return strictTypes;
-    }
-
-    /**
-     * Enable strict types (throw exceptions on typing errors)
-     *
-     * @return this
-     */
-    public Environment enableStrictTypes() {
-        strictTypes = true;
-
-        return this;
-    }
-
-    /**
-     * Disable strict types (return false or null)
-     *
-     * @return this
-     */
-    public Environment disableStrictTypes() {
-        strictTypes = false;
 
         return this;
     }

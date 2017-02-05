@@ -20,7 +20,7 @@ public class BinaryNotEqualsTests {
 
         Assert.assertEquals(
                 "Compiled source should compare with a not operator",
-                "(!compare(5, 2))",
+                "(!(new org.twig4j.core.typesystem.DynamicType(5)).equals((new org.twig4j.core.typesystem.DynamicType(2))))",
                 compiler.getSourceCode()
         );
     }

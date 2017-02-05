@@ -20,7 +20,7 @@ public class BinaryEqualsTests {
 
         Assert.assertEquals(
                 "Compiled source should call compare method",
-                "(compare(5, 2))",
+                "((new org.twig4j.core.typesystem.DynamicType(5)).equals(new org.twig4j.core.typesystem.DynamicType(2)))",
                 compiler.getSourceCode()
         );
     }

@@ -58,50 +58,6 @@ public class TemplateTests {
     }
 
     @Test
-    public void canCompareDifferentConstants() throws Twig4jException {
-        Template template = new TestCompareDifferentConstantsTemplate(new Environment());
-
-        Assert.assertEquals(
-                "Method compare should return false when comparing 2 different constants",
-                "false",
-                template.render()
-        );
-    }
-
-    @Test
-    public void canCompareEqualConstants() throws Twig4jException {
-        Template template = new TestCompareSameConstantsTemplate(new Environment());
-
-        Assert.assertEquals(
-                "Method compare should return true when comparing 2 equal constants",
-                "true",
-                template.render()
-        );
-    }
-
-    @Test(expected = Twig4jRuntimeException.class)
-    public void throwsExceptionWhenComparingDifferentTypes() throws Twig4jException {
-        Environment environment = new Environment();
-        environment.enableStrictTypes();
-        Template template = new TestCompareDifferentTypesConstantsTemplate(environment);
-
-        template.render();
-    }
-
-    @Test
-    public void failsSilentlyWhenComparingDifferentTypesWithStrictTypesDisabled() throws Twig4jException {
-        Environment environment = new Environment();
-        environment.disableStrictTypes();
-        Template template = new TestCompareDifferentTypesConstantsTemplate(environment);
-
-        Assert.assertEquals(
-                "Method compare should return false when comparing constants of different types",
-                "false",
-                template.render()
-        );
-    }
-
-    @Test
     public void canGetPropertyGetterIserHaser() throws Twig4jException {
         Context ctx = new Context();
         ctx.put("foo", new TestClassWithGettersAndProperty());
@@ -192,54 +148,6 @@ public class TemplateTests {
     protected class ClassWithBarMethod {
         public String bar(String anArgument, String anotherArgument) {
             return anArgument + anotherArgument;
-        }
-    }
-
-    protected class TestCompareDifferentConstantsTemplate extends Template {
-        public TestCompareDifferentConstantsTemplate(Environment environment) throws Twig4jException {
-            super(environment);
-        }
-
-        @Override
-        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {
-            return String.valueOf(compare("foo", "bar"));
-        }
-
-        @Override
-        public String getTemplateName() {
-            return "foo";
-        }
-    }
-
-    protected class TestCompareSameConstantsTemplate extends Template {
-        public TestCompareSameConstantsTemplate(Environment environment) throws Twig4jException {
-            super(environment);
-        }
-
-        @Override
-        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {
-            return String.valueOf(compare("foo", "foo"));
-        }
-
-        @Override
-        public String getTemplateName() {
-            return "foo";
-        }
-    }
-
-    protected class TestCompareDifferentTypesConstantsTemplate extends Template {
-        public TestCompareDifferentTypesConstantsTemplate(Environment environment) throws Twig4jException {
-            super(environment);
-        }
-
-        @Override
-        protected String doDisplay(Context context, Map<String, TemplateBlockMethodSet> blocks) throws Twig4jException {
-            return String.valueOf(compare("true", true));
-        }
-
-        @Override
-        public String getTemplateName() {
-            return "foo";
         }
     }
 

@@ -303,33 +303,6 @@ abstract public class Template {
     }
 
     /**
-     * Compare 2 variables or throw exception if of different types
-     *
-     * @param a Object 1
-     * @param b Object 2
-     *
-     * @return Whether they are equal
-     *
-     * @throws Twig4jRuntimeException On type errors if strict types are enabled
-     */
-    protected boolean compare(Object a, Object b) throws Twig4jRuntimeException {
-        if (!a.getClass().equals(b.getClass())) {
-            if (environment.isStrictTypes()) {
-                throw new Twig4jRuntimeException(
-                        String.format("Cannot compare different types (tried to compare \"%s\" with \"%s\")", a.getClass().getName(), b.getClass().getName()),
-                        getTemplateName(),
-                        -1
-                );
-            } else {
-                return false;
-            }
-
-        }
-
-        return a.equals(b);
-    }
-
-    /**
      * Loads another template
      *
      * @param template The actual template name to load

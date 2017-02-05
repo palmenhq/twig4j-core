@@ -20,7 +20,7 @@ public class BinaryGreaterThanTests {
 
         Assert.assertEquals(
                 "Complied source should be greater than",
-                "(Double.valueOf(5) > Double.valueOf(2))",
+                "((new org.twig4j.core.typesystem.DynamicType(5)).compareTo((new org.twig4j.core.typesystem.DynamicType(2))) > 0)",
                 compiler.getSourceCode()
         );
     }

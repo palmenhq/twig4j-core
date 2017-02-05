@@ -1,28 +1,28 @@
 package org.twig4j.core.syntax.parser.node.type.expression;
 
+import org.junit.Assert;
 import org.junit.Test;
+import org.twig4j.core.Environment;
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
 import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.parser.node.Node;
 
-import static org.mockito.Mockito.*;
-
 public class BinaryAddTests {
     @Test
     public void testCompile() throws LoaderException, Twig4jRuntimeException {
-        ClassCompiler compilerStub = mock(ClassCompiler.class);
-        Node left = new Node(1);
-        Node right = new Node(2);
+        ClassCompiler compiler = new ClassCompiler(new Environment());
+
+        Node left = new Constant(1, 1);
+        Node right = new Constant(1, 1);
         BinaryAdd addNode = new BinaryAdd(left, right, 1);
 
-        when(compilerStub.writeRaw(anyString())).thenReturn(compilerStub);
-        when(compilerStub.subCompile(anyObject())).thenReturn(compilerStub);
+        addNode.compile(compiler);
 
-        addNode.compile(compilerStub);
-
-        verify(compilerStub).subCompile(left);
-        verify(compilerStub).writeRaw(" + ");
-        verify(compilerStub).subCompile(right);
+        Assert.assertEquals(
+            "Compiled source should add 2 dynamic types",
+            "((new org.twig4j.core.typesystem.DynamicType(1)).add(new org.twig4j.core.typesystem.DynamicType(1)))",
+            compiler.getSourceCode()
+        );
     }
 }

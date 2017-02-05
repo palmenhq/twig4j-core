@@ -20,7 +20,7 @@ public class BinaryPowerOfTests {
 
         Assert.assertEquals(
                 "Compiled source should be an expression that handles power of",
-                "(Math.pow(5, 2))",
+                "((new org.twig4j.core.typesystem.DynamicType(5)).pow(new org.twig4j.core.typesystem.DynamicType(2)))",
                 compiler.getSourceCode()
         );
     }

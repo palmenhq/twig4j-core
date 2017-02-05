@@ -19,8 +19,8 @@ public class BinaryFloorDivideTests {
         divideNode.compile(compiler);
 
         Assert.assertEquals(
-                "Compiled source should be an an int of floor(a/b)",
-                "((int) Math.floor( ((double)5) / 2 ))",
+                "Compiled source should be floor divided dynamic types",
+                "((new org.twig4j.core.typesystem.DynamicType(5)).floorDivide(new org.twig4j.core.typesystem.DynamicType(2)))",
                 compiler.getSourceCode()
         );
     }

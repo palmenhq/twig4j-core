@@ -20,7 +20,7 @@ public class BinaryDivideTests {
 
         Assert.assertEquals(
                 "Compiled source should be an expression that handles doubles/ints",
-                "(((double)5) / 2)",
+                "((new org.twig4j.core.typesystem.DynamicType(5)).divide(new org.twig4j.core.typesystem.DynamicType(2)))",
                 compiler.getSourceCode()
         );
     }

@@ -3,7 +3,7 @@ package org.twig4j.core.syntax.parser.node.type.expression;
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.syntax.parser.node.Node;
 
-public class BinaryGreaterThanOrEqual extends BinaryDouble {
+public class BinaryGreaterThanOrEqual extends BinaryNumberComparison {
     public BinaryGreaterThanOrEqual(Node left, Node right, Integer line) {
         super(left, right, line);
     }

@@ -63,7 +63,7 @@ public class RenderMathsTests extends FunctionalTests {
         setupEnvironment(templates);
         String result = environment.render("division.twig4j");
 
-        Assert.assertEquals("10/2 should be 5.0", "5.0", result);
+        Assert.assertEquals("10/2 should be 5", "5", result);
 
     }
 
@@ -74,8 +74,8 @@ public class RenderMathsTests extends FunctionalTests {
         setupEnvironment(templates);
 
         Assert.assertEquals(
-                "(1 + 2 * 5 - 2 / 2) should be 10.0 (since we're doing division)",
-                "10.0",
+                "(1 + 2 * 5 - 2 / 2) should be 10",
+                "10",
                 environment.render("maths.twig4j")
         );
     }
@@ -87,8 +87,8 @@ public class RenderMathsTests extends FunctionalTests {
         setupEnvironment(templates);
 
         Assert.assertEquals(
-                "((1 + 2) * (5 - 2) / 3) should be 3.0",
-                "3.0",
+                "((1 + 2) * (5 - 2) / 3) should be 3",
+                "3",
                 environment.render("maths.twig4j")
         );
     }
@@ -125,6 +125,6 @@ public class RenderMathsTests extends FunctionalTests {
         templates.put("powerOf.twig4j", "{{ 3 ** 3 }}");
         setupEnvironment(templates);
 
-        Assert.assertEquals("(3 ** 3) should be 27.0", "27.0", environment.render("powerOf.twig4j"));
+        Assert.assertEquals("(3 ** 3) should be 27", "27", environment.render("powerOf.twig4j"));
     }
 }
