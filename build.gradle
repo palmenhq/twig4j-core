@@ -12,8 +12,8 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 group = 'org.twig4j'
-archivesBaseName = 'core'
-version = "0.2.0"
+archivesBaseName = 'twig4j-core'
+version = "0.2.1-BETA"
 
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
@@ -26,8 +26,8 @@ task sourcesJar(type: Jar) {
 }
 
 jar {
-    baseName = 'core'
-    version = '0.2.0'
+    baseName = 'twig4j-core'
+    version = '0.2.1-BETA'
 }
 
 artifacts {
@@ -42,8 +42,9 @@ signing {
 uploadArchives {
     repositories {
         mavenDeployer {
-            def realOssrhUsername = hasProperty('ossrhUsername') ? ossrhUsername : System.getenv('ossrhUsername');
-            def realOssrhPassword = hasProperty('ossrhPassword') ? ossrhPassword : System.getenv('ossrhPassword');
+            def realOssrhUsername = project.hasProperty('ossrhUsername') ? ossrhUsername : System.getenv('ossrhUsername');
+            def realOssrhPassword = project.hasProperty('ossrhPassword') ? ossrhPassword : System.getenv('ossrhPassword');
+
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
             repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
@@ -70,7 +71,7 @@ uploadArchives {
                 licenses {
                     license {
                         name 'BSD'
-                        url 'https://github.com/palmfjord/twig4j-core/blob/v0.2.0/LICENSE'
+                        url 'https://github.com/palmfjord/twig4j-core/blob/v0.2.1/LICENSE'
                     }
                 }
 
