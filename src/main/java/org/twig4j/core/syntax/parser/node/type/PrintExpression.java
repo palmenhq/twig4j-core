@@ -16,9 +16,9 @@ public class PrintExpression extends Node implements Output {
     public void compile(ClassCompiler compiler) throws LoaderException, Twig4jRuntimeException {
         compiler
                 .addDebugInfo(this)
-                .write("output.append(")
+                .write("output.append(convertNullValueToEmptyString(")
                     .subCompile(getExpression())
-                .writeRaw(");\n");
+                .writeRaw("));\n");
     }
 
     public Node getExpression() {

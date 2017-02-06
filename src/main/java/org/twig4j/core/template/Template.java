@@ -403,6 +403,10 @@ abstract public class Template {
         }
     }
 
+    protected Object convertNullValueToEmptyString(Object value) {
+        return value == null ? "" : value;
+    }
+
     /**
      * Set the environment
      *
