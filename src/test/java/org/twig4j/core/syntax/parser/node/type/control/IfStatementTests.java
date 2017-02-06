@@ -27,11 +27,11 @@ public class IfStatementTests {
         String source = compiler.getSourceCode();
         Assert.assertTrue(
                 "Should contain if statement with true",
-                source.contains("if ((Boolean) true) {")
+                source.contains("if ((new org.twig4j.core.typesystem.DynamicType(true)).toBoolean()) {")
         );
         Assert.assertTrue(
                 "Should contain elseif statement with false",
-                source.contains("} else if ((Boolean) false) {")
+                source.contains("} else if ((new org.twig4j.core.typesystem.DynamicType(false)).toBoolean()) {")
         );
         Assert.assertTrue(
                 "Should contain else statement",

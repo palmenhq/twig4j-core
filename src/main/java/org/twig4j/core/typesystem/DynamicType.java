@@ -4,6 +4,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
+import java.util.Map;
 
 public class DynamicType implements Comparable<DynamicType> {
     protected Object value;
@@ -193,6 +195,39 @@ public class DynamicType implements Comparable<DynamicType> {
         } else {
             return false;
         }
+    }
+
+    public Boolean toBoolean() {
+        Object value = getValue();
+        if (value instanceof DynamicType) {
+            value = ((DynamicType)value).getValue();
+        }
+
+        if (value == null) {
+            return false;
+        }
+
+        if (value instanceof Boolean) {
+            return (Boolean)value;
+        }
+
+        if (value instanceof Number) {
+            return ((Number)value).doubleValue() != 0d;
+        }
+
+        if (value instanceof String) {
+            return !value.equals("0") && ((String) value).length() > 0;
+        }
+
+        if (value instanceof List) {
+            return ((List)value).size() > 0;
+        }
+
+        if (value instanceof Map) {
+            return ((Map)value).size() > 0;
+        }
+
+        return true;
     }
 
     @Override

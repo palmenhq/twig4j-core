@@ -20,15 +20,15 @@ public class IfStatement extends Node {
         for (Node node : nodes) {
             if (node instanceof IfBody) {
                 compiler
-                        .write("if ((Boolean) ")
+                        .write("if ((new org.twig4j.core.typesystem.DynamicType(")
                         .subCompile(node.getNode(0))
-                        .writeRaw(") {\n")
+                        .writeRaw(")).toBoolean()) {\n")
                         .subCompile(node.getNode(1));
             } else if (node instanceof ElseIfBody) {
                 compiler
-                        .write("} else if ((Boolean) ")
+                        .write("} else if ((new org.twig4j.core.typesystem.DynamicType(")
                         .subCompile(node.getNode(0))
-                        .writeRaw(") {\n")
+                        .writeRaw(")).toBoolean()) {\n")
                         .subCompile(node.getNode(1));
             } else if (node instanceof ElseBody) {
                 compiler
