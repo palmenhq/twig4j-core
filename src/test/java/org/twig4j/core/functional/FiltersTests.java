@@ -11,35 +11,35 @@ public class FiltersTests extends FunctionalTests {
     public void canApplyBasicFilters() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-                "foo.twig4j",
+                "foo.twig",
                 "{{ 'foo'|upper }}"
         );
         setupEnvironment(templates);
 
-        Assert.assertEquals("applied filter should be upper cased", "FOO", environment.render("foo.twig4j"));
+        Assert.assertEquals("applied filter should be upper cased", "FOO", environment.render("foo.twig"));
     }
 
     @Test
     public void canApplyMultipleFilters() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-                "foo.twig4j",
+                "foo.twig",
                 "{{ 'Foo'|upper|lower }}"
         );
         setupEnvironment(templates);
 
-        Assert.assertEquals("applied filter should be lower cased", "foo", environment.render("foo.twig4j"));
+        Assert.assertEquals("applied filter should be lower cased", "foo", environment.render("foo.twig"));
     }
 
     @Test
     public void canApplyFiltersWithArguments() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-                "foo.twig4j",
+                "foo.twig",
                 "{{ ['foo', 'bar']|join(', ') }}"
         );
         setupEnvironment(templates);
 
-        Assert.assertEquals("applied filter should join array with provided argument", "foo, bar", environment.render("foo.twig4j"));
+        Assert.assertEquals("applied filter should join array with provided argument", "foo, bar", environment.render("foo.twig"));
     }
 }

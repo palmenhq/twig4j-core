@@ -14,7 +14,7 @@ public class IfTests extends FunctionalTests {
     public void canRenderIf() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-                "foo.twig4j",
+                "foo.twig",
                 "{% if foo %}foo{% endif %}\n"
                         + "{% if bar %}bar{% endif %}\n"
         );
@@ -27,7 +27,7 @@ public class IfTests extends FunctionalTests {
         Assert.assertEquals(
                 "Only contents of true if statement should be rendered",
                 "foo",
-                environment.render("foo.twig4j", ctx)
+                environment.render("foo.twig", ctx)
         );
     }
 
@@ -35,7 +35,7 @@ public class IfTests extends FunctionalTests {
     public void canRenderElse() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-                "foo.twig4j",
+                "foo.twig",
                 "{% if foo %}foo{% else %}bar{% endif %}\n"
         );
         setupEnvironment(templates);
@@ -46,7 +46,7 @@ public class IfTests extends FunctionalTests {
         Assert.assertEquals(
                 "Contents of else statement should be rendered",
                 "bar",
-                environment.render("foo.twig4j", ctx)
+                environment.render("foo.twig", ctx)
         );
     }
 
@@ -54,7 +54,7 @@ public class IfTests extends FunctionalTests {
     public void canRenderElseIf() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-                "foo.twig4j",
+                "foo.twig",
                 "{% if foo %}\n" +
                         "foo\n"
                         + "{% elseif bar %}bar{% endif %}\n"
@@ -68,7 +68,7 @@ public class IfTests extends FunctionalTests {
         Assert.assertEquals(
                 "Contents of elseif statement should be rendered",
                 "bar",
-                environment.render("foo.twig4j", ctx)
+                environment.render("foo.twig", ctx)
         );
     }
 
@@ -76,11 +76,11 @@ public class IfTests extends FunctionalTests {
     public void cantRenderUnclosedIf() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-                "foo.twig4j",
+                "foo.twig",
                 "{% if true %}"
         );
         setupEnvironment(templates);
 
-        environment.render("foo.twig4j");
+        environment.render("foo.twig");
     }
 }

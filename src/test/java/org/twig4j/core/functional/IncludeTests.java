@@ -13,22 +13,22 @@ public class IncludeTests extends FunctionalTests {
     @Test
     public void canIncludeTemplate() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
-        templates.put("foo.twig4j", "foo {% include('bar.twig4j') %}");
-        templates.put("bar.twig4j", "bar");
+        templates.put("foo.twig", "foo {% include('bar.twig') %}");
+        templates.put("bar.twig", "bar");
         setupEnvironment(templates);
 
         Assert.assertEquals(
             "Template should be included properly",
             "foo bar",
-            environment.render("foo.twig4j")
+            environment.render("foo.twig")
         );
     }
 
     @Test
     public void canIncludeTemplateWithContext() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
-        templates.put("foo.twig4j", "foo {% include('bar.twig4j') %}");
-        templates.put("bar.twig4j", "{{ bar }}");
+        templates.put("foo.twig", "foo {% include('bar.twig') %}");
+        templates.put("bar.twig", "{{ bar }}");
         setupEnvironment(templates);
 
         Context ctx = new Context();
@@ -37,15 +37,15 @@ public class IncludeTests extends FunctionalTests {
         Assert.assertEquals(
             "Template should be included properly with context",
             "foo baz",
-            environment.render("foo.twig4j", ctx)
+            environment.render("foo.twig", ctx)
         );
     }
 
     @Test
     public void canIncludeTemplateWithContextAndWith() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
-        templates.put("foo.twig4j", "foo {% include('bar.twig4j') with { qux: 'quux' } %}");
-        templates.put("bar.twig4j", "{{ bar }} {{ qux }}");
+        templates.put("foo.twig", "foo {% include('bar.twig') with { qux: 'quux' } %}");
+        templates.put("bar.twig", "{{ bar }} {{ qux }}");
         setupEnvironment(templates);
 
         Context ctx = new Context();
@@ -54,42 +54,42 @@ public class IncludeTests extends FunctionalTests {
         Assert.assertEquals(
             "Template should be included properly with context",
             "foo baz quux",
-            environment.render("foo.twig4j", ctx)
+            environment.render("foo.twig", ctx)
         );
     }
 
     @Test(expected = Twig4jRuntimeException.class)
     public void includeWithOnlyThrowsErrorOnAccessToParentContext() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
-        templates.put("foo.twig4j", "foo {% include('bar.twig4j') with { qux: 'quux' } only %}");
-        templates.put("bar.twig4j", "{{ bar }}");
+        templates.put("foo.twig", "foo {% include('bar.twig') with { qux: 'quux' } only %}");
+        templates.put("bar.twig", "{{ bar }}");
         setupEnvironment(templates);
 
         Context ctx = new Context();
         ctx.put("bar", "baz");
 
-        environment.render("foo.twig4j", ctx);
+        environment.render("foo.twig", ctx);
     }
 
     @Test(expected = LoaderException.class)
     public void cantIncludeNonExistingTemplate() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
-        templates.put("foo.twig4j", "{% include('nonExistingTemplate') %}");
+        templates.put("foo.twig", "{% include('nonExistingTemplate') %}");
         setupEnvironment(templates);
 
-        environment.render("foo.twig4j");
+        environment.render("foo.twig");
     }
 
     @Test
     public void ignoresMissing() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
-        templates.put("foo.twig4j", "foo {% include('nonExisting.twig4j') ignore missing %}");
+        templates.put("foo.twig", "foo {% include('nonExisting.twig') ignore missing %}");
         setupEnvironment(templates);
 
         Assert.assertEquals(
             "Template should render properly without exception",
             "foo ",
-            environment.render("foo.twig4j")
+            environment.render("foo.twig")
         );
     }
 }

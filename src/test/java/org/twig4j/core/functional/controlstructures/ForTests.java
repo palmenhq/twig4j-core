@@ -12,7 +12,7 @@ public class ForTests extends FunctionalTests {
     public void canRenderForInRange() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-                "foo.twig4j",
+                "foo.twig",
                 "{% for foo in 'a'..'c' %}\n" +
                         "{{ foo }}\n" +
                         "{% endfor %}"
@@ -22,7 +22,7 @@ public class ForTests extends FunctionalTests {
         Assert.assertEquals(
                 "Full range should be rendered",
                 "a\nb\nc\n",
-                environment.render("foo.twig4j")
+                environment.render("foo.twig")
         );
     }
 
@@ -30,7 +30,7 @@ public class ForTests extends FunctionalTests {
     public void canRenderArray() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-                "foo.twig4j",
+                "foo.twig",
                 "{% for item in ['foo', 'bar'] %}{{ item }} {% endfor %}"
         );
         setupEnvironment(templates);
@@ -38,7 +38,7 @@ public class ForTests extends FunctionalTests {
         Assert.assertEquals(
                 "All array keys should be rendered",
                 "foo bar ",
-                environment.render("foo.twig4j")
+                environment.render("foo.twig")
         );
     }
 
@@ -46,7 +46,7 @@ public class ForTests extends FunctionalTests {
     public void canRenderArrayWithKeys() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-                "foo.twig4j",
+                "foo.twig",
                 "{% for key, item in ['foo', 'bar'] %}{{ key }}: {{ item }}\n" +
                         "{% endfor %}"
         );
@@ -55,7 +55,7 @@ public class ForTests extends FunctionalTests {
         Assert.assertEquals(
                 "All array keys should be rendered",
                 "0: foo\n1: bar\n",
-                environment.render("foo.twig4j")
+                environment.render("foo.twig")
         );
     }
 
@@ -63,7 +63,7 @@ public class ForTests extends FunctionalTests {
     public void canUseLoopVariable() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-                "foo.twig4j",
+                "foo.twig",
                 "{% for item in ['foo', 'bar'] %}\n" +
                         "{{ loop.index }} {{ loop.index0 }} {{ loop.first }} {{ loop.revindex }} {{ loop.revindex0 }} {{ loop.last }} {{ item }}\n" +
                         "{% endfor %}"
@@ -74,7 +74,7 @@ public class ForTests extends FunctionalTests {
                 "Loop variables should be rendered correctly",
                 "1 0 true 2 1 false foo\n" +
                         "2 1 false 1 0 true bar\n",
-                environment.render("foo.twig4j")
+                environment.render("foo.twig")
         );
     }
 
@@ -82,7 +82,7 @@ public class ForTests extends FunctionalTests {
     public void canDoLoopInsideLoop() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-                "foo.twig4j",
+                "foo.twig",
                 "{% for key1, item1 in ['foo', 'bar'] %}\n" +
                         "{{ key1 }} {{ item1 }} {{ loop.index }} {{ loop.index0 }} {{ loop.first }}\n" +
                         "{% for key2, item2 in ['baz', 'qux'] %}\n" +
@@ -105,7 +105,7 @@ public class ForTests extends FunctionalTests {
                 "0 baz 1 0 true\n" +
                 // Loop 2:2
                 "1 qux 2 1 false\n",
-                environment.render("foo.twig4j")
+                environment.render("foo.twig")
         );
     }
 
@@ -113,7 +113,7 @@ public class ForTests extends FunctionalTests {
     public void canLoopHashMaps() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-                "foo.twig4j",
+                "foo.twig",
                 "{% for key, item in { foo: 'bar', baz: 'qux' } %}\n" +
                         "{{ key }}: {{ item }}\n" +
                         "{% endfor %}"
@@ -124,7 +124,7 @@ public class ForTests extends FunctionalTests {
                 "Key and items should be rendered correctly",
                 "foo: bar\n" +
                     "baz: qux\n",
-                environment.render("foo.twig4j")
+                environment.render("foo.twig")
         );
     }
 
@@ -132,7 +132,7 @@ public class ForTests extends FunctionalTests {
     public void canLoopWithIf() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-                "foo.twig4j",
+                "foo.twig",
                 "{% for i in 1..5 if i % 2 == 1 %}\n" +
                         "{{ i }} " +
                         "{% endfor %}"
@@ -142,7 +142,7 @@ public class ForTests extends FunctionalTests {
         Assert.assertEquals(
                 "Only items that matches if condition should be rendered",
                 "1 3 5 ",
-                environment.render("foo.twig4j")
+                environment.render("foo.twig")
         );
     }
 
@@ -150,7 +150,7 @@ public class ForTests extends FunctionalTests {
     public void canUseElseBody() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-                "foo.twig4j",
+                "foo.twig",
                 "{% for i in [] %}\n" +
                         "do nothing here\n" +
                         "{% else %}\n" +
@@ -162,7 +162,7 @@ public class ForTests extends FunctionalTests {
         Assert.assertEquals(
                 "Only \"else works\" text should be printed",
                 "else works",
-                environment.render("foo.twig4j")
+                environment.render("foo.twig")
         );
     }
 
@@ -170,7 +170,7 @@ public class ForTests extends FunctionalTests {
     public void doesNotTriggerElseBodyWhenIterated() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-                "foo.twig4j",
+                "foo.twig",
                 "{% for i in [1, 2] %}\n" +
                         "{{ i }}" +
                         "{% else %}\n" +
@@ -182,7 +182,7 @@ public class ForTests extends FunctionalTests {
         Assert.assertEquals(
                 "Else text should not be printed",
                 "12",
-                environment.render("foo.twig4j")
+                environment.render("foo.twig")
         );
     }
 }

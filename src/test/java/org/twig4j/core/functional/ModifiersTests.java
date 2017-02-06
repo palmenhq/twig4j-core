@@ -11,39 +11,39 @@ public class ModifiersTests extends FunctionalTests {
     public void canMakeSimpleAssignments() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-                "foo.twig4j",
+                "foo.twig",
                 "{% set foo = 'bar' %}\n" +
                     "{{ foo }}"
         );
         setupEnvironment(templates);
 
-        Assert.assertEquals("Contents of set variable should be rendered", "bar", environment.render("foo.twig4j"));
+        Assert.assertEquals("Contents of set variable should be rendered", "bar", environment.render("foo.twig"));
     }
 
     @Test
     public void canMakeComplexAssignments() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-                "foo.twig4j",
+                "foo.twig",
                 "{% set foo = {bar: 'baz'} %}\n" +
                     "{{ foo.bar }}"
         );
         setupEnvironment(templates);
 
-        Assert.assertEquals("Contents of set variable should be rendered", "baz", environment.render("foo.twig4j"));
+        Assert.assertEquals("Contents of set variable should be rendered", "baz", environment.render("foo.twig"));
     }
 
     @Test
     public void canMakeMultipleAssignments() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-                "foo.twig4j",
+                "foo.twig",
                 "{% set foo, bar = 'baz', 'qux' %}\n" +
                     "{{ foo ~ bar }}"
         );
         setupEnvironment(templates);
 
-        Assert.assertEquals("Contents of set both variables should be rendered", "bazqux", environment.render("foo.twig4j"));
+        Assert.assertEquals("Contents of set both variables should be rendered", "bazqux", environment.render("foo.twig"));
     }
 
 //  TODO capture assignments
@@ -51,12 +51,12 @@ public class ModifiersTests extends FunctionalTests {
 //    public void canMakeCaptureAssignment() throws Twig4jException {
 //        HashMap<String, String> templates = new HashMap<>();
 //        templates.put(
-//                "foo.twig4j",
+//                "foo.twig",
 //                "{% set foo %}bar{% endset %}\n" +
 //                        "{{ foo }}"
 //        );
 //        setupEnvironment(templates);
 //
-//        Assert.assertEquals("Contents of set variable should be rendered", "bar", environment.render("foo.twig4j"));
+//        Assert.assertEquals("Contents of set variable should be rendered", "bar", environment.render("foo.twig"));
 //    }
 }

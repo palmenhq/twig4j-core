@@ -12,19 +12,19 @@ public class ExtendsTests extends FunctionalTests {
     public void canExtendTemplateWithBlocks() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-            "foo.twig4j",
-            "{% extends 'bar.twig4j' %}\n" +
+            "foo.twig",
+            "{% extends 'bar.twig' %}\n" +
                 "{% block a %}\n" +
                 "foo\n" +
                 "{% endblock %}"
         );
-        templates.put("bar.twig4j", "bar {% block a %}{% endblock %}");
+        templates.put("bar.twig", "bar {% block a %}{% endblock %}");
         setupEnvironment(templates);
 
         Assert.assertEquals(
             "Templates should be rendered correctly",
             "bar foo\n",
-            environment.render("foo.twig4j")
+            environment.render("foo.twig")
         );
     }
 
@@ -32,17 +32,17 @@ public class ExtendsTests extends FunctionalTests {
     public void canExtendTemplateWithBlocksInsideBlocks() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-            "foo.twig4j",
-            "{% extends 'bar.twig4j' %}\n" +
+            "foo.twig",
+            "{% extends 'bar.twig' %}\n" +
                 "{% block b %}bar{% endblock %}"
         );
-        templates.put("bar.twig4j", "{% block a %}foo {% block b %}{% endblock b %}{% endblock a %}");
+        templates.put("bar.twig", "{% block a %}foo {% block b %}{% endblock b %}{% endblock a %}");
         setupEnvironment(templates);
 
         Assert.assertEquals(
             "Templates should be rendered correctly",
             "foo bar",
-            environment.render("foo.twig4j")
+            environment.render("foo.twig")
         );
     }
 
@@ -50,19 +50,19 @@ public class ExtendsTests extends FunctionalTests {
     public void canExtendTemplateWithSpacesAndNewlinesWithBlocks() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-            "foo.twig4j",
-            "\n   {% extends 'bar.twig4j' %} \n\n" +
+            "foo.twig",
+            "\n   {% extends 'bar.twig' %} \n\n" +
                 "{% block a %}\n" +
                 "foo\n" +
                 "{% endblock %}    \n\n"
         );
-        templates.put("bar.twig4j", "bar {% block a %}{% endblock %}");
+        templates.put("bar.twig", "bar {% block a %}{% endblock %}");
         setupEnvironment(templates);
 
         Assert.assertEquals(
             "Templates should be rendered correctly",
             "bar foo\n",
-            environment.render("foo.twig4j")
+            environment.render("foo.twig")
         );
     }
 
@@ -70,32 +70,32 @@ public class ExtendsTests extends FunctionalTests {
     public void throwsExceptionOnExtendingTemplateWithBody() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-            "foo.twig4j",
-            "{% extends 'bar.twig4j' %}\n" +
+            "foo.twig",
+            "{% extends 'bar.twig' %}\n" +
                 "illegal body here {% block a %}{% endblock %}"
         );
-        templates.put("bar.twig4j", "{% block a %}{% endblock %}");
+        templates.put("bar.twig", "{% block a %}{% endblock %}");
         setupEnvironment(templates);
 
-        environment.render("foo.twig4j");
+        environment.render("foo.twig");
     }
 
     @Test
     public void canDoMultipleExtends() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-            "foo.twig4j",
-            "{% extends 'bar.twig4j' %}\n" +
+            "foo.twig",
+            "{% extends 'bar.twig' %}\n" +
                 "{% block a %}A{% endblock %}"
         );
-        templates.put("bar.twig4j", "{% extends 'baz.twig4j' %}{% block a %}{% endblock %}{% block b %}B{% endblock %}");
-        templates.put("baz.twig4j", "foo {% block a %}{% endblock %} {% block b %}{% endblock %}");
+        templates.put("bar.twig", "{% extends 'baz.twig' %}{% block a %}{% endblock %}{% block b %}B{% endblock %}");
+        templates.put("baz.twig", "foo {% block a %}{% endblock %} {% block b %}{% endblock %}");
         setupEnvironment(templates);
 
         Assert.assertEquals(
             "Templates should be rendered correctly",
             "foo A B",
-            environment.render("foo.twig4j")
+            environment.render("foo.twig")
         );
     }
 
@@ -103,17 +103,17 @@ public class ExtendsTests extends FunctionalTests {
     public void canDoParent() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-            "foo.twig4j",
-            "{% extends 'bar.twig4j' %}\n" +
+            "foo.twig",
+            "{% extends 'bar.twig' %}\n" +
                 "{% block a %}{{ parent() }}{% endblock %}"
         );
-        templates.put("bar.twig4j", "foo {% block a %}parent A{% endblock %}");
+        templates.put("bar.twig", "foo {% block a %}parent A{% endblock %}");
         setupEnvironment(templates);
 
         Assert.assertEquals(
             "Templates should be rendered correctly",
             "foo parent A",
-            environment.render("foo.twig4j")
+            environment.render("foo.twig")
         );
     }
 
@@ -121,7 +121,7 @@ public class ExtendsTests extends FunctionalTests {
     public void canDoBlockReferenceFunction() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
         templates.put(
-            "foo.twig4j",
+            "foo.twig",
             "foo {% block a %}parent A{% endblock %}\n" +
                 "{{ block('a') }}"
         );
@@ -130,7 +130,7 @@ public class ExtendsTests extends FunctionalTests {
         Assert.assertEquals(
             "Templates should be rendered correctly",
             "foo parent Aparent A",
-            environment.render("foo.twig4j")
+            environment.render("foo.twig")
         );
     }
 }

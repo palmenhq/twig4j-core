@@ -14,29 +14,29 @@ public class RenderDataStructuresTests extends FunctionalTests {
     @Test
     public void canRenderArray() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
-        templates.put("foo.twig4j", "{{ ['foo', 'bar', 'baz'][1] }}");
+        templates.put("foo.twig", "{{ ['foo', 'bar', 'baz'][1] }}");
         setupEnvironment(templates);
 
         Assert.assertEquals(
                 "2nd element of array should be rendered",
                 "bar",
-                environment.render("foo.twig4j")
+                environment.render("foo.twig")
         );
     }
 
     @Test(expected = Twig4jRuntimeException.class)
     public void cantRenderArrayAccessToUndefinedKey() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
-        templates.put("foo.twig4j", "{{ ['foo', 'bar', 'baz'][5] }}");
+        templates.put("foo.twig", "{{ ['foo', 'bar', 'baz'][5] }}");
         setupEnvironment(templates);
 
-        environment.render("foo.twig4j");
+        environment.render("foo.twig");
     }
 
     @Test
     public void canRenderArrayFromContext() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
-        templates.put("foo.twig4j", "{{ foo[0] }}");
+        templates.put("foo.twig", "{{ foo[0] }}");
         setupEnvironment(templates);
 
         Context ctx = new Context();
@@ -47,32 +47,32 @@ public class RenderDataStructuresTests extends FunctionalTests {
         Assert.assertEquals(
                 "Content of called array element should be rendered",
                 "bar",
-                environment.render("foo.twig4j", ctx)
+                environment.render("foo.twig", ctx)
         );
     }
 
     @Test(expected = Twig4jRuntimeException.class)
     public void cantRenderArrayAccessToNonArray() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
-        templates.put("foo.twig4j", "{{ foo[0] }}");
+        templates.put("foo.twig", "{{ foo[0] }}");
         setupEnvironment(templates);
 
         Context ctx = new Context();
         ctx.put("foo", 1);
 
-        environment.render("foo.twig4j", ctx);
+        environment.render("foo.twig", ctx);
     }
 
     @Test
     public void canRenderHashmap() throws Twig4jException {
         HashMap<String, String> templates = new HashMap<>();
-        templates.put("foo.twig4j", "{{ ({foo: { 'bar': 'qux' } }).foo.bar }}");
+        templates.put("foo.twig", "{{ ({foo: { 'bar': 'qux' } }).foo.bar }}");
         setupEnvironment(templates);
 
         Assert.assertEquals(
                 "Contents of key inside hashmap inside hashmap should be rendered",
                 "qux",
-                environment.render("foo.twig4j")
+                environment.render("foo.twig")
         );
     }
 }
