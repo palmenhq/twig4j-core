@@ -1,4 +1,4 @@
-package org.twig4j.core.syntax.parser.node.type;
+package org.twig4j.core.syntax.parser.node.type.control;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -6,6 +6,8 @@ import org.twig4j.core.Environment;
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
 import org.twig4j.core.exception.Twig4jRuntimeException;
+import org.twig4j.core.syntax.parser.node.type.Text;
+import org.twig4j.core.syntax.parser.node.type.control.For;
 import org.twig4j.core.syntax.parser.node.type.expression.BinaryRange;
 import org.twig4j.core.syntax.parser.node.type.expression.Constant;
 

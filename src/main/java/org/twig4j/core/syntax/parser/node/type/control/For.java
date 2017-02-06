@@ -1,11 +1,9 @@
-package org.twig4j.core.syntax.parser.node.type;
+package org.twig4j.core.syntax.parser.node.type.control;
 
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
 import org.twig4j.core.exception.Twig4jRuntimeException;
 import org.twig4j.core.syntax.parser.node.Node;
-import org.twig4j.core.syntax.parser.node.type.control.IfBody;
-import org.twig4j.core.syntax.parser.node.type.control.IfStatement;
 import org.twig4j.core.syntax.parser.node.type.expression.Expression;
 
 import java.util.*;

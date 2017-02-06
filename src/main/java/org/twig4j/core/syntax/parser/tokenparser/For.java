@@ -17,7 +17,7 @@ public class For extends AbstractTokenParser {
         List<String> targets = parser.getExpressionParser().parseAssignmentExpression();
         tokenStream.expect(Token.Type.OPERATOR, "in");
         Expression seq = parser.getExpressionParser().parseExpression();
-        org.twig4j.core.syntax.parser.node.type.For.Settings settings = new org.twig4j.core.syntax.parser.node.type.For.Settings();
+        org.twig4j.core.syntax.parser.node.type.control.For.Settings settings = new org.twig4j.core.syntax.parser.node.type.control.For.Settings();
 
         if (tokenStream.getCurrent().test(Token.Type.NAME, "if")) {
             tokenStream.next();
@@ -48,7 +48,7 @@ public class For extends AbstractTokenParser {
 
         // TODO check loop variables
 
-        return new org.twig4j.core.syntax.parser.node.type.For(settings, line, "for");
+        return new org.twig4j.core.syntax.parser.node.type.control.For(settings, line, "for");
     }
 
     @Override

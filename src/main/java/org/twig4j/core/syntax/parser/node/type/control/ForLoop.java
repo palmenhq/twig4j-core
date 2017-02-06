@@ -1,4 +1,4 @@
-package org.twig4j.core.syntax.parser.node.type;
+package org.twig4j.core.syntax.parser.node.type.control;
 
 import org.twig4j.core.compiler.ClassCompiler;
 import org.twig4j.core.exception.LoaderException;
