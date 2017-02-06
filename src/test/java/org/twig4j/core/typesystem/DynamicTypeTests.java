@@ -33,6 +33,8 @@ public class DynamicTypeTests {
         Assert.assertEquals("2.0 / 2 should be 1", 1, (new DynamicType(2.0)).divide(new DynamicType(2)));
         Assert.assertEquals("2.2 / 2 should be 1.1", 1.1, (new DynamicType(2.2)).divide(new DynamicType(2)));
 
+        Assert.assertEquals("2.5 // 2 should be 1", 1, (new DynamicType(2.5)).floorDivide(new DynamicType(2)));
+
         Assert.assertEquals("3.0 % 2 should be 1", 1, (new DynamicType(3.0)).mod(new DynamicType(2)));
         Assert.assertEquals("2.2 % 2 should be 0.2", 0.2, (new DynamicType(2.2)).mod(new DynamicType(2)));
 
